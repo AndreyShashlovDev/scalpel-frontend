@@ -1,0 +1,4 @@
+export enum ChainType {
+  ETHEREUM_MAIN_NET = 'ETHEREUM_MAIN_NET',
+  POLYGON = 'POLYGON'
+}

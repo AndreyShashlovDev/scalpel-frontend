@@ -1,0 +1,20 @@
+import { ApplicationRouter } from './ApplicationRouter.ts'
+
+export class ApplicationRouterImpl extends ApplicationRouter {
+
+  constructor() {
+    super()
+  }
+
+  public openLoginPage(): void {
+    this.navigateTo('/', {replace: true})
+  }
+
+  public openStrategiesPage(): void {
+    this.navigateTo('/strategies', {replace: true})
+  }
+
+  public openCreateStrategyPage(): void {
+    this.navigateTo('/create-strategy', {replace: true})
+  }
+}
