@@ -1,7 +1,10 @@
 import { useCallback, useLayoutEffect, useMemo } from 'react'
 import styled from 'styled-components'
+import PlayIcon from '../../../assets/icons/app/PlayIcon.svg'
+import { AppAddressView } from '../../../common/app-ui/presentation/AppAddressView.tsx'
 import { AppButton } from '../../../common/app-ui/presentation/AppButton.tsx'
 import { AppComboBoxView } from '../../../common/app-ui/presentation/AppComboBoxView.tsx'
+import { AppSpaceView } from '../../../common/app-ui/presentation/AppSpaceView.tsx'
 import { ComponentSize } from '../../../common/app-ui/presentation/ComponentSize.ts'
 import { LoadingView } from '../../../common/app-ui/presentation/LoadingView.tsx'
 import { PageHeaderView } from '../../../common/app-ui/presentation/PageHeaderView.tsx'
@@ -14,10 +17,21 @@ import { State } from '../domain/CreateStrategyPagePresenterImpl.ts'
 import '../domain/CreateStrategyPagePresenterModule.ts'
 import { ClassicScalpelOptionsView } from './components/strategy-options/ClassicScalpelOptionsView.tsx'
 
+const PlayIconWrapper = styled(PlayIcon)`
+  width: 16px;
+  height: auto;
+`
+
 const Container = styled(PageLayoutView)`
   height: 100vh;
+  overflow-y: hidden;
+`
+
+const ScrollPageContainer = styled.div`
+  overflow-y: auto;
+  height: calc(100vh - 32px);
   display: grid;
-  grid-template-rows: 48px 1fr 80px;
+  grid-template-rows: 1fr 60px;
 `
 
 const ContentContainer = styled.div`
@@ -36,6 +50,28 @@ const ButtonNextContainer = styled.div`
 const TitleContainer = styled.div`
   font-size: ${({theme}) => theme.size.fontSize.medium};
   padding-bottom: 8px;
+  text-align: center;
+`
+
+const SubTitleContainer = styled.div`
+  font-size: ${({theme}) => theme.size.fontSize.small};
+  padding-bottom: 8px;
+  text-align: center;
+`
+
+const InfoBlockContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+`
+const BodyContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  max-width: 80%;
 `
 
 const CreateStrategyPageView = () => {
@@ -53,6 +89,7 @@ const CreateStrategyPageView = () => {
   const selectedTokenA = useObservable(presenter.getSelectedTokenA(), undefined)
   const selectedTokenB = useObservable(presenter.getSelectedTokenB(), undefined)
   const selectedWallet = useObservable(presenter.getSelectedWallet(), undefined)
+  const isCreateIsLoading = useObservable(presenter.getShowCreateLoading(), false)
 
   useLayoutEffect(() => {
     presenter.init()
@@ -60,19 +97,68 @@ const CreateStrategyPageView = () => {
     return () => presenter.destroy()
   }, [presenter])
 
+  const descBodyView = useCallback(() => {
+    const items = () => {
+      if (state === State.CHAIN) {
+        return (
+          <div>Strategy: Classic Scalpel</div>
+        )
+      } else if (state === State.COIN) {
+        return (
+          <>
+            <div>Strategy: Classic Scalpel</div>
+            <div>Chain: {selectedChain}</div>
+          </>
+        )
+      } else if (state === State.WALLET) {
+        return (
+          <>
+            <div>Strategy: Classic Scalpel</div>
+            <div>Chain: {selectedChain}</div>
+            <div>Token A: {selectedTokenA?.symbol}</div>
+            <div>Token B: {selectedTokenB?.symbol}</div>
+          </>
+        )
+      } else if (state === State.OPTIONS) {
+        return (
+          <>
+            <div>Strategy: Classic Scalpel</div>
+            <div>Chain: {selectedChain}</div>
+            <div>Token A: {selectedTokenA?.symbol}</div>
+            <div>Token B: {selectedTokenB?.symbol}</div>
+            <div>Wallet: <AppAddressView address={selectedWallet!} /></div>
+          </>
+        )
+      }
+    }
+    return (
+      <InfoBlockContainer>
+        <AppSpaceView />
+        <div>Order: </div>
+        {items()}
+        <AppSpaceView />
+        <AppSpaceView />
+      </InfoBlockContainer>
+    )
+  }, [selectedChain, selectedWallet, selectedTokenA, selectedTokenB, state])
+
   const getChooseChain = useCallback(() => {
     return (
-      <div>
+      <BodyContainer>
+        {descBodyView()}
+
         <TitleContainer>Please choose Chain</TitleContainer>
-        <div>
+        <BodyContainer>
           <AppComboBoxView
-            defaultSelection={selectedChain?.toString() ?? 'Select chain...'}
+            title={'Select chain...'}
+            selectedItem={selectedChain?.toString()}
             items={availableChains}
             onSelect={(item => presenter.onSelectChain(item))}
-          /></div>
-      </div>
+          />
+        </BodyContainer>
+      </BodyContainer>
     )
-  }, [selectedChain, presenter, availableChains])
+  }, [descBodyView, selectedChain, presenter, availableChains])
 
   const getChooseCoin = useCallback(() => {
     return (
@@ -81,21 +167,24 @@ const CreateStrategyPageView = () => {
         canShowLoading
           ? <LoadingView size={ComponentSize.LARGEST} />
           : (
-            <div>
+            <BodyContainer>
+              {descBodyView()}
+
               <TitleContainer>Please choose coin</TitleContainer>
-              <div>
+              <BodyContainer>
                 <AppComboBoxView
-                  defaultSelection={selectedTokenB?.address ?? 'Select coin...'}
+                  title={'Select coin...'}
+                  selectedItem={selectedTokenB?.symbol}
                   items={availableCoins}
                   onSelect={(item => presenter.onSelectCoinB(item))}
                 />
-              </div>
-            </div>
+              </BodyContainer>
+            </BodyContainer>
           )
       }
     </>
     )
-  }, [presenter, selectedTokenB, availableCoins, canShowLoading])
+  }, [descBodyView, presenter, selectedTokenB, availableCoins, canShowLoading])
 
   const getChooseWallet = useCallback(() => {
     return (
@@ -104,43 +193,66 @@ const CreateStrategyPageView = () => {
         canShowLoading
           ? <LoadingView size={ComponentSize.LARGEST} />
           : (
-            <div>
-              <TitleContainer>Please choose wallet</TitleContainer>
-               <AppComboBoxView
-                 defaultSelection={selectedWallet ?? 'Select wallet...'}
-                 items={availableWallets}
-                 onSelect={(item => presenter.onSelectWallet(item))}
-               />
+            <BodyContainer>
+             {descBodyView()}
 
-              {
-                availableWallets.length === 0 && (
-                  <div>
-                    <div>
-                       It looks like you don't have any wallets. Please create a wallet.
-                    </div>
-                    <div>
+              <TitleContainer>Please choose wallet</TitleContainer>
+              <BodyContainer>
+                <AppComboBoxView
+                  title={'Select wallet...'}
+                  selectedItem={selectedWallet}
+                  items={availableWallets}
+                  onSelect={(item => presenter.onSelectWallet(item))}
+                />
+
+                {
+                  availableWallets.length === 0 &&
+                  (
+                    <>
+                      <SubTitleContainer>
+                         It looks like you don't have any wallets. Please create a wallet.
+                      </SubTitleContainer>
+
                       <AppButton onClick={() => presenter.onCreateWalletClick()} text={'Create wallet'} />
-                    </div>
-                  </div>
-                )
-              }
-            </div>
+                    </>
+                  )
+                }
+              </BodyContainer>
+            </BodyContainer>
           )
       }
     </>
     )
-  }, [presenter, selectedWallet, availableWallets, canShowLoading])
+  }, [presenter, descBodyView, selectedWallet, availableWallets, canShowLoading])
 
   const getChooseOptions = useCallback(() => {
-    if (selectedStrategy === StrategyType.CLASSIC_SCALPEL && selectedTokenA && selectedTokenB && selectedWallet) {
-      return <ClassicScalpelOptionsView
-        tokenA={selectedTokenA}
-        tokenB={selectedTokenB}
-        wallet={selectedWallet}
-        onChange={(data, isFullFilled) => presenter.onChangeOptions(data, isFullFilled)}
-      />
+    const optionsView = () => {
+      if (selectedStrategy ===
+        StrategyType.CLASSIC_SCALPEL &&
+        selectedTokenA &&
+        selectedTokenB &&
+        selectedWallet &&
+        selectedChain
+      ) {
+        return <ClassicScalpelOptionsView
+          tokenA={selectedTokenA}
+          tokenB={selectedTokenB}
+          wallet={selectedWallet}
+          chain={selectedChain}
+          onChange={(data, isFullFilled) => presenter.onChangeOptions(data, isFullFilled)}
+        />
+      }
     }
-  }, [presenter, selectedTokenA, selectedTokenB, selectedWallet, selectedStrategy])
+
+    return (
+      <BodyContainer>
+        {descBodyView()}
+        <TitleContainer>Configuration of current strategy:</TitleContainer>
+        {optionsView()}
+        <div>Initially the order will be in the 'Pause' status. After all balances are completed, start it by clicking <PlayIconWrapper /></div>
+      </BodyContainer>
+    )
+  }, [presenter, selectedChain, descBodyView, selectedTokenA, selectedTokenB, selectedWallet, selectedStrategy])
 
   const getViewByState = () => {
     if (state === State.CHAIN) {
@@ -162,17 +274,25 @@ const CreateStrategyPageView = () => {
   return (
     <Container>
       <PageHeaderView text={'Create strategy'} />
-      <ContentContainer>
-        {getViewByState()}
-      </ContentContainer>
+      <ScrollPageContainer>
+        <div>
+          <ContentContainer>
+            {getViewByState()}
+          </ContentContainer>
 
-      <ButtonNextContainer>
-        <AppButton
-          onClick={() => presenter.onClickNext()}
-          text={state === State.OPTIONS ? 'Create' : 'Next'}
-          disabled={!isCanNext}
-        />
-      </ButtonNextContainer>
+          <ButtonNextContainer>
+            <AppButton
+              onClick={() => presenter.onClickNext()}
+              text={state === State.OPTIONS
+                ? (isCreateIsLoading ? <LoadingView size={ComponentSize.SMALL} /> : 'Create')
+                : 'Next'
+              }
+              disabled={!isCanNext || isCreateIsLoading}
+            />
+          </ButtonNextContainer>
+          <AppSpaceView />
+        </div>
+      </ScrollPageContainer>
     </Container>
   )
 }

@@ -1,6 +1,8 @@
+import { JsonObject } from '../../../../utils/types.ts'
+
 export interface HttpRequest {
   query?: Map<string, string>
-  body?: Record<string, unknown>
+  body?: JsonObject<unknown>
 }
 
 export interface HttpService<T> {

@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { ForwardedRef, forwardRef } from 'react'
 import styled from 'styled-components'
-import { AppSpaceView } from '../../../../../../common/app-ui/presentation/AppSpaceView.ts'
+import { AppSpaceView } from '../../../../../../common/app-ui/presentation/AppSpaceView.tsx'
 import { LogListItemModel } from '../../../model/LogListItemModel.ts'
 
 const Container = styled(motion.div)`
@@ -13,6 +13,7 @@ const Container = styled(motion.div)`
 const DateContainer = styled.div`
   text-align: end;
 `
+
 export interface LogsListHolderProps {
   item: LogListItemModel
 }

@@ -30,6 +30,8 @@ export abstract class CreateStrategyPagePresenter extends BasicPresenter {
 
   public abstract isCanNext(): Observable<boolean>
 
+  public abstract getShowCreateLoading(): Observable<boolean>
+
   public abstract onClickNext(): void
 
   public abstract onSelectChain(chainAlias: string): void

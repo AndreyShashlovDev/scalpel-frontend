@@ -6,32 +6,32 @@ import { HttpRequest, HttpService } from './HttpService.ts'
 export class AppSourceService implements HttpService<AppResponse<JsonObject<unknown>>> {
 
   constructor(
-    private readonly unitonAuthHttpsService: AppAuthHttpsService,
+    private readonly appAuthHttpsService: AppAuthHttpsService,
   ) {}
 
   public async get<T>(path: string, request?: HttpRequest): Promise<AppResponse<JsonObject<T>>> {
-    return this.toResponse(() => this.unitonAuthHttpsService.get(path, request))
+    return this.toResponse(() => this.appAuthHttpsService.get(path, request))
   }
 
   public async post<T>(
     path: string,
     request?: HttpRequest
   ): Promise<AppResponse<JsonObject<T>>> {
-    return this.toResponse(() => this.unitonAuthHttpsService.post(path, request))
+    return this.toResponse(() => this.appAuthHttpsService.post(path, request))
   }
 
   public async delete<T>(
     path: string,
     request?: HttpRequest
   ): Promise<AppResponse<JsonObject<T>>> {
-    return this.toResponse(() => this.unitonAuthHttpsService.delete(path, request))
+    return this.toResponse(() => this.appAuthHttpsService.delete(path, request))
   }
 
   public async put<T>(
     path: string,
     request?: HttpRequest
   ): Promise<AppResponse<JsonObject<T>>> {
-    return this.toResponse(() => this.unitonAuthHttpsService.put(path, request))
+    return this.toResponse(() => this.appAuthHttpsService.put(path, request))
   }
 
   private async toResponse<T>(call: () => Promise<Response>): Promise<AppResponse<T>> {

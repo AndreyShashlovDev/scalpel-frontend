@@ -6,7 +6,7 @@ import { ComponentSize, ComponentSizeProps } from './ComponentSize.ts'
 const BasicButton = styled(motion.button)<{ $disabled: boolean | undefined, size: ComponentSize }>`
   font-size: 16px;
   width: 100%;
-  max-width: 320px;
+  max-width: 300px;
   
   height: ${({size}) => {
     if (size === ComponentSize.SMALL) {

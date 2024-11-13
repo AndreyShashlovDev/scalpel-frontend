@@ -19,22 +19,25 @@ const OptionWrapperItem = styled.option`
 export interface AppComboBoxProps {
   items: string[]
   onSelect: (item: string) => void
-  defaultSelection: string
+  title: string
+  selectedItem?: string
 }
 
-export const AppComboBoxView = ({items, onSelect, defaultSelection}: AppComboBoxProps) => {
+export const AppComboBoxView = ({items, onSelect, title, selectedItem}: AppComboBoxProps) => {
 
   return (
     <Container>
-      <SelectWrapper onChange={e => onSelect(e.target.value)}>
-        <OptionWrapperItem
-          value={defaultSelection}
-        >{defaultSelection}</OptionWrapperItem>
+      <SelectWrapper onChange={e => onSelect(e.target.value)} defaultValue={selectedItem ?? title}>
+        <OptionWrapperItem value={title}>{title}</OptionWrapperItem>
+
         {items.map(item => (
-          <OptionWrapperItem
-            value={item}
-            key={item}
-          >{item}</OptionWrapperItem>)
+            <OptionWrapperItem
+              value={item}
+              key={item}
+            >
+              {item}
+            </OptionWrapperItem>
+          )
         )}
       </SelectWrapper>
     </Container>

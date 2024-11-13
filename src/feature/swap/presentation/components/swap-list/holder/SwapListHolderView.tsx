@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { ForwardedRef, forwardRef } from 'react'
 import styled from 'styled-components'
-import { AppSpaceView } from '../../../../../../common/app-ui/presentation/AppSpaceView.ts'
+import { AppSpaceView } from '../../../../../../common/app-ui/presentation/AppSpaceView.tsx'
 import { AppTxHashView } from '../../../../../../common/app-ui/presentation/AppTxHashView.tsx'
 import { SwapListItemModel } from '../../../model/SwapListItemModel.ts'
 

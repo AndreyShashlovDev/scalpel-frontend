@@ -1,6 +1,5 @@
 import 'styled-components'
-import { UIColor, UIControlStateColor } from './AppTheme.ts'
-import { DefaultSize, ExtendedSize } from './UnitonTheme.ts'
+import { DefaultSize, ExtendedSize, UIColor, UIControlStateColor } from './AppTheme.ts'
 
 declare module 'styled-components' {
 

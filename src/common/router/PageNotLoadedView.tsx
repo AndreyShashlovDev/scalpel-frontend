@@ -15,12 +15,11 @@ const Container = styled.div`
 export const PageNotLoadedView = () => {
 
   return <Container>
-    <h2>Приложение обновилось!</h2>
+    <h2>The application has been updated!</h2>
     <AppButton
+      text={'Reload page'}
       size={ComponentSize.STANDARD}
       onClick={() => window.location.reload()}
-    >
-      Перезагрузить
-    </AppButton>
+    />
   </Container>
 }

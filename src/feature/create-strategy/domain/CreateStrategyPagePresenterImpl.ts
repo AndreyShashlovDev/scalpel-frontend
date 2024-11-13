@@ -7,15 +7,19 @@ import { StrategyType } from '../../../common/repository/data/model/StrategyType
 import { WalletResponse } from '../../../common/repository/data/model/WalletResponse.ts'
 import { WalletRepository } from '../../../common/repository/data/wallet/WalletRepository.ts'
 import { AddressShortener } from '../../../utils/Shortener.ts'
+import { CreateScalpelStrategyRequest } from '../data/model/CreateStrategyRequest.ts'
+import { StrategyRepository } from '../data/strategy-repository/StrategyRepository.ts'
+import { ClassicScalpelOptionsData } from '../presentation/components/strategy-options/ClassicScalpelOptionsView.tsx'
 import { StrategyOptionsData } from '../presentation/components/strategy-options/StrategyOptionsProps.ts'
 import { CreateStrategyPagePresenter } from './CreateStrategyPagePresenter.ts'
+import { CreateStrategyRouter } from './router/CreateStrategyRouter.ts'
 
 export enum State {
   CHAIN = 'CHAIN',
   // STRATEGY = 'STRATEGY'
   COIN = 'COIN',
   WALLET = 'WALLET',
-  OPTIONS = 'OPTIONS'
+  OPTIONS = 'OPTIONS',
 }
 
 export class CreateStrategyPagePresenterImpl extends CreateStrategyPagePresenter {
@@ -34,6 +38,7 @@ export class CreateStrategyPagePresenterImpl extends CreateStrategyPagePresenter
   private readonly availableCoins: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([])
   private readonly availableWallets: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([])
   private readonly showLoading: BehaviorSubject<boolean> = new BehaviorSubject(false)
+  private readonly showCreateLoading: BehaviorSubject<boolean> = new BehaviorSubject(false)
 
   private readonly selectedStrategy = new BehaviorSubject<StrategyType | undefined>(StrategyType.CLASSIC_SCALPEL)
   private readonly selectedChain = new BehaviorSubject<ChainType | undefined>(undefined)
@@ -41,10 +46,16 @@ export class CreateStrategyPagePresenterImpl extends CreateStrategyPagePresenter
   private readonly selectedCoinB = new BehaviorSubject<CurrencyResponse | undefined>(undefined)
   private readonly selectedWallet = new BehaviorSubject<string | undefined>(undefined)
 
+  private strategyOptionsData: ClassicScalpelOptionsData | undefined
+
   constructor(
     private readonly currencyRepository: CurrencyRepository,
     private readonly walletRepository: WalletRepository,
-  ) {super()}
+    private readonly strategyRepository: StrategyRepository,
+    private readonly createStrategyRouter: CreateStrategyRouter,
+  ) {
+    super()
+  }
 
   public destroy(): void {
   }
@@ -99,6 +110,9 @@ export class CreateStrategyPagePresenterImpl extends CreateStrategyPagePresenter
 
     } else if (state === State.WALLET) {
       this.state.next(State.OPTIONS)
+
+    } else if (state === State.OPTIONS && this.strategyOptionsData) {
+      this.createOrder(this.strategyOptionsData)
     }
   }
 
@@ -134,6 +148,10 @@ export class CreateStrategyPagePresenterImpl extends CreateStrategyPagePresenter
     return this.selectedWallet.asObservable()
   }
 
+  public getShowCreateLoading(): Observable<boolean> {
+    return this.showCreateLoading.asObservable()
+  }
+
   public onSelectChain(chainAlias: string): void {
     const result = this.chainByAlias.get(chainAlias)
 
@@ -143,21 +161,21 @@ export class CreateStrategyPagePresenterImpl extends CreateStrategyPagePresenter
     }
 
     this.selectedChain.next(result)
-    this.canNext.next(this.selectedChain !== undefined)
+    this.canNext.next(result !== undefined)
   }
 
   public onSelectCoinB(coinAlias: string): void {
     const result = this.coinsByAlias.get(coinAlias)
 
     this.selectedCoinB.next(result)
-    this.canNext.next(this.selectedCoinB !== undefined)
+    this.canNext.next(result !== undefined)
   }
 
   public onSelectWallet(walletAlias: string): void {
     const result = this.walletsByAlias.get(walletAlias)?.address
 
     this.selectedWallet.next(result)
-    this.canNext.next(this.selectedWallet !== undefined)
+    this.canNext.next(result !== undefined)
   }
 
   public onCreateWalletClick(): void {
@@ -165,8 +183,7 @@ export class CreateStrategyPagePresenterImpl extends CreateStrategyPagePresenter
   }
 
   public onChangeOptions(data: StrategyOptionsData, isFullFilled: boolean): void {
-    console.log(data, isFullFilled)
-
+    this.strategyOptionsData = data as ClassicScalpelOptionsData
     this.canNext.next(isFullFilled)
   }
 
@@ -219,6 +236,46 @@ export class CreateStrategyPagePresenterImpl extends CreateStrategyPagePresenter
       console.error(e)
     } finally {
       this.showLoading.next(false)
+    }
+  }
+
+  private async createOrder(data: ClassicScalpelOptionsData): Promise<void> {
+    try {
+      this.showCreateLoading.next(true)
+      this.canNext.next(false)
+
+      if (this.selectedChain.value &&
+        this.selectedWallet.value &&
+        this.selectedCoinA.value &&
+        this.selectedCoinB.value &&
+        data.tokenAmountA &&
+        data.growDiffPercentsUp &&
+        data.growDiffPercentsDown &&
+        data.maxGasPriceGwei &&
+        this.strategyOptionsData
+      ) {
+        await this.strategyRepository.createStrategy(new CreateScalpelStrategyRequest(
+          StrategyType.CLASSIC_SCALPEL,
+          this.selectedChain.value,
+          this.selectedWallet.value,
+          this.selectedCoinA.value?.address,
+          this.selectedCoinB.value?.address,
+          data.tokenAmountA,
+          data.growDiffPercentsUp,
+          data.growDiffPercentsDown,
+          data.buyMaxPrice,
+          data.maxGasPriceGwei,
+        ))
+      }
+
+      this.createStrategyRouter.openStrategiesPage()
+      
+    } catch (e) {
+      console.error(e)
+
+    } finally {
+      this.canNext.next(false)
+      this.showCreateLoading.next(false)
     }
   }
 }
