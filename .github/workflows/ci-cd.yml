@@ -72,4 +72,4 @@ jobs:
           BACKEND_HOST: ${{ secrets.BACKEND_HOST }}
           BACKEND_USER: ${{ secrets.BACKEND_USER }}
         run: |
-          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -r dist $BACKEND_USER@$BACKEND_HOST:/home/project/public
+          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -r ./* $BACKEND_USER@$BACKEND_HOST:/home/project/public
