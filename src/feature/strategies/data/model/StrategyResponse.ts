@@ -4,6 +4,7 @@ import { StrategyType } from '../../../../common/repository/data/model/StrategyT
 import { JsonObject } from '../../../../utils/types.ts'
 
 export enum StrategyStatusType {
+  CREATED = 'CREATED',
   READY = 'READY',
   APPROVE_IN_PROGRESS = 'APPROVE_IN_PROGRESS',
   IN_PROGRESS = 'IN_PROGRESS',

@@ -16,7 +16,7 @@ const ListWrapper = styled(InfiniteScrollListView)`
 export interface StrategyListProps {
   items: StrategyListItem<unknown>[]
   onNextFetch: () => void
-  onItemClick: (viewId: number, item: StrategyListItem<unknown>) => void
+  onItemClick: (viewId: number, item: StrategyListItem<unknown>, data?: unknown) => void
   hasNext: boolean
   // defaultIndexSelected?: number
   // initialScrollY?: number
@@ -33,7 +33,11 @@ export const StrategyListView = ({items, onNextFetch, hasNext, onItemClick}: Str
       getHolderView={(item, _, ref) => {
         return <ScalpelClassicStrategyHolderView
           item={item as StrategyListItem<ScalpelClassicStrategyOptions>}
-          onItemClick={(viewId) => onItemClick(viewId, item as StrategyListItem<ScalpelClassicStrategyOptions>)}
+          onItemClick={(viewId, data) => onItemClick(
+            viewId,
+            item as StrategyListItem<ScalpelClassicStrategyOptions>,
+            data
+          )}
           key={item.hash}
           ref={ref}
         />

@@ -7,7 +7,6 @@ const LoaderWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 4px;
 `
 
 export interface LoadingProps extends ComponentSizeProps {

@@ -23,6 +23,8 @@ export class StrategyListItem<T> implements ListItem {
   public readonly gasLimit: number
   public readonly createdAt: string
   public readonly swaps: SwapUiModel[]
+  public readonly waitChangeStatusPlayPause: boolean
+  public readonly waitChangeStatusCancel: boolean
 
   constructor(
     chain: ChainType,
@@ -41,6 +43,8 @@ export class StrategyListItem<T> implements ListItem {
     gasLimit: number,
     createdAt: string,
     swaps: SwapUiModel[],
+    waitChangeStatusPlayPause: boolean,
+    waitChangeStatusCancel: boolean
   ) {
     this.chain = chain
     this.type = type
@@ -58,5 +62,11 @@ export class StrategyListItem<T> implements ListItem {
     this.gasLimit = gasLimit
     this.createdAt = createdAt
     this.swaps = swaps
+    this.waitChangeStatusPlayPause = waitChangeStatusPlayPause
+    this.waitChangeStatusCancel = waitChangeStatusCancel
+  }
+
+  public copy(entity: Partial<StrategyListItem<unknown>>): StrategyListItem<unknown> {
+    return Object.assign(Reflect.construct(StrategyListItem, []), this, entity)
   }
 }

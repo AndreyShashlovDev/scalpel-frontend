@@ -1,22 +1,43 @@
 import { motion } from 'framer-motion'
-import { ForwardedRef, forwardRef, ReactNode, useCallback, useState } from 'react'
+import { ForwardedRef, forwardRef, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import DeleteIcon from '../../../../../../assets/icons/app/DeleteIcon.svg'
+import EditIcon from '../../../../../../assets/icons/app/EditIcon.svg'
 import FailIcon from '../../../../../../assets/icons/app/FailIcon.svg'
 import LogIcon from '../../../../../../assets/icons/app/LogIcon.svg'
 import PauseIcon from '../../../../../../assets/icons/app/PauseIcon.svg'
 import PlayIcon from '../../../../../../assets/icons/app/PlayIcon.svg'
+import SaveIcon from '../../../../../../assets/icons/app/SaveIcon.svg'
 import SuccessIcon from '../../../../../../assets/icons/app/SuccessIcon.svg'
 import WarningIcon from '../../../../../../assets/icons/app/WarningIcon.svg'
 import { AppAddressView } from '../../../../../../common/app-ui/presentation/AppAddressView.tsx'
 import { AppIconButton } from '../../../../../../common/app-ui/presentation/AppIconButton.tsx'
+import { AppInputView } from '../../../../../../common/app-ui/presentation/AppInputView.tsx'
 import { AppSpaceView } from '../../../../../../common/app-ui/presentation/AppSpaceView.tsx'
 import { ComponentSize } from '../../../../../../common/app-ui/presentation/ComponentSize.ts'
+import { LoadingView } from '../../../../../../common/app-ui/presentation/LoadingView.tsx'
 import { SwapState } from '../../../../../../common/repository/data/model/SwapResponse.ts'
 import { StrategyStatusType } from '../../../../data/model/StrategyResponse.ts'
 import { StrategyHolderButtonIds } from '../../../../domain/StrategyHolderButtonIds.ts'
 import { StrategyListItem } from '../../../model/StrategyListItem.ts'
 
+const SaveButtonContainer = styled(motion.div)`
+  padding: 4px;
+  display: flex;
+`
+const SaveIconWrapper = styled(SaveIcon)`
+  width: 16px;
+  height: auto;
+`
+
+const EditButtonContainer = styled(motion.div)`
+  padding: 4px;
+  display: flex;
+`
+const EditIconWrapper = styled(EditIcon)`
+  width: 16px;
+  height: auto;
+`
 const PlayIconWrapper = styled(PlayIcon)`
   width: 24px;
   height: 24px;
@@ -58,7 +79,10 @@ const ButtonLogIcon = styled(LogIcon)`
 `
 
 const ElementContainer = styled.div`
-
+  display: flex;
+  align-items: center;
+  height: 24px;
+  overflow: hidden;
 `
 
 const StableCoinContainer = styled.span<{ $highlight: boolean }>`
@@ -105,6 +129,21 @@ const ActionButtonsContainer = styled.div`
   gap: 24px;
   margin-bottom: 24px;
 `
+const InputWrapper = styled(AppInputView)`
+  width: 100px;
+`
+
+const PlayStatus = new Set([
+  StrategyStatusType.CREATED,
+  StrategyStatusType.PAUSED,
+  StrategyStatusType.USER_ACTION_REQUIRED,
+])
+
+const PauseStatus = new Set([
+  StrategyStatusType.IN_PROGRESS,
+  StrategyStatusType.APPROVE_IN_PROGRESS,
+  StrategyStatusType.READY
+])
 
 export interface ScalpelClassicStrategyOptions {
   growDiffPercents?: number,
@@ -115,38 +154,62 @@ export interface ScalpelClassicStrategyOptions {
 
 export interface ScalpelClassicStrategyHolderProps {
   item: StrategyListItem<ScalpelClassicStrategyOptions>
-  onItemClick: (viewId: number) => void
+  onItemClick: (viewId: number, data?: unknown) => void
 }
 
 export const ScalpelClassicStrategyHolderView = forwardRef((
   {item, onItemClick}: ScalpelClassicStrategyHolderProps,
   ref: ForwardedRef<HTMLDivElement>
 ) => {
-  const [isMoreInfo, setIsMoreInfo] = useState(false)
 
-  const getShortView = () => {
+  const [isMoreInfo, setIsMoreInfo] = useState(false)
+  const [editGasPrice, setEditGasPrice] = useState(false)
+  const [editGrowPercent, setEditGrowPercent] = useState(false)
+  const [editFallPercent, setEditFallPercent] = useState(false)
+  const [editMaxTokenPrice, setEditMaxTokenPrice] = useState(false)
+
+  const [maxGasPrice, setMaxGasPrice] = useState<number>(item.gasLimit)
+  const [growPercent, setGrowPercent] = useState<number>(
+    (item.options.growDiffPercentsUp ?? item.options.growDiffPercents ?? 0)
+  )
+  const [fallPercent, setFallPercent] = useState<number>(
+    (item.options.growDiffPercentsDown ?? item.options.growDiffPercents ?? 0)
+  )
+  const [maxBuyPriceCoin, setMaxBuyPriceCoin] = useState<number | undefined>(item.options.buyMaxPrice)
+
+  useEffect(() => {
+    setMaxGasPrice(item.gasLimit)
+    setGrowPercent((item.options.growDiffPercentsUp ?? item.options.growDiffPercents ?? 0))
+    setFallPercent((item.options.growDiffPercentsDown ?? item.options.growDiffPercents ?? 0))
+    setMaxBuyPriceCoin(item.options.buyMaxPrice)
+
+  }, [item.options, item.gasLimit])
+
+  const getShortView = useCallback(() => {
     return (
       <>
         {item.status === StrategyStatusType.USER_ACTION_REQUIRED && <WarningIconWrapper />}
         <ElementContainer>Chain: {item.chain}</ElementContainer>
         <ElementContainer>Tokens: {item.currencyA.symbol} &#10230; {item.currencyB.symbol}</ElementContainer>
-        <ElementContainer>Amount: <StableCoinContainer
+        <ElementContainer>Amount:&nbsp;<StableCoinContainer
           $highlight={(item.totalAmountA > 0) || false}
-        >{item.totalAmountA}</StableCoinContainer> / {item.totalAmountB}
+        >{item.totalAmountA}</StableCoinContainer>
+          &nbsp;/ {item.totalAmountB}
         </ElementContainer>
         <AppSpaceView />
         <ElementContainer>Status: {item.status}</ElementContainer>
       </>
     )
-  }
+  }, [item])
 
-  const getFullView = () => {
-    return (
-      <>
+  const getFullView = useCallback(
+    () => {
+      return (
+        <>
         {getShortView()}
-        <AppSpaceView />
+          <AppSpaceView />
         <ElementContainer>Strategy: {item.type}</ElementContainer>
-        <ElementContainer>Wallet: <AppAddressView address={item.wallet} /></ElementContainer>
+        <ElementContainer>Wallet:&nbsp;<AppAddressView address={item.wallet} /></ElementContainer>
         <AppSpaceView />
         <ElementContainer>Stable coin: {item.currencyA.symbol}</ElementContainer>
         <ElementContainer>Initial amount: {item.initialAmountA}</ElementContainer>
@@ -157,19 +220,194 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
         <ElementContainer>Current amount: {item.totalAmountB}</ElementContainer>
         <ElementContainer>Approved: {item.approvedB ? 'Yes' : 'No'}</ElementContainer>
         <AppSpaceView />
-        <ElementContainer>Max gas price (GWEI): {item.gasLimit}</ElementContainer>
         <ElementContainer>
-          Exit point to stable: {item.options.growDiffPercents ?? item.options.growDiffPercentsUp ?? '-'}
+          Max gas price (GWEI):&nbsp;
+          {
+            editGasPrice
+              ? (
+                <>
+                  <InputWrapper
+                    allowNegative={false}
+                    decimals={0}
+                    min={1}
+                    max={1000}
+                    defaultValue={maxGasPrice}
+                    allowEmptyValue={false}
+                    onChange={(v) => setMaxGasPrice(v!)}
+                  />
+                  <SaveButtonContainer
+                    onClick={() => {
+                      onItemClick(StrategyHolderButtonIds.CHANGE_GAS_PRICE_BUTTON_ID, maxGasPrice)
+                      setEditGasPrice(false)
+                    }}
+                    whileTap={{scale: 0.95}}
+                  >
+                    <SaveIconWrapper />
+                  </SaveButtonContainer>
+                </>
+              )
+              : (
+                <>
+                  {maxGasPrice}&nbsp;
+                  <EditButtonContainer
+                    onClick={() => setEditGasPrice(true)}
+                    whileTap={{scale: 0.95}}
+                  >
+                    <EditIconWrapper />
+                  </EditButtonContainer>
+                </>
+              )
+          }
+
         </ElementContainer>
         <ElementContainer>
-          Token entry point: {item.options.growDiffPercents ?? item.options.growDiffPercentsDown ?? '-'}
+          Exit point to stable:&nbsp;
+          {
+            editGrowPercent
+              ? (
+                <>
+                  <InputWrapper
+                    allowNegative={false}
+                    decimals={2}
+                    max={100}
+                    min={0}
+                    allowEmptyValue={false}
+                    defaultValue={growPercent}
+                    suffix={'%'}
+                    onChange={(v) => setGrowPercent(v ?? 0)}
+                  />
+
+                  <SaveButtonContainer
+                    onClick={() => {
+                      onItemClick(StrategyHolderButtonIds.CHANGE_GROW_PERCENT_BUTTON_ID, growPercent)
+                      setEditGrowPercent(false)
+                    }}
+                    whileTap={{scale: 0.95}}
+                  >
+                    <SaveIconWrapper />
+                  </SaveButtonContainer>
+                </>
+              )
+              : (
+                <>
+                  {growPercent}%&nbsp;
+                  <EditButtonContainer
+                    onClick={() => setEditGrowPercent(true)}
+                    whileTap={{scale: 0.95}}
+                  >
+                    <EditIconWrapper />
+                  </EditButtonContainer>
+                </>
+              )
+          }
         </ElementContainer>
         <ElementContainer>
-          Max token entry price: {item.options.buyMaxPrice ?? '-'}
+          Token entry point:&nbsp;
+          {
+            editFallPercent
+              ? (
+                <>
+                  <InputWrapper
+                    allowNegative={false}
+                    decimals={2}
+                    max={100}
+                    min={0}
+                    allowEmptyValue={false}
+                    defaultValue={fallPercent}
+                    suffix={'%'}
+                    onChange={(v) => setFallPercent(v ?? 0)}
+                  />
+
+                  <SaveButtonContainer
+                    onClick={() => {
+                      onItemClick(StrategyHolderButtonIds.CHANGE_FALL_PERCENT_BUTTON_ID, fallPercent)
+                      setEditFallPercent(false)
+                    }}
+                    whileTap={{scale: 0.95}}
+                  >
+                    <SaveIconWrapper />
+                  </SaveButtonContainer>
+                </>
+              )
+              : (
+                <>
+                  {fallPercent}%&nbsp;
+                  <EditButtonContainer
+                    onClick={() => setEditFallPercent(true)}
+                    whileTap={{scale: 0.95}}
+                  >
+                    <EditIconWrapper />
+                  </EditButtonContainer>
+                </>
+              )
+          }
+
+        </ElementContainer>
+        <ElementContainer>
+          Max token entry price:&nbsp;
+          {
+            editMaxTokenPrice
+              ? (
+                <>
+                <InputWrapper
+                  allowNegative={false}
+                  decimals={3}
+                  prefix={'$'}
+                  defaultValue={maxBuyPriceCoin}
+                  allowEmptyValue={true}
+                  onChange={(v) => setMaxBuyPriceCoin(v)}
+                />
+                  <SaveButtonContainer
+                    onClick={() => {
+                      onItemClick(StrategyHolderButtonIds.CHANGE_TOKEN_B_PRICE_BUTTON_ID, maxBuyPriceCoin)
+                      setEditMaxTokenPrice(false)
+                    }}
+                    whileTap={{scale: 0.95}}
+                  >
+                    <SaveIconWrapper />
+                  </SaveButtonContainer>
+                </>
+              )
+              : (
+                <>
+                  ${maxBuyPriceCoin ?? '-'} &nbsp;
+                  <EditButtonContainer
+                    onClick={() => setEditMaxTokenPrice(true)}
+                    whileTap={{scale: 0.95}}
+                  >
+                    <EditIconWrapper />
+                  </EditButtonContainer>
+                </>
+              )
+          }
         </ElementContainer>
       </>
-    )
-  }
+      )
+    },
+    [
+      onItemClick,
+      item,
+      fallPercent,
+      growPercent,
+      maxGasPrice,
+      maxBuyPriceCoin,
+      editFallPercent,
+      editGrowPercent,
+      editGasPrice,
+      editMaxTokenPrice,
+      getShortView
+    ]
+  )
+
+  const getIconPlayPause = useMemo(() => {
+    if (PlayStatus.has(item.status)) {
+      return <PlayIconWrapper />
+
+    } else if (PauseStatus.has(item.status)) {
+      return <PauseIconWrapper />
+    }
+    return undefined
+  }, [item.status])
 
   const getSwapStatusIcon = useCallback((status: SwapState): ReactNode => {
     if (status === SwapState.FAILED || status === SwapState.EXECUTION_FAILED || status === SwapState.CANCELLED) {
@@ -199,16 +437,31 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
 
       <ActionButtonsContainer>
         <AppIconButton
-          onClick={() => {}}
-          text={<DeleteIconWrapper />}
+          disabled={item.waitChangeStatusCancel}
+          onClick={() => {
+            onItemClick(StrategyHolderButtonIds.CANCEL_ORDER_BUTTON_ID)
+          }}
+          text={item.waitChangeStatusCancel ? <LoadingView size={ComponentSize.SMALL} /> : <DeleteIconWrapper />}
           size={ComponentSize.SMALL}
         />
 
-        <AppIconButton
-          onClick={() => {}}
-          text={item.status === StrategyStatusType.PAUSED ? <PlayIconWrapper /> : <PauseIconWrapper />}
-          size={ComponentSize.SMALL}
-        />
+        {
+          getIconPlayPause && (
+            <AppIconButton
+              disabled={item.waitChangeStatusPlayPause}
+              onClick={() => {
+                if (PlayStatus.has(item.status)) {
+                  onItemClick(StrategyHolderButtonIds.PLAY_ORDER_BUTTON_ID)
+
+                } else if (PauseStatus.has(item.status)) {
+                  onItemClick(StrategyHolderButtonIds.PAUSE_ORDER_BUTTON_ID)
+                }
+              }}
+              text={item.waitChangeStatusPlayPause ? <LoadingView size={ComponentSize.SMALL} /> : getIconPlayPause}
+              size={ComponentSize.SMALL}
+            />
+          )
+        }
 
         <AppIconButton
           onClick={() => onItemClick(StrategyHolderButtonIds.OPEN_LOGS_BUTTON_ID)}

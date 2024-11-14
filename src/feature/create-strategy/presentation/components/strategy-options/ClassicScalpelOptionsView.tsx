@@ -1,10 +1,8 @@
-import BigNumber from 'bignumber.js'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { AppAddressView } from '../../../../../common/app-ui/presentation/AppAddressView.tsx'
 import { AppInputView } from '../../../../../common/app-ui/presentation/AppInputView.tsx'
 import { AppSpaceView } from '../../../../../common/app-ui/presentation/AppSpaceView.tsx'
-import { ComponentSize } from '../../../../../common/app-ui/presentation/ComponentSize.ts'
 import { ChainType } from '../../../../../common/repository/data/model/ChainType.ts'
 import { StrategyOptionsData, StrategyOptionsProps } from './StrategyOptionsProps.ts'
 
@@ -32,6 +30,9 @@ const DescContainer = styled.div`
   flex-direction: column;
 `
 
+const InputWrapper = styled(AppInputView)`
+`
+
 export interface ClassicScalpelOptionsData extends StrategyOptionsData {
   buyMaxPrice: number | undefined
   growDiffPercentsUp: number
@@ -50,18 +51,18 @@ export const ClassicScalpelOptionsView = ({
   wallet,
 }: StrategyOptionsProps<ClassicScalpelOptionsData>) => {
 
-  const [amountStableCoin, setAmountStableCoin] = useState<BigNumber>(new BigNumber(1))
-  const [maxBuyPriceCoin, setMaxBuyPriceCoin] = useState<BigNumber | undefined>()
+  const [amountStableCoin, setAmountStableCoin] = useState<number>(1)
+  const [maxBuyPriceCoin, setMaxBuyPriceCoin] = useState<number | undefined>()
   const [maxGasPrice, setMaxGasPrice] = useState<number>(chain === ChainType.POLYGON ? 300 : 50)
   const [growPercent, setGrowPercent] = useState<number>(0)
   const [fallPercent, setFallPercent] = useState<number>(0)
 
   useEffect(() => {
     const result: ClassicScalpelOptionsData = {
-      tokenAmountA: amountStableCoin.toNumber(),
+      tokenAmountA: amountStableCoin,
       tokenAmountB: 0,
       maxGasPriceGwei: maxGasPrice,
-      buyMaxPrice: maxBuyPriceCoin?.toNumber() ?? undefined,
+      buyMaxPrice: maxBuyPriceCoin ?? undefined,
       growDiffPercentsDown: fallPercent,
       growDiffPercentsUp: growPercent
     }
@@ -80,68 +81,68 @@ export const ClassicScalpelOptionsView = ({
       <InputsContainer>
         <InputElementContainer>
           amount of stable coin:
-            <AppInputView
-              size={ComponentSize.SMALL}
-              min={1}
-              prefix={'$'}
-              onChange={e => setAmountStableCoin(new BigNumber(e.target.value || '1'))}
-              value={
-                Math.min(
-                  10000,
-                  Number(amountStableCoin.toFixed(3, BigNumber.ROUND_DOWN)),
-                ).toString()
-              }
-              type={'number'}
-            />
+          <InputWrapper
+            allowNegative={false}
+            decimals={3}
+            prefix={'$'}
+            min={1}
+            max={10000}
+            defaultValue={amountStableCoin}
+            allowEmptyValue={false}
+            onChange={(v) => setAmountStableCoin(v!)}
+          />
         </InputElementContainer>
 
         <InputElementContainer>
           Max token entry price:
-          <AppInputView
-            type={'number'}
-            min={0}
+          <InputWrapper
+            allowNegative={false}
+            decimals={3}
             prefix={'$'}
-            onChange={e => setMaxBuyPriceCoin(e.target.value ? new BigNumber(e.target.value) : undefined)}
-            value={Number(maxBuyPriceCoin?.toFixed(3, BigNumber.ROUND_DOWN)).toString()}
-            size={ComponentSize.SMALL}
+            defaultValue={maxBuyPriceCoin}
+            allowEmptyValue={true}
+            onChange={(v) => setMaxBuyPriceCoin(v)}
           />
         </InputElementContainer>
 
         <InputElementContainer>
           Max gas price (GWEI):
-          <AppInputView
-            size={ComponentSize.SMALL}
-            min={0}
-            max={500}
-            onChange={e => setMaxGasPrice(parseInt(e.target.value ?? 0))}
-            value={Math.min(500, maxGasPrice).toString()}
-            type={'number'}
+          <InputWrapper
+            allowNegative={false}
+            decimals={0}
+            min={1}
+            max={1000}
+            defaultValue={maxGasPrice}
+            allowEmptyValue={false}
+            onChange={(v) => setMaxGasPrice(v!)}
           />
         </InputElementContainer>
 
         <InputElementContainer>
           Exit point to stable (percents % ):
-          <AppInputView
-            min={0.1}
+          <InputWrapper
+            allowNegative={false}
+            decimals={2}
             max={100}
-            prefix={'%'}
-            onChange={e => setGrowPercent(Number(e.target.value ?? 0))}
-            value={Math.min(Number(new BigNumber(growPercent).toFixed(1, BigNumber.ROUND_DOWN)), 100).toString()}
-            type={'number'}
-            size={ComponentSize.SMALL}
+            min={0}
+            allowEmptyValue={false}
+            defaultValue={growPercent}
+            suffix={'%'}
+            onChange={(v) => setGrowPercent(v ?? 0)}
           />
         </InputElementContainer>
 
         <InputElementContainer>
           Token entry point (percents %):
-          <AppInputView
-            min={0.1}
+          <InputWrapper
+            allowNegative={false}
+            decimals={2}
             max={100}
-            prefix={'%'}
-            onChange={e => setFallPercent(Number(e.target.value ?? 0))}
-            value={Math.min(Number(new BigNumber(fallPercent).toFixed(1, BigNumber.ROUND_DOWN)), 100).toString()}
-            type={'number'}
-            size={ComponentSize.SMALL}
+            min={0}
+            allowEmptyValue={false}
+            defaultValue={fallPercent}
+            suffix={'%'}
+            onChange={(v) => setFallPercent(v ?? 0)}
           />
         </InputElementContainer>
 
@@ -149,8 +150,8 @@ export const ClassicScalpelOptionsView = ({
 
         <DescContainer>
           <div>
-            1. Be sure to top up your selected wallet <AppAddressView address={wallet} /> wallet with the amount {Number(
-            amountStableCoin.toFixed(3, BigNumber.ROUND_DOWN)).toString()} of {tokenA.symbol + '  '}
+            1. Be sure to top up your selected wallet <AppAddressView address={wallet} /> wallet with the amount {amountStableCoin} of {tokenA.symbol +
+            '  '}
             <AppAddressView address={tokenA.address} />
           </div>
           <div>

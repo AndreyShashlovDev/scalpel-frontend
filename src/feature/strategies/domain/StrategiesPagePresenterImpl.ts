@@ -2,7 +2,9 @@ import { BehaviorSubject, from, Observable, Subscription } from 'rxjs'
 import { ChainType } from '../../../common/repository/data/model/ChainType.ts'
 import { Pageable } from '../../../common/repository/data/model/Pageable.ts'
 import { BasicDialogProvider } from '../../../utils/arch/DialogProvider.ts'
+import { ChangeOptionsRequest } from '../data/model/ChangeOptionsRequest.ts'
 import { CompositeStrategyResponse } from '../data/model/CompositeStrategyResponse.ts'
+import { StrategyStatusType } from '../data/model/StrategyResponse.ts'
 import { StrategyRepository } from '../data/strategy-repository/StrategyRepository.ts'
 import { StrategyResponseToStrategyListItem } from '../presentation/mapping/StrategyResponseToStrategyListItem.ts'
 import { StrategyListItem } from '../presentation/model/StrategyListItem.ts'
@@ -69,12 +71,83 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
       })
   }
 
-  public onListItemClick(viewId: number, item: StrategyListItem<unknown>): void {
+  public onListItemClick(viewId: number, item: StrategyListItem<unknown>, data?: number): void {
     if (viewId === StrategyHolderButtonIds.OPEN_SWAP_BUTTON_ID) {
       this.onShowSwapsClick(item.hash, item.chain)
 
     } else if (viewId === StrategyHolderButtonIds.OPEN_LOGS_BUTTON_ID) {
       this.onShowLogsClick(item.hash)
+
+    } else if (viewId === StrategyHolderButtonIds.CHANGE_GAS_PRICE_BUTTON_ID) {
+      this.changeStrategyOptions(item.hash, {maxGasPrice: data})
+
+    } else if (viewId === StrategyHolderButtonIds.CHANGE_GROW_PERCENT_BUTTON_ID) {
+      this.changeStrategyOptions(item.hash, {diffPercentUp: data})
+
+    } else if (viewId === StrategyHolderButtonIds.CHANGE_FALL_PERCENT_BUTTON_ID) {
+      this.changeStrategyOptions(item.hash, {diffPercentDown: data})
+
+    } else if (viewId === StrategyHolderButtonIds.CHANGE_TOKEN_B_PRICE_BUTTON_ID) {
+      this.changeStrategyOptions(item.hash, {maxBuyPrice: data})
+
+    } else if (viewId === StrategyHolderButtonIds.PLAY_ORDER_BUTTON_ID) {
+      this.changeStrategyStatus(item.hash, StrategyStatusType.IN_PROGRESS)
+
+    } else if (viewId === StrategyHolderButtonIds.PAUSE_ORDER_BUTTON_ID) {
+      this.changeStrategyStatus(item.hash, StrategyStatusType.PAUSED)
+
+    } else if (viewId === StrategyHolderButtonIds.CANCEL_ORDER_BUTTON_ID) {
+      this.changeStrategyStatus(item.hash, StrategyStatusType.CANCELED)
+    }
+  }
+
+  private async changeStrategyStatus(orderHash: string, status: StrategyStatusType): Promise<void> {
+    try {
+      const updatedListForWait = this.strategiesList.value.map(item => {
+        if (item.hash === orderHash) {
+          if (status === StrategyStatusType.IN_PROGRESS || status === StrategyStatusType.PAUSED) {
+            return item.copy({waitChangeStatusPlayPause: true})
+          }
+          if (status === StrategyStatusType.CANCELED) {
+            return item.copy({waitChangeStatusCancel: true})
+          }
+        }
+        return item
+      })
+      this.strategiesList.next(updatedListForWait)
+
+      await this.strategiesRepository.changeStatus(orderHash, status)
+      const strategy = await this.strategiesRepository.getStrategy(orderHash)
+
+      if (strategy.status === StrategyStatusType.CANCELED) {
+        this.strategiesList.next(this.strategiesList.value.filter(item => item.hash !== strategy.orderHash))
+
+      } else {
+        const updatedList = this.strategiesList.value.map(item => {
+          if (item.hash === strategy.orderHash) {
+            return StrategyResponseToStrategyListItem(strategy, item.swaps)
+          }
+          return item
+        })
+
+        this.strategiesList.next(updatedList)
+      }
+
+    } catch (e) {
+      console.error(e)
+      const updatedList = this.strategiesList.value.map(item => {
+        if (item.hash === orderHash) {
+          if (status === StrategyStatusType.IN_PROGRESS || status === StrategyStatusType.PAUSED) {
+            return item.copy({waitChangeStatusPlayPause: false})
+          }
+          if (status === StrategyStatusType.CANCELED) {
+            return item.copy({waitChangeStatusCancel: false})
+          }
+        }
+        return item
+      })
+      this.strategiesList.next(updatedList)
+
     }
   }
 
@@ -84,6 +157,25 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
 
   private onShowLogsClick(strategyHash: string): void {
     this.dialogProvider.getDialogs()?.openLogsDialog(strategyHash)
+  }
+
+  private async changeStrategyOptions(hash: string, options: Partial<ChangeOptionsRequest>): Promise<void> {
+    try {
+      await this.strategiesRepository.changeOptions(hash, options)
+      const strategy = await this.strategiesRepository.getStrategy(hash)
+
+      const updatedList = this.strategiesList.value.map(item => {
+        if (item.hash === strategy.orderHash) {
+          return StrategyResponseToStrategyListItem(strategy, item.swaps)
+        }
+        return item
+      })
+
+      this.strategiesList.next(updatedList)
+    } catch (e) {
+      console.error(e)
+      this.strategiesList.next(this.strategiesList.value.concat([]))
+    }
   }
 
   public onCreateNewStrategyClick(): void {

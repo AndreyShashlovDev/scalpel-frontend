@@ -269,7 +269,7 @@ export class CreateStrategyPagePresenterImpl extends CreateStrategyPagePresenter
       }
 
       this.createStrategyRouter.openStrategiesPage()
-      
+
     } catch (e) {
       console.error(e)
 

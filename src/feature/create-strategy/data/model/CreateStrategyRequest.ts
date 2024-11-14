@@ -11,7 +11,7 @@ export class CreateScalpelStrategyRequest {
   public readonly stableTokenAmount: number
   public readonly diffPercentUp: number
   public readonly diffPercentDown: number
-  public readonly tokenMaxBuyPrice?: number
+  public readonly maxBuyPrice?: number
   public readonly maxGasPrice: number
 
   constructor(
@@ -23,7 +23,7 @@ export class CreateScalpelStrategyRequest {
     stableTokenAmount: number,
     diffPercentUp: number,
     diffPercentDown: number,
-    tokenMaxBuyPrice: number | undefined,
+    maxBuyPrice: number | undefined,
     maxGasPrice: number,
   ) {
     this.type = type
@@ -34,7 +34,7 @@ export class CreateScalpelStrategyRequest {
     this.stableTokenAmount = stableTokenAmount
     this.diffPercentUp = diffPercentUp
     this.diffPercentDown = diffPercentDown
-    this.tokenMaxBuyPrice = tokenMaxBuyPrice
+    this.maxBuyPrice = maxBuyPrice
     this.maxGasPrice = maxGasPrice
   }
 }

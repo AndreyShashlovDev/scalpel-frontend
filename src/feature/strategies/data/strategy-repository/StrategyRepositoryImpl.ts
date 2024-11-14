@@ -2,8 +2,9 @@ import { Pageable } from '../../../../common/repository/data/model/Pageable.ts'
 import { SwapResponse } from '../../../../common/repository/data/model/SwapResponse.ts'
 import { AppSourceService } from '../../../../common/repository/data/source/AppSourceService.ts'
 import { Delay } from '../../../../utils/Delay.ts'
+import { ChangeOptionsRequest } from '../model/ChangeOptionsRequest.ts'
 import { CompositeStrategyResponse } from '../model/CompositeStrategyResponse.ts'
-import { StrategyResponse } from '../model/StrategyResponse.ts'
+import { StrategyResponse, StrategyStatusType } from '../model/StrategyResponse.ts'
 import { StrategyRepository } from './StrategyRepository.ts'
 
 export class StrategyRepositoryImpl extends StrategyRepository {
@@ -49,6 +50,40 @@ export class StrategyRepositoryImpl extends StrategyRepository {
         result.data.total,
         result.data.page
       )
+    }
+
+    throw new Error()
+  }
+
+  public async changeOptions(orderHash: string, options: Partial<ChangeOptionsRequest>): Promise<void> {
+    const result = await this.appSourceService.put<Pageable<StrategyResponse>>(`/strategy/${orderHash}/`, {
+      body: options
+    })
+
+    if (result.success) {
+      return
+    }
+
+    throw new Error()
+  }
+
+  public async getStrategy(hash: string): Promise<StrategyResponse> {
+    const result = await this.appSourceService.get<StrategyResponse>(`/strategy/${hash}`)
+
+    if (result.success && result.data) {
+      return StrategyResponse.valueOfJson(result.data)
+    }
+
+    throw new Error()
+  }
+
+  public async changeStatus(orderHash: string, status: StrategyStatusType): Promise<void> {
+    const result = await this.appSourceService.post<void>(`/strategy/${orderHash}/status`, {
+      query: new Map([['status', status.toString()]])
+    })
+
+    if (result.success) {
+      return
     }
 
     throw new Error()

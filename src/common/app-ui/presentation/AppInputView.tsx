@@ -1,48 +1,62 @@
-import { InputHTMLAttributes } from 'react'
-import styled from 'styled-components'
-import { ComponentSize, ComponentSizeProps } from './ComponentSize.ts'
+import { useRef } from 'react'
+import { NumericFormat } from 'react-number-format'
 
-const Container = styled.span<{ size?: ComponentSize, $prefix?: string }>`
-  display: grid;
-  grid-auto-flow: column;
-  grid-template-columns: 0 1fr;
-  
-  &:before {
-    content: ${({$prefix}) => `'${$prefix ?? ''}'`};
-    position: relative;
-    top: 2px;
-    left: 4px;
-  }
-`
-
-const InputWrapper = styled.input<{ size?: ComponentSize, $prefix?: string }>`
-
-  width: 100%;
-
-  padding-left: ${({$prefix}) => $prefix ? '16px' : '4px'};
-  padding-top: 2px;
-
-  height: ${({size}) => {
-    if (size === ComponentSize.SMALL) {
-      return '22px'
-    }
-
-    return '32px'
-  }};
-
-
-`
-
-export interface AppInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>, ComponentSizeProps {
+export interface AppInputProps {
+  defValue?: number,
   prefix?: string
-  postfix?: string
+  suffix?: string,
+  allowNegative?: boolean
+  decimals?: number
+  maxAmount?: number
+  onChange: (value: number | undefined) => void
+  max?: number
+  min?: number
+  allowEmptyValue?: boolean
+  defaultValue?: number | undefined
 }
 
-export const AppInputView = ({prefix, size, ...props}: AppInputProps) => {
+export const AppInputView = ({
+  prefix,
+  suffix,
+  onChange,
+  decimals,
+  allowNegative,
+  allowEmptyValue,
+  defaultValue,
+  min,
+  max,
+  ...props
+}: AppInputProps) => {
+  const val = useRef<number | undefined>(defaultValue)
 
   return (
-    <Container $prefix={prefix}>
-      <InputWrapper size={size} $prefix={prefix} {...props} />
-    </Container>
+    <NumericFormat
+      allowLeadingZeros
+      prefix={prefix}
+      allowNegative={allowNegative}
+      suffix={suffix}
+      decimalScale={decimals}
+      defaultValue={defaultValue}
+      value={(() => {
+        return allowEmptyValue ? val.current : Math.max(val.current ?? min ?? 0, min ?? 0)
+      })()}
+      isAllowed={(v) => {
+        return (max === undefined || max >= (v.floatValue ?? 0)) &&
+          (min === undefined || min <= (v.floatValue ?? min))
+      }}
+      decimalSeparator={','}
+      thousandSeparator={' '}
+      onValueChange={(values) => {
+        val.current = values.floatValue
+
+        if (!values.floatValue && !allowEmptyValue) {
+          onChange(min ?? 0)
+          return
+        }
+
+        onChange(values.floatValue)
+      }}
+      {...props}
+    />
   )
 }

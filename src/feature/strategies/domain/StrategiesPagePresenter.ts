@@ -10,7 +10,7 @@ export abstract class StrategiesPagePresenter extends BasicPresenter {
 
   public abstract fetchNextPage(): void
 
-  public abstract onListItemClick(viewId: number, item: StrategyListItem<unknown>): void
+  public abstract onListItemClick(viewId: number, item: StrategyListItem<unknown>, data?: number): void
 
   public abstract onCreateNewStrategyClick(): void
 }
