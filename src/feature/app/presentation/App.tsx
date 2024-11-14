@@ -1,9 +1,12 @@
 import { AnimatePresence } from 'framer-motion'
-import { useCallback } from 'react'
+import { useCallback, useLayoutEffect, useMemo } from 'react'
 import { RouterProvider } from 'react-router-dom'
 import styled, { createGlobalStyle, ThemeProvider } from 'styled-components'
 import { AppRouting } from '../../../common/router/AppRouting.tsx'
+import { getDIValue } from '../../../Injections.ts'
 import { useAppTheme } from '../../../style/theme/AppThemeProvider.tsx'
+import '../domain/AppPresenterModule.ts'
+import { AppPresenter } from '../domain/AppPresenter.ts'
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -20,8 +23,15 @@ const BasicContainer = styled.div(({theme}) => `
 `)
 
 function App() {
+  const presenter = useMemo(() => getDIValue(AppPresenter), [])
   const routing = useCallback(() => AppRouting, [])
   const {theme} = useAppTheme()
+
+  useLayoutEffect(() => {
+    presenter.init()
+
+    return () => presenter.destroy()
+  })
 
   return (
     <ThemeProvider theme={theme}>

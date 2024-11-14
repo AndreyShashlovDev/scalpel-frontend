@@ -6,6 +6,9 @@ import { ApplicationRouter } from './common/router/domain/ApplicationRouter.ts'
 import { ApplicationRouterImpl } from './common/router/domain/ApplicationRouterImpl.ts'
 import { AppAuthService } from './common/service/auth/AppAuthService.ts'
 import { AppAuthServiceImpl } from './common/service/auth/AppAuthServiceImpl.ts'
+import { AppExceptionHandlerService } from './common/service/exception-handler/AppExceptionHandlerService.ts'
+import { ExceptionHandlerService } from './common/service/exception-handler/ExceptionHandlerService.ts'
+import { ExceptionNotifierService } from './common/service/exception-handler/ExceptionNotifierService.ts'
 import { WalletConnect } from './common/service/wallet-connect/WalletConnect.ts'
 import { WalletConnectImpl } from './common/service/wallet-connect/WalletConnectImpl.ts'
 
@@ -60,13 +63,22 @@ export const getDIValue = <T>(qualifier: Newable<T> | Abstract<T>): T => initVal
 export const useInject = <T>(qualifier: Newable<T> | Abstract<T>): T => initValue(qualifier)
 
 const SCALPEL_ENDPOINT = import.meta.env.VITE_SCALPEL_ENDPOINT ?? ''
+const exceptionService = new AppExceptionHandlerService()
+
+injectionKernel.set(ExceptionHandlerService, new Factory(() => exceptionService, true))
+injectionKernel.set(ExceptionNotifierService, new Factory(() => exceptionService, true))
 
 injectionKernel.set(AppAuthService, new Factory(() => new AppAuthServiceImpl(), true))
 
 injectionKernel.set(
   AppSourceService,
   new Factory(
-    () => new AppSourceService(new AppAuthHttpsService(SCALPEL_ENDPOINT, 'api', getDIValue(AppAuthService))),
+    () => new AppSourceService(new AppAuthHttpsService(
+      SCALPEL_ENDPOINT,
+      'api',
+      getDIValue(AppAuthService),
+      getDIValue(ExceptionNotifierService)
+    )),
     true
   )
 )
