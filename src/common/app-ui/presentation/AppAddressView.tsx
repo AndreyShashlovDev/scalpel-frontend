@@ -9,5 +9,13 @@ const AddressContainer = styled.span`
 `
 
 export const AppAddressView = ({address}: { address: string }) => {
-  return <AddressContainer>{address && AddressShortener(address)}</AddressContainer>
+  return <AddressContainer
+    onClick={() => {
+      navigator.clipboard.writeText(address)
+        .then(() => alert('Copied address: ' + address))
+        .catch(e => console.error(e))
+    }}
+  >
+    {address && AddressShortener(address)}
+  </AddressContainer>
 }
