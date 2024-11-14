@@ -1,0 +1,69 @@
+name: CI/CD for Scalpel Frontend
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Cache node_modules
+        id: cache-deps
+        uses: actions/cache@v3
+        with:
+          path: |
+            node_modules
+            **/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install dependencies with Yarn
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+        run: yarn install
+
+      - name: Build the project
+        run: yarn build
+
+      - name: Upload dist and dependencies as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build_artifacts
+          path: |
+            dist
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build_artifacts
+
+      - name: Set up SSH key
+        env:
+          BACKEND_KEY: ${{ secrets.BACKEND_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$BACKEND_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+      - name: Send build artifacts to backend server
+        env:
+          BACKEND_HOST: ${{ secrets.BACKEND_HOST }}
+          BACKEND_USER: ${{ secrets.BACKEND_USER }}
+        run: |
+          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -r dist package.json yarn.lock $BACKEND_USER@$BACKEND_HOST:/home/project/public
