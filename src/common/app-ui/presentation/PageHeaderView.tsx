@@ -7,7 +7,7 @@ export const PageHeaderView = styled(AppTitleView)`
   height: ${({theme}) => theme.size.header};
   text-align: center;
   background: ${({theme}) => theme.color.background};
-  font-size: medium;
+  font-size: large;
   border-bottom-color: grey;
   border-bottom-width: 1px;
   border-bottom-style: solid;

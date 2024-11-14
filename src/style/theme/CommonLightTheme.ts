@@ -37,7 +37,7 @@ export class CommonLightTheme implements DefaultTheme {
   }
 
   public readonly size = {
-    header: '32px',
+    header: '56px',
 
     fontSize: {
       xx_small: 'xx-small',
