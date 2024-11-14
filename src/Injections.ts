@@ -63,6 +63,8 @@ export const getDIValue = <T>(qualifier: Newable<T> | Abstract<T>): T => initVal
 export const useInject = <T>(qualifier: Newable<T> | Abstract<T>): T => initValue(qualifier)
 
 const SCALPEL_ENDPOINT = import.meta.env.VITE_SCALPEL_ENDPOINT ?? ''
+export const IS_PRODUCTION = import.meta.env.PROD
+
 const exceptionService = new AppExceptionHandlerService()
 
 injectionKernel.set(ExceptionHandlerService, new Factory(() => exceptionService, true))

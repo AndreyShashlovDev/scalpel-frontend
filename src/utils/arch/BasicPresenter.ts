@@ -1,3 +1,5 @@
+import { IS_PRODUCTION } from '../../Injections.ts'
+
 export abstract class BasicPresenter {
 
   private initCount = 0
@@ -5,7 +7,7 @@ export abstract class BasicPresenter {
   public init(): void {
     this.initCount++
 
-    if (this.initCount === 2) {
+    if (this.initCount === (IS_PRODUCTION ? 1 : 2)) {
       this.ready()
     }
   }
