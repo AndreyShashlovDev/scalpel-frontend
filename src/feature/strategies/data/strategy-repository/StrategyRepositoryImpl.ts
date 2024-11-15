@@ -1,7 +1,6 @@
 import { Pageable } from '../../../../common/repository/data/model/Pageable.ts'
 import { SwapResponse } from '../../../../common/repository/data/model/SwapResponse.ts'
 import { AppSourceService } from '../../../../common/repository/data/source/AppSourceService.ts'
-import { Delay } from '../../../../utils/Delay.ts'
 import { ChangeOptionsRequest } from '../model/ChangeOptionsRequest.ts'
 import { CompositeStrategyResponse } from '../model/CompositeStrategyResponse.ts'
 import { StrategyResponse, StrategyStatusType } from '../model/StrategyResponse.ts'
@@ -20,8 +19,7 @@ export class StrategyRepositoryImpl extends StrategyRepository {
         ['limit', limit.toString()]
       ])
     })
-
-    await Delay(1000)
+    
     if (result.success && result.data) {
       return new Pageable(
         result.data.data.map(item => new CompositeStrategyResponse(

@@ -23,7 +23,7 @@ export class SwapResponse {
       json.valueTo,
       json.scalpelFeeAmount,
       json.accumulatorFeeAmount,
-      json.txHash ?? '0xf94d17d42018ea30d2d2d819071730dc4de283a16273da906b9a42e1798e53da',
+      json.txHash,
       json.txFee,
       // @ts-expect-error transform
       SwapState[json.state],
