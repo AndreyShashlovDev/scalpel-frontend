@@ -28,6 +28,6 @@ export const SwapResponseToSwapListItem = (
     swap.txHash,
     swap.txFee ? new BigNumber(ethers.formatEther(swap.txFee)).toFixed(4, 1) : undefined,
     swap.state,
-    DateUtils.toFormat(swap.updateAt, DateUtils.FORMAT_SHORT_DD_YYYY)
+    DateUtils.toFormat(swap.updateAt, DateUtils.DATE_FORMAT_SHORT2)
   )
 }

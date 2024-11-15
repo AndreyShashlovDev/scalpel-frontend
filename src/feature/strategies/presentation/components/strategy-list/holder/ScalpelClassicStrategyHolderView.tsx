@@ -21,19 +21,24 @@ import { StrategyStatusType } from '../../../../data/model/StrategyResponse.ts'
 import { StrategyHolderButtonIds } from '../../../../domain/StrategyHolderButtonIds.ts'
 import { StrategyListItem } from '../../../model/StrategyListItem.ts'
 
-const SaveButtonContainer = styled(motion.div)`
-  padding: 4px;
+const IconContainer = styled(motion.div)`
   display: flex;
+  justify-content: center;
+  align-items: center;
+`
+const ButtonContainer = styled(IconContainer)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  padding: 4px;
 `
 const SaveIconWrapper = styled(SaveIcon)`
+  cursor: pointer;
   width: 16px;
   height: auto;
 `
 
-const EditButtonContainer = styled(motion.div)`
-  padding: 4px;
-  display: flex;
-`
 const EditIconWrapper = styled(EditIcon)`
   width: 16px;
   height: auto;
@@ -235,7 +240,7 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
                     allowEmptyValue={false}
                     onChange={(v) => setMaxGasPrice(v!)}
                   />
-                  <SaveButtonContainer
+                  <ButtonContainer
                     onClick={() => {
                       onItemClick(StrategyHolderButtonIds.CHANGE_GAS_PRICE_BUTTON_ID, maxGasPrice)
                       setEditGasPrice(false)
@@ -243,18 +248,18 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
                     whileTap={{scale: 0.95}}
                   >
                     <SaveIconWrapper />
-                  </SaveButtonContainer>
+                  </ButtonContainer>
                 </>
               )
               : (
                 <>
                   {maxGasPrice}&nbsp;
-                  <EditButtonContainer
+                  <ButtonContainer
                     onClick={() => setEditGasPrice(true)}
                     whileTap={{scale: 0.95}}
                   >
                     <EditIconWrapper />
-                  </EditButtonContainer>
+                  </ButtonContainer>
                 </>
               )
           }
@@ -277,7 +282,7 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
                     onChange={(v) => setGrowPercent(v ?? 0)}
                   />
 
-                  <SaveButtonContainer
+                  <ButtonContainer
                     onClick={() => {
                       onItemClick(StrategyHolderButtonIds.CHANGE_GROW_PERCENT_BUTTON_ID, growPercent)
                       setEditGrowPercent(false)
@@ -285,18 +290,18 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
                     whileTap={{scale: 0.95}}
                   >
                     <SaveIconWrapper />
-                  </SaveButtonContainer>
+                  </ButtonContainer>
                 </>
               )
               : (
                 <>
                   {growPercent}%&nbsp;
-                  <EditButtonContainer
+                  <ButtonContainer
                     onClick={() => setEditGrowPercent(true)}
                     whileTap={{scale: 0.95}}
                   >
                     <EditIconWrapper />
-                  </EditButtonContainer>
+                  </ButtonContainer>
                 </>
               )
           }
@@ -318,7 +323,7 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
                     onChange={(v) => setFallPercent(v ?? 0)}
                   />
 
-                  <SaveButtonContainer
+                  <ButtonContainer
                     onClick={() => {
                       onItemClick(StrategyHolderButtonIds.CHANGE_FALL_PERCENT_BUTTON_ID, fallPercent)
                       setEditFallPercent(false)
@@ -326,18 +331,18 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
                     whileTap={{scale: 0.95}}
                   >
                     <SaveIconWrapper />
-                  </SaveButtonContainer>
+                  </ButtonContainer>
                 </>
               )
               : (
                 <>
                   {fallPercent}%&nbsp;
-                  <EditButtonContainer
+                  <ButtonContainer
                     onClick={() => setEditFallPercent(true)}
                     whileTap={{scale: 0.95}}
                   >
                     <EditIconWrapper />
-                  </EditButtonContainer>
+                  </ButtonContainer>
                 </>
               )
           }
@@ -357,7 +362,7 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
                   allowEmptyValue={true}
                   onChange={(v) => setMaxBuyPriceCoin(v)}
                 />
-                  <SaveButtonContainer
+                  <ButtonContainer
                     onClick={() => {
                       onItemClick(StrategyHolderButtonIds.CHANGE_TOKEN_B_PRICE_BUTTON_ID, maxBuyPriceCoin)
                       setEditMaxTokenPrice(false)
@@ -365,18 +370,18 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
                     whileTap={{scale: 0.95}}
                   >
                     <SaveIconWrapper />
-                  </SaveButtonContainer>
+                  </ButtonContainer>
                 </>
               )
               : (
                 <>
                   ${maxBuyPriceCoin ?? '-'} &nbsp;
-                  <EditButtonContainer
+                  <ButtonContainer
                     onClick={() => setEditMaxTokenPrice(true)}
                     whileTap={{scale: 0.95}}
                   >
                     <EditIconWrapper />
-                  </EditButtonContainer>
+                  </ButtonContainer>
                 </>
               )
           }
@@ -478,7 +483,7 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
           {item.swaps.map((swap, index) => (
             <SwapItem key={index}>
             <div>{swap.symbolFrom} {swap.amountFrom} &#10230; {swap.symbolTo} {swap.amountTo}</div>
-              <div>{getSwapStatusIcon(swap.state)}</div>
+              <IconContainer>{getSwapStatusIcon(swap.state)}</IconContainer>
               {/*<div>{swap.txHash}</div>*/}
               <div>{swap.date}</div>
           </SwapItem>
