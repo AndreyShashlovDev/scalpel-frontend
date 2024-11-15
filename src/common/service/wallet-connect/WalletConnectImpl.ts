@@ -1,7 +1,7 @@
 import { AppKit, createAppKit } from '@reown/appkit'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import type { AppKitNetwork } from '@reown/appkit-common'
-import { mainnet } from '@reown/appkit/networks'
+import { mainnet, polygon } from '@reown/appkit/networks'
 import { BehaviorSubject, Observable } from 'rxjs'
 import { Wallet, WalletConnect } from './WalletConnect.ts'
 
@@ -11,7 +11,7 @@ export interface WalletProvider extends Wallet {
 
 export class WalletConnectImpl extends WalletConnect<WalletProvider> {
 
-  private readonly networks: [AppKitNetwork, ...AppKitNetwork[]] = [mainnet]
+  private readonly networks: [AppKitNetwork, ...AppKitNetwork[]] = [mainnet, polygon]
   private readonly ethersAdapter = new EthersAdapter()
 
   private readonly subject = new BehaviorSubject<WalletProvider | undefined>(undefined)
@@ -19,8 +19,9 @@ export class WalletConnectImpl extends WalletConnect<WalletProvider> {
   private readonly metadata = {
     name: 'Scalpel',
     description: 'Scalpel trading',
-    url: 'https://mywebsite.com', // origin must match your domain & subdomain
+    url: 'https://trade-scalpel.com', // origin must match your domain & subdomain
     icons: ['https://avatars.mywebsite.com/']
+
   }
 
   private readonly appKit: AppKit
