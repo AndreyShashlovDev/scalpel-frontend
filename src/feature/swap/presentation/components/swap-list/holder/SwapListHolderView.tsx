@@ -35,7 +35,7 @@ export const SwapListHolderView = forwardRef(({item}: SwapListHolderProps, ref: 
       <div>State: {item.state}</div>
       <AppSpaceView />
       <div>{item.currencyFromSymbol} &#10230; {item.currencyToSymbol}</div>
-      <div>{item.valueFrom}  &#10230; {item.valueTo}</div>
+      <div>{item.valueFrom} &#10230; {item.valueTo}</div>
       <AppSpaceView />
       {item.txHash && <div>tx hash: <AppTxHashView hash={item.txHash} chain={item.chain} /></div>}
       {item.txFee && <div>tx fee: {item.txFee}</div>}

@@ -424,6 +424,9 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
     if (status === SwapState.WAIT_FOR_ACTION) {
       return <WarningIconWrapper />
     }
+    if (status === SwapState.EXECUTION) {
+      return <LoadingView size={ComponentSize.SMALLEST} />
+    }
   }, [])
 
   return (
