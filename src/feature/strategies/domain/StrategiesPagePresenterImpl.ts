@@ -75,7 +75,7 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
       })
   }
 
-  public onListItemClick(viewId: number, item: StrategyListItem<unknown>, data?: number): void {
+  public onListItemClick(viewId: number, item: StrategyListItem<unknown>, data?: number | null): void {
     if (viewId === StrategyHolderButtonIds.OPEN_SWAP_BUTTON_ID) {
       this.onShowSwapsClick(item.hash, item.chain)
 
@@ -83,13 +83,13 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
       this.onShowLogsClick(item.hash)
 
     } else if (viewId === StrategyHolderButtonIds.CHANGE_GAS_PRICE_BUTTON_ID) {
-      this.changeStrategyOptions(item.hash, {maxGasPrice: data})
+      this.changeStrategyOptions(item.hash, {maxGasPrice: data || 1})
 
     } else if (viewId === StrategyHolderButtonIds.CHANGE_GROW_PERCENT_BUTTON_ID) {
-      this.changeStrategyOptions(item.hash, {diffPercentUp: data})
+      this.changeStrategyOptions(item.hash, {diffPercentUp: data || 0.01})
 
     } else if (viewId === StrategyHolderButtonIds.CHANGE_FALL_PERCENT_BUTTON_ID) {
-      this.changeStrategyOptions(item.hash, {diffPercentDown: data})
+      this.changeStrategyOptions(item.hash, {diffPercentDown: data || 0.01})
 
     } else if (viewId === StrategyHolderButtonIds.CHANGE_TOKEN_B_PRICE_BUTTON_ID) {
       this.changeStrategyOptions(item.hash, {maxBuyPrice: data})

@@ -199,7 +199,6 @@ const getArrowTrend = (trend: string) => {
     angle = 34
   }
 
-  console.log(trend, angle)
   return angle !== undefined ? <ArrowIconWrapper angle={angle} /> : '??'
 }
 
@@ -443,7 +442,7 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
                 />
                   <ButtonContainer
                     onClick={() => {
-                      onItemClick(StrategyHolderButtonIds.CHANGE_TOKEN_B_PRICE_BUTTON_ID, maxBuyPriceCoin)
+                      onItemClick(StrategyHolderButtonIds.CHANGE_TOKEN_B_PRICE_BUTTON_ID, maxBuyPriceCoin ?? null)
                       setEditMaxTokenPrice(false)
                     }}
                     whileTap={{scale: 0.95}}

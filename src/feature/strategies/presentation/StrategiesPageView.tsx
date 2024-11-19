@@ -70,7 +70,11 @@ export const StrategiesPageView = () => {
       <ListContainer ref={listScrollContainerRef}>
         <StrategyListView
           items={strategies ?? []}
-          onItemClick={(viewId, item, data) => presenter.onListItemClick(viewId, item, data ? Number(data) : undefined)}
+          onItemClick={(viewId, item, data) => presenter.onListItemClick(
+            viewId,
+            item,
+            data as number | null | undefined
+          )}
           onNextFetch={() => presenter.fetchNextPage()}
           hasNext={!isLastPage}
         />
