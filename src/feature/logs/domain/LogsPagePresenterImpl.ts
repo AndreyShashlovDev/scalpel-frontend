@@ -1,7 +1,7 @@
 import { BehaviorSubject, from, Observable, Subscription } from 'rxjs'
 import { Pageable } from '../../../common/repository/data/model/Pageable.ts'
 import { LogsRepository } from '../data/logs-repository/LogsRepository.ts'
-import { LogResponse } from '../data/model/LogResponse.ts'
+import { LogResponse } from '../../../common/repository/data/model/LogResponse.ts'
 import { LogResponseToLogListItem } from '../presentation/mapping/LogResponseToLogListItem.ts'
 import { LogListItemModel } from '../presentation/model/LogListItemModel.ts'
 import { LogsPagePresenter } from './LogsPagePresenter.ts'

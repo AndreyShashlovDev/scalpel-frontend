@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion'
 import { ForwardedRef, forwardRef, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
+import ArrowIcon from '../../../../../../assets/icons/app/ArrowIcon.svg'
 import DeleteIcon from '../../../../../../assets/icons/app/DeleteIcon.svg'
 import EditIcon from '../../../../../../assets/icons/app/EditIcon.svg'
 import FailIcon from '../../../../../../assets/icons/app/FailIcon.svg'
-import LogIcon from '../../../../../../assets/icons/app/LogIcon.svg'
 import PauseIcon from '../../../../../../assets/icons/app/PauseIcon.svg'
 import PlayIcon from '../../../../../../assets/icons/app/PlayIcon.svg'
 import SaveIcon from '../../../../../../assets/icons/app/SaveIcon.svg'
@@ -14,12 +14,27 @@ import { AppAddressView } from '../../../../../../common/app-ui/presentation/App
 import { AppIconButton } from '../../../../../../common/app-ui/presentation/AppIconButton.tsx'
 import { AppInputView } from '../../../../../../common/app-ui/presentation/AppInputView.tsx'
 import { AppSpaceView } from '../../../../../../common/app-ui/presentation/AppSpaceView.tsx'
+import { ChainIconView } from '../../../../../../common/app-ui/presentation/ChainIconView.tsx'
 import { ComponentSize } from '../../../../../../common/app-ui/presentation/ComponentSize.ts'
 import { LoadingView } from '../../../../../../common/app-ui/presentation/LoadingView.tsx'
+import { TokenIconView } from '../../../../../../common/app-ui/presentation/TokenIconView.tsx'
 import { SwapState } from '../../../../../../common/repository/data/model/SwapResponse.ts'
 import { StrategyStatusType } from '../../../../data/model/StrategyResponse.ts'
 import { StrategyHolderButtonIds } from '../../../../domain/StrategyHolderButtonIds.ts'
 import { StrategyListItem } from '../../../model/StrategyListItem.ts'
+
+const ArrowIconContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px;
+`
+
+const ArrowIconWrapper = styled(ArrowIcon)<{ angle: number }>`
+  width: 24px;
+  height: 24px;
+  rotate: ${({angle}) => angle}deg;
+`
 
 const IconContainer = styled(motion.div)`
   display: flex;
@@ -74,19 +89,26 @@ const FailIconWrapper = styled(FailIcon)`
 
 const Container = styled(motion.div)`
   border: 1px solid #747474;
-  padding: 12px 12px 0;
+  padding: 12px 12px 12px;
   border-radius: ${({theme}) => theme.size.borderRadius.small};
   background: ${({theme}) => theme.color.background};
+  max-width: 640px;
+  width: 100%;
 `
-const ButtonLogIcon = styled(LogIcon)`
-  width: 24px;
-  height: 24px;
+
+const ContainerHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid;
 `
 
 const ElementContainer = styled.div`
   display: flex;
   align-items: center;
-  height: 24px;
+  //height: 24px;
   overflow: hidden;
 `
 
@@ -94,7 +116,10 @@ const StableCoinContainer = styled.span<{ $highlight: boolean }>`
   color: ${({$highlight, theme}) => $highlight ? '#ade25d' : theme.color.text.primary};
 `
 
-const SwapsBlock = styled.div`
+const SwapsLogsBlock = styled.div`
+  margin-top: 12px;
+  margin-bottom: 12px;
+
   > div {
     margin-top: 4px;
   }
@@ -103,28 +128,44 @@ const SwapsBlock = styled.div`
     margin-bottom: 0;
   }
 `
-const SwapItem = styled.div`
+const LogsContainer = styled.div`
   font-size: 10px !important;
-  display: flex;
-  justify-content: space-around;
+  display: grid;
+  grid-template-columns: 34px 1fr 0.5fr;
+  justify-content: center;
   align-items: center;
   border: 1px solid gray;
 `
 
-const DateContainer = styled(ElementContainer)`
-  display: flex;
-  justify-content: end;
+const SwapContainer = styled.div`
+  font-size: 10px !important;
+  display: grid;
+  padding: 0 8px;
+  grid-template-columns: 20px 1fr 100px;
+  justify-content: center;
+  gap: 8px;
+  align-items: center;
+  border: 1px solid gray;
+  text-align: end;
 `
 
-const MoreLessContainer = styled.div`
-  width: 100%;
-  margin-top: 8px;
-  cursor: pointer;
-  text-align: center;
+const SwapSubItem = styled.div`
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
 `
 
 const TextUnderline = styled.span`
   text-decoration: underline;
+  cursor: pointer;
+`
+
+const HeaderButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
 `
 
@@ -133,10 +174,34 @@ const ActionButtonsContainer = styled.div`
   justify-content: end;
   gap: 24px;
   margin-bottom: 24px;
+  cursor: pointer;
 `
 const InputWrapper = styled(AppInputView)`
   width: 100px;
 `
+
+const getArrowTrend = (trend: string) => {
+  let angle: number | undefined = 10
+
+  if (trend === 'FALLING_CHANGE_TO_NOT_DEFINED' || trend === 'FALLING') {
+    angle = 88
+  }
+
+  if (trend === 'GROWING_CHANGE_TO_NOT_DEFINED' || trend === 'GROWING') {
+    angle = -92
+  }
+
+  if (trend === 'FALLING_CHANGE_TO_GROWING') {
+    angle = -47
+  }
+
+  if (trend === 'GROWING_CHANGE_TO_FALLING') {
+    angle = 34
+  }
+
+  console.log(trend, angle)
+  return angle !== undefined ? <ArrowIconWrapper angle={angle} /> : '??'
+}
 
 const PlayStatus = new Set([
   StrategyStatusType.CREATED,
@@ -147,7 +212,6 @@ const PlayStatus = new Set([
 const PauseStatus = new Set([
   StrategyStatusType.IN_PROGRESS,
   StrategyStatusType.APPROVE_IN_PROGRESS,
-  StrategyStatusType.READY
 ])
 
 export interface ScalpelClassicStrategyOptions {
@@ -190,28 +254,43 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
 
   }, [item.options, item.gasLimit])
 
-  const getShortView = useCallback(() => {
+  const getActionButtons = () => {
     return (
-      <>
-        {item.status === StrategyStatusType.USER_ACTION_REQUIRED && <WarningIconWrapper />}
-        <ElementContainer>Chain: {item.chain}</ElementContainer>
-        <ElementContainer>Tokens: {item.currencyA.symbol} &#10230; {item.currencyB.symbol}</ElementContainer>
-        <ElementContainer>Amount:&nbsp;<StableCoinContainer
-          $highlight={(item.totalAmountA > 0) || false}
-        >{item.totalAmountA}</StableCoinContainer>
-          &nbsp;/ {item.totalAmountB}
-        </ElementContainer>
-        <AppSpaceView />
-        <ElementContainer>Status: {item.status}</ElementContainer>
-      </>
+      <ActionButtonsContainer>
+        <AppIconButton
+          disabled={item.waitChangeStatusCancel}
+          onClick={() => {
+            onItemClick(StrategyHolderButtonIds.CANCEL_ORDER_BUTTON_ID)
+          }}
+          text={item.waitChangeStatusCancel ? <LoadingView size={ComponentSize.SMALL} /> : <DeleteIconWrapper />}
+          size={ComponentSize.SMALL}
+        />
+
+        {
+          getIconPlayPause && (
+            <AppIconButton
+              disabled={item.waitChangeStatusPlayPause}
+              onClick={() => {
+                if (PlayStatus.has(item.status)) {
+                  onItemClick(StrategyHolderButtonIds.PLAY_ORDER_BUTTON_ID)
+
+                } else if (PauseStatus.has(item.status)) {
+                  onItemClick(StrategyHolderButtonIds.PAUSE_ORDER_BUTTON_ID)
+                }
+              }}
+              text={item.waitChangeStatusPlayPause ? <LoadingView size={ComponentSize.SMALL} /> : getIconPlayPause}
+              size={ComponentSize.SMALL}
+            />
+          )
+        }
+      </ActionButtonsContainer>
     )
-  }, [item])
+  }
 
   const getFullView = useCallback(
     () => {
       return (
         <>
-        {getShortView()}
           <AppSpaceView />
         <ElementContainer>Strategy: {item.type}</ElementContainer>
         <ElementContainer>Wallet:&nbsp;<AppAddressView address={item.wallet} /></ElementContainer>
@@ -386,10 +465,12 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
               )
           }
         </ElementContainer>
+          {getActionButtons()}
       </>
       )
     },
     [
+      getActionButtons,
       onItemClick,
       item,
       fallPercent,
@@ -400,7 +481,6 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
       editGrowPercent,
       editGasPrice,
       editMaxTokenPrice,
-      getShortView
     ]
   )
 
@@ -435,69 +515,90 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
       initial={{opacity: 0}}
       animate={{opacity: 1}}
       exit={{opacity: 0}}
-      layout
-      transition={{
-        exit: {duration: 0.1},
-      }}
+      transition={{exit: {duration: 0.1}}}
     >
-      {isMoreInfo ? getFullView() : getShortView()}
-      <DateContainer>{item.createdAt}</DateContainer>
+      <ContainerHeader>
+        <ChainIconView chain={item.chain} size={ComponentSize.SMALL} />
 
-      <ActionButtonsContainer>
-        <AppIconButton
-          disabled={item.waitChangeStatusCancel}
-          onClick={() => {
-            onItemClick(StrategyHolderButtonIds.CANCEL_ORDER_BUTTON_ID)
-          }}
-          text={item.waitChangeStatusCancel ? <LoadingView size={ComponentSize.SMALL} /> : <DeleteIconWrapper />}
-          size={ComponentSize.SMALL}
-        />
+        <ElementContainer>
+          <TokenIconView
+            chain={item.chain}
+            address={item.currencyA.address}
+            symbol={item.currencyA.symbol}
+            size={ComponentSize.SMALL}
+          />
+           <TokenIconView
+             chain={item.chain}
+             address={item.currencyB.address}
+             symbol={item.currencyB.symbol}
+             size={ComponentSize.SMALL}
+           />
+        </ElementContainer>
 
-        {
-          getIconPlayPause && (
-            <AppIconButton
-              disabled={item.waitChangeStatusPlayPause}
-              onClick={() => {
-                if (PlayStatus.has(item.status)) {
-                  onItemClick(StrategyHolderButtonIds.PLAY_ORDER_BUTTON_ID)
+        <div>
+           <ElementContainer>{item.currencyA.symbol} &#10230; {item.currencyB.symbol}</ElementContainer>
+        </div>
 
-                } else if (PauseStatus.has(item.status)) {
-                  onItemClick(StrategyHolderButtonIds.PAUSE_ORDER_BUTTON_ID)
-                }
-              }}
-              text={item.waitChangeStatusPlayPause ? <LoadingView size={ComponentSize.SMALL} /> : getIconPlayPause}
-              size={ComponentSize.SMALL}
-            />
-          )
-        }
+        <div>
+          <ElementContainer>
+            <StableCoinContainer $highlight={(item.totalAmountA > 0) || false}>{item.totalAmountA}</StableCoinContainer>
+            &nbsp;/&nbsp;
+            {item.totalAmountB}
+        </ElementContainer>
+        </div>
+        <HeaderButtonContainer onClick={() => setIsMoreInfo(!isMoreInfo)}>
+          <EditIconWrapper />
+        </HeaderButtonContainer>
+      </ContainerHeader>
+      <ElementContainer>
+        Status: {item.statusText}
+      </ElementContainer>
+      <ElementContainer>
+        {item.currencyB.symbol} Price: ${item.currencyBUsdPrice ?? '-'}
+      </ElementContainer>
 
-        <AppIconButton
-          onClick={() => onItemClick(StrategyHolderButtonIds.OPEN_LOGS_BUTTON_ID)}
-          text={<ButtonLogIcon />}
-          size={ComponentSize.SMALL}
-        />
-      </ActionButtonsContainer>
+      {isMoreInfo ? getFullView() : undefined}
+      <SwapsLogsBlock onClick={() => onItemClick(StrategyHolderButtonIds.OPEN_LOGS_BUTTON_ID)}>
+          <div>
+            Latest Logs <TextUnderline>(see more...)</TextUnderline>:
+          </div>
+        {item.logs.map((log, index) => (
+          <LogsContainer key={index}>
+            <ArrowIconContainer>{getArrowTrend(log.trend)}</ArrowIconContainer>
+            <div>{log.diff}</div>
+            <div>{log.createdAt}</div>
+          </LogsContainer>
+        ))}
+      </SwapsLogsBlock>
 
-      {item.swaps.length > 0 && (
-        <SwapsBlock onClick={() => onItemClick(StrategyHolderButtonIds.OPEN_SWAP_BUTTON_ID)}>
+      <SwapsLogsBlock onClick={() => onItemClick(StrategyHolderButtonIds.OPEN_SWAP_BUTTON_ID)}>
           <div>
             Latest swaps <TextUnderline>(see more...)</TextUnderline>:
           </div>
-          {item.swaps.map((swap, index) => (
-            <SwapItem key={index}>
-            <div>{swap.symbolFrom} {swap.amountFrom} &#10230; {swap.symbolTo} {swap.amountTo}</div>
-              <IconContainer>{getSwapStatusIcon(swap.state)}</IconContainer>
-              {/*<div>{swap.txHash}</div>*/}
-              <div>{swap.date}</div>
-          </SwapItem>
-          ))}
-      </SwapsBlock>
-      )}
-      <MoreLessContainer
-        onClick={() => setIsMoreInfo(!isMoreInfo)}
-      >
-        {isMoreInfo ? 'Less...' : 'More...'}
-      </MoreLessContainer>
+        {item.swaps.map((swap, index) => (
+          <SwapContainer key={index}>
+            <IconContainer>{getSwapStatusIcon(swap.state)}</IconContainer>
+            <SwapSubItem>
+              <TokenIconView
+                chain={item.chain}
+                address={swap.addressFrom}
+                symbol={swap.symbolFrom}
+                size={ComponentSize.SMALLEST}
+              />
+              <span>{swap.amountFrom}</span>
+              <span>&#10230;</span>
+              <TokenIconView
+                chain={item.chain}
+                address={swap.addressTo}
+                symbol={swap.symbolTo}
+                size={ComponentSize.SMALLEST}
+              />
+              <span>{swap.amountTo}</span>
+            </SwapSubItem>
+            <div>{swap.date}</div>
+          </SwapContainer>
+        ))}
+      </SwapsLogsBlock>
     </Container>
   )
 })

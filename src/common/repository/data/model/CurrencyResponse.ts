@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { JsonObject } from '../../../../utils/types.ts'
 import { ChainType } from './ChainType.ts'
+import { CurrencyPriceResponse } from './CurrencyPriceResponse.ts'
 
 export class CurrencyResponse {
 
@@ -12,6 +13,7 @@ export class CurrencyResponse {
       ChainType[json.chain],
       json.decimal,
       json.isStable,
+      json.price ? CurrencyPriceResponse.valueOfJson(json.price) : undefined,
     )
   }
 
@@ -21,14 +23,24 @@ export class CurrencyResponse {
   public readonly chain: ChainType
   public readonly decimal: string
   public readonly isStable: boolean
+  public readonly price?: CurrencyPriceResponse
 
-  constructor(symbol: string, name: string, address: string, chain: ChainType, decimal: string, isStable: boolean) {
+  constructor(
+    symbol: string,
+    name: string,
+    address: string,
+    chain: ChainType,
+    decimal: string,
+    isStable: boolean,
+    price?: CurrencyPriceResponse
+  ) {
     this.symbol = symbol
     this.name = name
     this.address = address
     this.chain = chain
     this.decimal = decimal
     this.isStable = isStable
+    this.price = price
   }
 
   public valueTo(value: string): number {

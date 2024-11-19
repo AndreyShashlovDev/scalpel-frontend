@@ -1,5 +1,5 @@
 import { Pageable } from '../../../../common/repository/data/model/Pageable.ts'
-import { LogResponse } from '../model/LogResponse.ts'
+import { LogResponse } from '../../../../common/repository/data/model/LogResponse.ts'
 
 export abstract class LogsRepository {
 

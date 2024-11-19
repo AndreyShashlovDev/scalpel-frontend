@@ -5,7 +5,6 @@ import { JsonObject } from '../../../../utils/types.ts'
 
 export enum StrategyStatusType {
   CREATED = 'CREATED',
-  READY = 'READY',
   APPROVE_IN_PROGRESS = 'APPROVE_IN_PROGRESS',
   IN_PROGRESS = 'IN_PROGRESS',
   USER_ACTION_REQUIRED = 'USER_ACTION_REQUIRED',

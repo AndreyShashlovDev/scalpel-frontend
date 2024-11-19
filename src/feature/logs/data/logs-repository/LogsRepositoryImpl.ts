@@ -1,6 +1,6 @@
 import { Pageable } from '../../../../common/repository/data/model/Pageable.ts'
 import { AppSourceService } from '../../../../common/repository/data/source/AppSourceService.ts'
-import { LogResponse } from '../model/LogResponse.ts'
+import { LogResponse } from '../../../../common/repository/data/model/LogResponse.ts'
 import { LogsRepository } from './LogsRepository.ts'
 
 export class LogsRepositoryImpl extends LogsRepository {

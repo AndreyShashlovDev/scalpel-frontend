@@ -8,6 +8,14 @@ import {
 } from './holder/ScalpelClassicStrategyHolderView.tsx'
 
 const ListWrapper = styled(InfiniteScrollListView)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  > div {
+    margin-bottom: 8px;
+  }
+  
   > div:last-child {
     margin-bottom: 18px;
   }

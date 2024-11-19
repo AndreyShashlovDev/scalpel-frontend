@@ -1,6 +1,6 @@
 import { ListItem } from '../../../../common/app-ui/presentation/AppInfiniteScrollView.tsx'
 import { JsonObject } from '../../../../utils/types.ts'
-import { LogType } from '../../data/model/LogResponse.ts'
+import { LogType } from '../../../../common/repository/data/model/LogResponse.ts'
 
 export class LogListItemModel implements ListItem {
 

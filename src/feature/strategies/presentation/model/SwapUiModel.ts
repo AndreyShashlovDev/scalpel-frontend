@@ -2,6 +2,8 @@ import { SwapState } from '../../../../common/repository/data/model/SwapResponse
 
 export class SwapUiModel {
 
+  public readonly addressFrom: string
+  public readonly addressTo: string
   public readonly symbolFrom: string
   public readonly symbolTo: string
   public readonly amountFrom: number
@@ -11,6 +13,8 @@ export class SwapUiModel {
   public readonly date: string
 
   constructor(
+    addressFrom: string,
+    addressTo: string,
     symbolFrom: string,
     symbolTo: string,
     amountFrom: number,
@@ -19,6 +23,8 @@ export class SwapUiModel {
     state: SwapState,
     date: string
   ) {
+    this.addressFrom = addressFrom
+    this.addressTo = addressTo
     this.symbolFrom = symbolFrom
     this.symbolTo = symbolTo
     this.amountFrom = amountFrom

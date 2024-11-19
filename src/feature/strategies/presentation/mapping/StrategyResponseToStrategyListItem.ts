@@ -1,14 +1,25 @@
 import { ethers } from 'ethers'
 import { CurrencyResponse } from '../../../../common/repository/data/model/CurrencyResponse.ts'
+import { LogResponse } from '../../../../common/repository/data/model/LogResponse.ts'
 import { StrategyType } from '../../../../common/repository/data/model/StrategyType.ts'
 import { SwapResponse } from '../../../../common/repository/data/model/SwapResponse.ts'
 import { DateUtils } from '../../../../utils/DateUtils.ts'
 import { JsonObject } from '../../../../utils/types.ts'
-import { StrategyResponse } from '../../data/model/StrategyResponse.ts'
+import { StrategyResponse, StrategyStatusType } from '../../data/model/StrategyResponse.ts'
 import { ScalpelClassicStrategyOptions } from '../components/strategy-list/holder/ScalpelClassicStrategyHolderView.tsx'
 import { CurrencyUiModel } from '../model/CurrencyUiModel.ts'
+import { LogUiModel } from '../model/LogUiModel.ts'
 import { StrategyListItem } from '../model/StrategyListItem.ts'
 import { SwapUiModel } from '../model/SwapUiModel.ts'
+
+const mapStrategyStatus = new Map<StrategyStatusType, string>([
+  [StrategyStatusType.CREATED, 'Created'],
+  [StrategyStatusType.APPROVE_IN_PROGRESS, 'Tokens approve in progress'],
+  [StrategyStatusType.IN_PROGRESS, 'In progress'],
+  [StrategyStatusType.USER_ACTION_REQUIRED, 'User action required'],
+  [StrategyStatusType.PAUSED, 'Paused'],
+  [StrategyStatusType.CANCELED, 'Canceled'],
+])
 
 const convertOptionsByStrategy = (
   type: StrategyType,
@@ -35,7 +46,8 @@ const convertOptionsByStrategy = (
 
 export const StrategyResponseToStrategyListItem = (
   strategy: StrategyResponse,
-  swaps: SwapResponse[] | SwapUiModel[]
+  swaps: SwapResponse[] | SwapUiModel[],
+  logs: LogResponse[] | LogUiModel[],
 ) => {
   const mapOfToken = new Map([
     [strategy.currencyA.address, strategy.currencyA],
@@ -49,6 +61,8 @@ export const StrategyResponseToStrategyListItem = (
       const to = mapOfToken.get(item.currencyTo)!
 
       return new SwapUiModel(
+        from.address,
+        to.address,
         from.symbol,
         to.symbol,
         from.valueTo(item.valueFrom),
@@ -58,6 +72,20 @@ export const StrategyResponseToStrategyListItem = (
         DateUtils.toFormat(item.updateAt, DateUtils.DATE_FORMAT_SHORT),
       )
     })
+
+  const currencyBPrice = strategy.currencyB.price
+    ? strategy.currencyA.valueTo(strategy.currencyB.price.usdtPrice)
+    : undefined
+
+  const logsModels = logs[0] instanceof LogUiModel
+    ? logs as LogUiModel[]
+    : (logs as LogResponse[]).map(item => new LogUiModel(
+      // @ts-expect-error swap has diff
+      item.log.diff,
+      // @ts-expect-error swap has trend
+      item.log.trend,
+      DateUtils.toFormat(item.createdAt, DateUtils.DATE_FORMAT_SHORT)
+    ))
 
   return new StrategyListItem(
     strategy.chain,
@@ -74,6 +102,7 @@ export const StrategyResponseToStrategyListItem = (
       strategy.currencyB.name,
       strategy.currencyB.address,
     ),
+    currencyBPrice,
     strategy.currencyA.valueTo(strategy.totalAmountA),
     strategy.currencyB.valueTo(strategy.totalAmountB),
     convertOptionsByStrategy(strategy.type, strategy.options, strategy.currencyA),
@@ -81,10 +110,12 @@ export const StrategyResponseToStrategyListItem = (
     strategy.approvedA,
     strategy.approvedB,
     strategy.status,
+    mapStrategyStatus.get(strategy.status) ?? 'unknown',
     Number(ethers.formatUnits(strategy.gasLimit, 9)),
     DateUtils.toFormat(strategy.createdAt, DateUtils.DATE_FORMAT_SHORT),
     swapsUiModels,
     false /*waitChangeStatusPlayPause: boolean*/,
     false /*waitChangeStatusCancel: boolean*/,
+    logsModels,
   )
 }

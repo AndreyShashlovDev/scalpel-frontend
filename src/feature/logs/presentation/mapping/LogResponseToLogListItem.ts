@@ -1,5 +1,5 @@
 import { DateUtils } from '../../../../utils/DateUtils.ts'
-import { LogResponse } from '../../data/model/LogResponse.ts'
+import { LogResponse } from '../../../../common/repository/data/model/LogResponse.ts'
 import { LogListItemModel } from '../model/LogListItemModel.ts'
 
 export const LogResponseToLogListItem = (log: LogResponse) => new LogListItemModel(

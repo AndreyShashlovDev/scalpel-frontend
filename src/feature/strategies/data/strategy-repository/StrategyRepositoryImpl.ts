@@ -1,3 +1,4 @@
+import { LogResponse } from '../../../../common/repository/data/model/LogResponse.ts'
 import { Pageable } from '../../../../common/repository/data/model/Pageable.ts'
 import { SwapResponse } from '../../../../common/repository/data/model/SwapResponse.ts'
 import { AppSourceService } from '../../../../common/repository/data/source/AppSourceService.ts'
@@ -19,12 +20,13 @@ export class StrategyRepositoryImpl extends StrategyRepository {
         ['limit', limit.toString()]
       ])
     })
-    
+
     if (result.success && result.data) {
       return new Pageable(
         result.data.data.map(item => new CompositeStrategyResponse(
           StrategyResponse.valueOfJson(item.strategy),
-          item.swaps.map(SwapResponse.valueOfJson)
+          item.swaps.map(SwapResponse.valueOfJson),
+          item.latestLog ? LogResponse.valueOfJson(item.latestLog) : undefined
         )),
         result.data.total,
         result.data.page
@@ -54,6 +56,7 @@ export class StrategyRepositoryImpl extends StrategyRepository {
   }
 
   public async changeOptions(orderHash: string, options: Partial<ChangeOptionsRequest>): Promise<void> {
+    console.log('options', options)
     const result = await this.appSourceService.put<Pageable<StrategyResponse>>(`/strategy/${orderHash}/`, {
       body: options
     })
