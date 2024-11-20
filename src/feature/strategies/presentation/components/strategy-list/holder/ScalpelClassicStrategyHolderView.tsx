@@ -97,12 +97,19 @@ const Container = styled(motion.div)`
 `
 
 const ContainerHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 36px 50px 1fr 1fr 30px;
   align-items: center;
   padding-bottom: 12px;
+  text-align: center;
   margin-bottom: 12px;
   border-bottom: 1px solid;
+
+  > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 `
 
 const ElementContainer = styled.div`
@@ -130,11 +137,16 @@ const SwapsLogsBlock = styled.div`
 `
 const LogsContainer = styled.div`
   font-size: 10px !important;
-  display: grid;
-  grid-template-columns: 34px 1fr 0.5fr;
-  justify-content: center;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   border: 1px solid gray;
+  padding-right: 8px;
+`
+
+const LogItemContainer = styled.div`
+  display: flex;
+  place-items: center;
 `
 
 const SwapContainer = styled.div`
@@ -563,8 +575,9 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
           </div>
         {item.logs.map((log, index) => (
           <LogsContainer key={index}>
-            <ArrowIconContainer>{getArrowTrend(log.trend)}</ArrowIconContainer>
-            <div>{log.diff}</div>
+            <LogItemContainer>
+              <ArrowIconContainer>{getArrowTrend(log.trend)}</ArrowIconContainer>{log.diff}
+            </LogItemContainer>
             <div>{log.createdAt}</div>
           </LogsContainer>
         ))}

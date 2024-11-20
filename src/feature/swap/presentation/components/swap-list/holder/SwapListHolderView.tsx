@@ -3,6 +3,9 @@ import { ForwardedRef, forwardRef } from 'react'
 import styled from 'styled-components'
 import { AppSpaceView } from '../../../../../../common/app-ui/presentation/AppSpaceView.tsx'
 import { AppTxHashView } from '../../../../../../common/app-ui/presentation/AppTxHashView.tsx'
+import { ComponentSize } from '../../../../../../common/app-ui/presentation/ComponentSize.ts'
+import { TokenIconView } from '../../../../../../common/app-ui/presentation/TokenIconView.tsx'
+import { ChainNativeCurrency } from '../../../../../../utils/ChainNativeCurrency.ts'
 import { SwapListItemModel } from '../../../model/SwapListItemModel.ts'
 
 const Container = styled(motion.div)`
@@ -14,6 +17,18 @@ const Container = styled(motion.div)`
 
 const DateContainer = styled.div`
   text-align: end;
+`
+
+const TxFeeContainer = styled.div`
+  display: flex;
+  place-items: center;
+  gap: 4px;
+`
+
+const CurrenciesContainer = styled.div`
+  display: flex;
+  place-items: center;
+  gap: 4px;
 `
 
 export interface SwapListHolderProps {
@@ -32,13 +47,39 @@ export const SwapListHolderView = forwardRef(({item}: SwapListHolderProps, ref: 
       }}
       ref={ref}
     >
-      <div>State: {item.state}</div>
+      <div>State: {item.stateText}</div>
       <AppSpaceView />
-      <div>{item.currencyFromSymbol} &#10230; {item.currencyToSymbol}</div>
+      <CurrenciesContainer>
+        <TokenIconView
+          chain={item.chain}
+          address={item.currencyFrom}
+          symbol={item.currencyFromSymbol}
+          size={ComponentSize.SMALLEST}
+        />
+        {item.currencyFromSymbol}
+        &#10230;
+        <TokenIconView
+          chain={item.chain}
+          address={item.currencyTo}
+          symbol={item.currencyToSymbol}
+          size={ComponentSize.SMALLEST}
+        />
+        {item.currencyToSymbol}</CurrenciesContainer>
       <div>{item.valueFrom} &#10230; {item.valueTo}</div>
       <AppSpaceView />
       {item.txHash && <div>tx hash: <AppTxHashView hash={item.txHash} chain={item.chain} /></div>}
-      {item.txFee && <div>tx fee: {item.txFee}</div>}
+      {item.txFee && (
+        <TxFeeContainer>
+          <span>tx fee: {item.txFee}</span>
+          <TokenIconView
+            chain={item.chain}
+            address={'0xffffffffffffffffffffffffffffffffffffffff'}
+            symbol={ChainNativeCurrency.get(item.chain)?.symbol ?? ''}
+            size={ComponentSize.SMALLEST}
+          />
+        </TxFeeContainer>
+      )
+      }
       <DateContainer>{item.updateAt}</DateContainer>
     </Container>
   )

@@ -88,11 +88,17 @@ const mapChainName: Map<ChainType, string> = new Map([
 ])
 
 const url = 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/<chain>/assets/<address>/logo.png'
-
+const nativeCurrencyUrl = 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/<chain>/info/logo.png'
 export const TokenIconView = ({chain, address, symbol, size}: TokenIconProps) => {
   return (
     <Container size={size}>
-      <img src={url.replace('<chain>', mapChainName.get(chain) ?? '').replace('<address>', address)} alt={symbol} />
+      <img
+        src={
+          address.toLowerCase() === '0xffffffffffffffffffffffffffffffffffffffff'
+            ? nativeCurrencyUrl.replace('<chain>', mapChainName.get(chain) ?? '')
+            : url.replace('<chain>', mapChainName.get(chain) ?? '').replace('<address>', address)
+        } alt={symbol}
+      />
     </Container>
   )
 }

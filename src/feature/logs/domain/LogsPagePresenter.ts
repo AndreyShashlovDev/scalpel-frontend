@@ -10,5 +10,9 @@ export abstract class LogsPagePresenter extends BasicPresenter {
 
   public abstract getIsLastPage(): Observable<boolean>
 
+  public abstract getIsLoading(): Observable<boolean>
+
   public abstract onFetchNext(): void
+
+  public abstract refresh(): void
 }

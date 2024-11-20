@@ -56,7 +56,6 @@ export class StrategyRepositoryImpl extends StrategyRepository {
   }
 
   public async changeOptions(orderHash: string, options: Partial<ChangeOptionsRequest>): Promise<void> {
-    console.log('options', options)
     const result = await this.appSourceService.put<Pageable<StrategyResponse>>(`/strategy/${orderHash}/`, {
       body: options
     })

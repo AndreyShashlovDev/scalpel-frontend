@@ -18,6 +18,7 @@ export class SwapListItemModel implements ListItem {
   public readonly txHash?: string
   public readonly txFee?: string
   public readonly state: SwapState
+  public readonly stateText: string
   public readonly updateAt: string
 
   constructor(
@@ -35,6 +36,7 @@ export class SwapListItemModel implements ListItem {
     txHash: string | undefined,
     txFee: string | undefined,
     state: SwapState,
+    stateText: string,
     updateAt: string
   ) {
     this.hash = hash
@@ -51,6 +53,7 @@ export class SwapListItemModel implements ListItem {
     this.txHash = txHash
     this.txFee = txFee
     this.state = state
+    this.stateText = stateText
     this.updateAt = updateAt
   }
 }

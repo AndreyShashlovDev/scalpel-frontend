@@ -1,9 +1,19 @@
 import BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
 import { CurrencyResponse } from '../../../../common/repository/data/model/CurrencyResponse.ts'
-import { SwapResponse } from '../../../../common/repository/data/model/SwapResponse.ts'
+import { SwapResponse, SwapState } from '../../../../common/repository/data/model/SwapResponse.ts'
 import { DateUtils } from '../../../../utils/DateUtils.ts'
 import { SwapListItemModel } from '../model/SwapListItemModel.ts'
+
+const StateText = new Map<SwapState, string>([
+  [SwapState.WAIT_FOR_ACTION, 'Wait user action'],
+  [SwapState.WAIT_EXECUTION, 'Wait for execute'],
+  [SwapState.EXECUTION, 'Execution in progress'],
+  [SwapState.EXECUTION_SUCCESS, 'Tx executed success'],
+  [SwapState.EXECUTION_FAILED, 'Tx failed'],
+  [SwapState.FAILED, 'Failed'],
+  [SwapState.CANCELLED, 'Canceled'],
+])
 
 export const SwapResponseToSwapListItem = (
   swap: SwapResponse,
@@ -28,6 +38,7 @@ export const SwapResponseToSwapListItem = (
     swap.txHash,
     swap.txFee ? new BigNumber(ethers.formatEther(swap.txFee)).toFixed(4, 1) : undefined,
     swap.state,
+    StateText.get(swap.state) ?? 'unknown state',
     DateUtils.toFormat(swap.updateAt, DateUtils.DATE_FORMAT_SHORT2)
   )
 }

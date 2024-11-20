@@ -15,7 +15,7 @@ import { StrategyHolderButtonIds } from './StrategyHolderButtonIds.ts'
 
 export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
 
-  private static PAGE_LIMIT: number = 10
+  private static PAGE_LIMIT: number = 5
 
   private readonly strategiesList = new BehaviorSubject<StrategyListItem<unknown>[]>([])
   private readonly isLastPage = new BehaviorSubject<boolean>(false)
@@ -37,6 +37,13 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
 
   public destroy(): void {
     this.listFetchSubscriber?.unsubscribe()
+  }
+
+  public refresh(): void {
+    this.isLastPage.next(false)
+    this.strategiesLatestResult = undefined
+    this.strategiesList.next([])
+    this.fetchNextPage()
   }
 
   public getStrategiesList(): Observable<StrategyListItem<unknown>[]> {

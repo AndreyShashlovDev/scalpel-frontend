@@ -1,7 +1,7 @@
 import { BehaviorSubject, from, Observable, Subscription } from 'rxjs'
+import { LogResponse } from '../../../common/repository/data/model/LogResponse.ts'
 import { Pageable } from '../../../common/repository/data/model/Pageable.ts'
 import { LogsRepository } from '../data/logs-repository/LogsRepository.ts'
-import { LogResponse } from '../../../common/repository/data/model/LogResponse.ts'
 import { LogResponseToLogListItem } from '../presentation/mapping/LogResponseToLogListItem.ts'
 import { LogListItemModel } from '../presentation/model/LogListItemModel.ts'
 import { LogsPagePresenter } from './LogsPagePresenter.ts'
@@ -11,7 +11,8 @@ export class LogsPagePresenterImpl extends LogsPagePresenter {
   private static readonly PAGE_LIMIT: number = 10
 
   private readonly logItems: BehaviorSubject<LogListItemModel[]> = new BehaviorSubject<LogListItemModel[]>([])
-  private readonly isLastPage: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
+  private readonly isLastPage: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
+  private readonly isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
 
   private logsFetchSubscription: Subscription | undefined
   private strategyHash: string | undefined
@@ -29,6 +30,13 @@ export class LogsPagePresenterImpl extends LogsPagePresenter {
     this.logsFetchSubscription?.unsubscribe()
   }
 
+  public refresh(): void {
+    this.logItems.next([])
+    this.isLastPage.next(false)
+    this.prevSwapsResponse = undefined
+    this.onFetchNext()
+  }
+
   public setStrategyHash(hash: string): void {
     this.strategyHash = hash
   }
@@ -41,11 +49,15 @@ export class LogsPagePresenterImpl extends LogsPagePresenter {
     return this.isLastPage.asObservable()
   }
 
+  public getIsLoading(): Observable<boolean> {
+    return this.isLoading.asObservable()
+  }
+
   public onFetchNext(): void {
     if (!this.strategyHash) {
       return
     }
-
+    this.isLoading.next(true)
     this.logsFetchSubscription?.unsubscribe()
 
     this.logsFetchSubscription = from(this.logsRepository.getLogs(
@@ -59,11 +71,11 @@ export class LogsPagePresenterImpl extends LogsPagePresenter {
         this.prevSwapsResponse = result
 
         this.logItems.next(list)
-
         this.isLastPage.next(
           result.total <= list.length ||
           result.data.length < LogsPagePresenterImpl.PAGE_LIMIT
         )
+        this.isLoading.next(false)
       }
     })
   }

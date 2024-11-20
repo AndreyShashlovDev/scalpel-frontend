@@ -15,7 +15,9 @@ export class SwapPagePresenterImpl extends SwapPagePresenter {
   private static readonly PAGE_LIMIT: number = 10
 
   private readonly swapsItems: BehaviorSubject<SwapListItemModel[]> = new BehaviorSubject<SwapListItemModel[]>([])
-  private readonly isLastPage: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
+  private readonly isLastPage: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
+  private readonly isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
+
   private readonly currencies: Map<string, CurrencyResponse> = new Map()
 
   private swapsFetchSubscription: Subscription | undefined
@@ -51,6 +53,10 @@ export class SwapPagePresenterImpl extends SwapPagePresenter {
     return this.isLastPage.asObservable()
   }
 
+  public getIsLoading(): Observable<boolean> {
+    return this.isLoading.asObservable()
+  }
+
   private async fetchCurrencies(): Promise<Map<string, CurrencyResponse>> {
     if (this.currencies.size > 0) {
       return this.currencies
@@ -70,6 +76,7 @@ export class SwapPagePresenterImpl extends SwapPagePresenter {
       return
     }
 
+    this.isLoading.next(true)
     this.swapsFetchSubscription?.unsubscribe()
 
     this.swapsFetchSubscription = forkJoin([
@@ -83,7 +90,6 @@ export class SwapPagePresenterImpl extends SwapPagePresenter {
     ])
       .subscribe({
         next: ([currenciesMap, swapsList]) => {
-
           const transform = swapsList.data.map(item => {
             return SwapResponseToSwapListItem(item, currenciesMap)
           })
@@ -97,7 +103,15 @@ export class SwapPagePresenterImpl extends SwapPagePresenter {
             swapsList.total <= list.length ||
             swapsList.data.length < SwapPagePresenterImpl.PAGE_LIMIT
           )
+          this.isLoading.next(false)
         }
       })
+  }
+
+  public refresh(): void {
+    this.prevSwapsResponse = undefined
+    this.isLastPage.next(false)
+    this.swapsItems.next([])
+    this.onFetchNext()
   }
 }

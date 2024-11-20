@@ -18,7 +18,7 @@ export const DialogSwapsView = forwardRef((
 
   return (
     <BasicDialogView
-      title={<PageHeaderView text={`Swaps ${data?.chain}`} />}
+      title={<PageHeaderView text={`Swaps`} />}
       // @ts-expect-error is ok
       ref={ref}
       // @ts-expect-error is ok

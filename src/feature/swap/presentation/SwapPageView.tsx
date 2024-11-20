@@ -1,6 +1,8 @@
 import { useLayoutEffect, useMemo } from 'react'
 import styled from 'styled-components'
+import { ComponentSize } from '../../../common/app-ui/presentation/ComponentSize.ts'
 import { LoadingView } from '../../../common/app-ui/presentation/LoadingView.tsx'
+import { PageLayoutView } from '../../../common/app-ui/presentation/PageLayoutView.tsx'
 import { ChainType } from '../../../common/repository/data/model/ChainType.ts'
 import useObservable from '../../../hooks/useObservable.ts'
 import { getDIValue } from '../../../Injections.ts'
@@ -8,10 +10,9 @@ import { SwapPagePresenter } from '../domain/SwapPagePresenter.ts'
 import { StrategyListView } from './components/swap-list/SwapListView.tsx'
 import '../domain/SwapPagePresenterModule.ts'
 
-const Container = styled.div`
+const Container = styled(PageLayoutView)`
   overflow: hidden;
   height: 100vh;
-  background: ${({theme}) => theme.color.background};
 `
 
 const ListContainer = styled.div`
@@ -28,7 +29,8 @@ export const SwapPageView = ({strategyHash, chain}: SwapPageProps) => {
 
   const presenter = useMemo(() => getDIValue(SwapPagePresenter), [])
   const swapItemsList = useObservable(presenter.getSwapItems(), [])
-  const isLastPage = useObservable(presenter.getIsLastPage(), false)
+  const isLastPage = useObservable(presenter.getIsLastPage(), true)
+  const isLoading = useObservable(presenter.getIsLoading(), true)
 
   useLayoutEffect(() => {
     if (strategyHash && chain) {
@@ -41,20 +43,26 @@ export const SwapPageView = ({strategyHash, chain}: SwapPageProps) => {
   }, [strategyHash, chain, presenter])
 
   return (
-    <Container>
+    <Container
+      refresh={() => presenter.refresh()}
+      fetched={!isLoading}
+    >
       {
-        isLastPage && (swapItemsList?.length ?? 0) === 0
-          ? 'List empty'
-          : (swapItemsList?.length ?? 0) === 0 && <LoadingView />
+        (isLoading && isLastPage) ? <LoadingView size={ComponentSize.STANDARD} /> : undefined
       }
-
-      <ListContainer>
-        <StrategyListView
-          items={swapItemsList}
-          onNextFetch={() => presenter.onFetchNext()}
-          hasNext={!isLastPage}
-        />
-      </ListContainer>
+      {
+        (!isLoading && swapItemsList.length === 0)
+          ? <div>List is empty</div>
+          : (
+            <ListContainer>
+              <StrategyListView
+                items={swapItemsList}
+                onNextFetch={() => presenter.onFetchNext()}
+                hasNext={!isLastPage}
+              />
+            </ListContainer>
+          )
+      }
     </Container>
   )
 }

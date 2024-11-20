@@ -4,6 +4,8 @@ import { StrategyListItem } from '../presentation/model/StrategyListItem.ts'
 
 export abstract class StrategiesPagePresenter extends BasicPresenter {
 
+  public abstract refresh(): void
+
   public abstract getStrategiesList(): Observable<StrategyListItem<unknown>[]>
 
   public abstract getIsLastPage(): Observable<boolean>
