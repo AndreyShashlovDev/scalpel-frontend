@@ -183,9 +183,10 @@ const HeaderButtonContainer = styled.div`
 
 const ActionButtonsContainer = styled.div`
   display: flex;
-  justify-content: end;
+  justify-content: start;
   gap: 24px;
   margin-bottom: 24px;
+  margin-top: 24px;
 `
 
 const InputWrapper = styled(AppInputView)`

@@ -64,13 +64,14 @@ export const StrategiesPageView = () => {
   }, [presenter, dialogProvider])
 
   return (
+    <div>
+       <PageHeaderView text={'Orders:'} />
     <PageLayoutWrapper
       fetched={(strategies?.length ?? 0) > 0}
       refresh={() => {
         presenter.refresh()
       }}
     >
-      <PageHeaderView text={'Orders:'} />
       {
         isLastPage && (strategies?.length ?? 0) === 0
           ? 'List empty'
@@ -103,6 +104,7 @@ export const StrategiesPageView = () => {
         ref={dialogDeleteRef}
       />
     </PageLayoutWrapper>
+    </div>
   )
 }
 

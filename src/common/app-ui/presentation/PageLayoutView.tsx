@@ -9,7 +9,7 @@ const Container = styled.div`
 
 const PullRefreshWrapper = styled(PullToRefresh)`
   background: ${({theme}) => theme.color.background};
-  
+
   .ptr__loader {
     background: ${({theme}) => theme.color.background};
   }
@@ -41,6 +41,8 @@ export const PageLayoutView = ({children, refresh, fetched, ...props}: PageLayou
 
   return (
     <PullRefreshWrapper
+      pullDownThreshold={130}
+      maxPullDownDistance={130}
       isPullable={refresh !== undefined}
       onRefresh={async () => {
         if (refresh) {

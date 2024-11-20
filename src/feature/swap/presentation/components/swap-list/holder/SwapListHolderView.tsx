@@ -70,13 +70,13 @@ export const SwapListHolderView = forwardRef(({item}: SwapListHolderProps, ref: 
       {item.txHash && <div>tx hash: <AppTxHashView hash={item.txHash} chain={item.chain} /></div>}
       {item.txFee && (
         <TxFeeContainer>
-          <span>tx fee: {item.txFee}</span>
           <TokenIconView
             chain={item.chain}
             address={'0xffffffffffffffffffffffffffffffffffffffff'}
             symbol={ChainNativeCurrency.get(item.chain)?.symbol ?? ''}
             size={ComponentSize.SMALLEST}
           />
+          <span>tx fee: {item.txFee}</span>
         </TxFeeContainer>
       )
       }

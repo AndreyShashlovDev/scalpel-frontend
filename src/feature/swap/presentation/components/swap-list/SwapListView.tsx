@@ -6,6 +6,14 @@ import { SwapListHolderView } from './holder/SwapListHolderView.tsx'
 
 const ListWrapper = styled(InfiniteScrollListView)`
   background: ${({theme}) => theme.color.background};
+  
+  > div {
+    margin-bottom: 8px;
+  }
+
+  > div:last-child {
+    margin-bottom: 32px;
+  }
 `
 
 export interface StrategyListProps {

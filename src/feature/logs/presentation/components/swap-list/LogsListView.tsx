@@ -6,6 +6,13 @@ import { LogsListHolderView } from './holder/LogsListHolderView.tsx'
 
 const ListWrapper = styled(InfiniteScrollListView)`
   background: ${({theme}) => theme.color.background};
+  > div {
+    margin-bottom: 8px;
+  }
+
+  > div:last-child {
+    margin-bottom: 32px;
+  }
 `
 
 export interface LogsListViewProps {
