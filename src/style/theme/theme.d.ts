@@ -6,6 +6,9 @@ declare module 'styled-components' {
   export interface DefaultTheme {
 
     color: {
+      common: {
+        green: string
+      },
       overlay: string
       background: string
       title: string

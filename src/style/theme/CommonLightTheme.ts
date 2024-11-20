@@ -3,6 +3,9 @@ import { DefaultTheme } from 'styled-components'
 export class CommonLightTheme implements DefaultTheme {
 
   public readonly color = {
+    common: {
+      green: '#a6db57'
+    },
     overlay: 'rgba(14,14,14,0.54)',
     background: '#ffffff',
     title: '#f6c92d',

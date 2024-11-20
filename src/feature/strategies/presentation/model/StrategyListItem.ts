@@ -4,6 +4,7 @@ import { JsonObject } from '../../../../utils/types.ts'
 import { StrategyStatusType } from '../../data/model/StrategyResponse.ts'
 import { CurrencyUiModel } from './CurrencyUiModel.ts'
 import { LogUiModel } from './LogUiModel.ts'
+import { SwapHistoryUiModel } from './SwapHistoryUiModel.ts'
 import { SwapUiModel } from './SwapUiModel.ts'
 
 export class StrategyListItem<T> implements ListItem {
@@ -29,6 +30,8 @@ export class StrategyListItem<T> implements ListItem {
   public readonly waitChangeStatusPlayPause: boolean
   public readonly waitChangeStatusCancel: boolean
   public readonly logs: LogUiModel[]
+  public readonly totalUsdProfit: number
+  public readonly swapsHistory: SwapHistoryUiModel[]
 
   constructor(
     chain: ChainType,
@@ -51,7 +54,9 @@ export class StrategyListItem<T> implements ListItem {
     swaps: SwapUiModel[],
     waitChangeStatusPlayPause: boolean,
     waitChangeStatusCancel: boolean,
-    logs: LogUiModel[]
+    logs: LogUiModel[],
+    totalUsdProfit: number,
+    swapsHistory: SwapHistoryUiModel[],
   ) {
     this.chain = chain
     this.type = type
@@ -74,6 +79,8 @@ export class StrategyListItem<T> implements ListItem {
     this.waitChangeStatusPlayPause = waitChangeStatusPlayPause
     this.waitChangeStatusCancel = waitChangeStatusCancel
     this.logs = logs
+    this.totalUsdProfit = totalUsdProfit
+    this.swapsHistory = swapsHistory
   }
 
   public copy(entity: Partial<StrategyListItem<unknown>>): StrategyListItem<unknown> {

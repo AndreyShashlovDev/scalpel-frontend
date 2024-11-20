@@ -192,6 +192,12 @@ const InputWrapper = styled(AppInputView)`
   width: 100px;
 `
 
+const ProfitValueContainer = styled.div<{ color?: 'green' | undefined }>`
+  display: flex;
+  gap: 4px;
+  color: ${({color, theme}) => color ? theme.color.common.green : 'unset'};
+`
+
 const getArrowTrend = (trend: string) => {
   let angle: number | undefined = 10
 
@@ -561,11 +567,26 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
           <EditIconWrapper />
         </HeaderButtonContainer>
       </ContainerHeader>
+
       <ElementContainer>
         Status: {item.statusText}
       </ElementContainer>
+
       <ElementContainer>
         {item.currencyB.symbol} Price: ${item.currencyBUsdPrice ?? '-'}
+      </ElementContainer>
+
+      <ElementContainer>
+        Total profit:&nbsp;
+        <ProfitValueContainer color={item.totalUsdProfit > 0 ? 'green' : undefined}>
+          <TokenIconView
+            chain={item.chain}
+            address={item.currencyA.address}
+            symbol={item.currencyA.symbol}
+            size={ComponentSize.SMALLEST}
+          />
+          {item.totalUsdProfit}
+        </ProfitValueContainer>
       </ElementContainer>
 
       {isMoreInfo ? getFullView() : undefined}

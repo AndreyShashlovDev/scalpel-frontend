@@ -6,10 +6,12 @@ import { SwapResponse } from '../../../../common/repository/data/model/SwapRespo
 import { DateUtils } from '../../../../utils/DateUtils.ts'
 import { JsonObject } from '../../../../utils/types.ts'
 import { StrategyResponse, StrategyStatusType } from '../../data/model/StrategyResponse.ts'
+import { SwapHistoryResponse } from '../../data/model/SwapHistoryResponse.ts'
 import { ScalpelClassicStrategyOptions } from '../components/strategy-list/holder/ScalpelClassicStrategyHolderView.tsx'
 import { CurrencyUiModel } from '../model/CurrencyUiModel.ts'
 import { LogUiModel } from '../model/LogUiModel.ts'
 import { StrategyListItem } from '../model/StrategyListItem.ts'
+import { SwapHistoryUiModel } from '../model/SwapHistoryUiModel.ts'
 import { SwapUiModel } from '../model/SwapUiModel.ts'
 
 const mapStrategyStatus = new Map<StrategyStatusType, string>([
@@ -48,6 +50,7 @@ export const StrategyResponseToStrategyListItem = (
   strategy: StrategyResponse,
   swaps: SwapResponse[] | SwapUiModel[],
   logs: LogResponse[] | LogUiModel[],
+  swapHistory: SwapHistoryResponse[] | SwapHistoryUiModel[],
 ) => {
   const mapOfToken = new Map([
     [strategy.currencyA.address, strategy.currencyA],
@@ -87,6 +90,21 @@ export const StrategyResponseToStrategyListItem = (
       DateUtils.toFormat(item.createdAt, DateUtils.DATE_FORMAT_SHORT)
     ))
 
+  const history: SwapHistoryUiModel[] = swapHistory[0] instanceof SwapHistoryUiModel
+    ? swapHistory as SwapHistoryUiModel[]
+    : (swapHistory as SwapHistoryResponse[]).map(item => new SwapHistoryUiModel(
+      new Date(item.date * 1000),
+      strategy.currencyA.valueTo(item.value)
+    ))
+
+  const initialAmountA = strategy.currencyA.valueTo(strategy.initialAmountA)
+
+  const totalUsdProfit = Number(
+    history.reduce((previousValue, currentValue) => previousValue +
+      ((currentValue.value - initialAmountA) - previousValue), 0)
+      .toFixed(4)
+  )
+
   return new StrategyListItem(
     strategy.chain,
     strategy.type,
@@ -106,7 +124,7 @@ export const StrategyResponseToStrategyListItem = (
     strategy.currencyA.valueTo(strategy.totalAmountA),
     strategy.currencyB.valueTo(strategy.totalAmountB),
     convertOptionsByStrategy(strategy.type, strategy.options, strategy.currencyA),
-    strategy.currencyA.valueTo(strategy.initialAmountA),
+    initialAmountA,
     strategy.approvedA,
     strategy.approvedB,
     strategy.status,
@@ -117,5 +135,7 @@ export const StrategyResponseToStrategyListItem = (
     false /*waitChangeStatusPlayPause: boolean*/,
     false /*waitChangeStatusCancel: boolean*/,
     logsModels,
+    totalUsdProfit,
+    history,
   )
 }

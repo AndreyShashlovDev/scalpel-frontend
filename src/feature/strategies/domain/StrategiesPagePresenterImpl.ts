@@ -70,7 +70,8 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
             .concat(result.data.map(item => StrategyResponseToStrategyListItem(
               item.strategy,
               item.swaps,
-              item.latestLog ? [item.latestLog] : []
+              item.latestLog ? [item.latestLog] : [],
+              item.swapHistory,
             )))
 
           this.strategiesList.next(list)
@@ -136,7 +137,7 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
       } else {
         const updatedList = this.strategiesList.value.map(item => {
           if (item.hash === strategy.orderHash) {
-            return StrategyResponseToStrategyListItem(strategy, item.swaps, item.logs)
+            return StrategyResponseToStrategyListItem(strategy, item.swaps, item.logs, item.swapsHistory)
           }
           return item
         })
@@ -177,7 +178,7 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
 
       const updatedList = this.strategiesList.value.map(item => {
         if (item.hash === strategy.orderHash) {
-          return StrategyResponseToStrategyListItem(strategy, item.swaps, item.logs)
+          return StrategyResponseToStrategyListItem(strategy, item.swaps, item.logs, item.swapsHistory)
         }
         return item
       })
