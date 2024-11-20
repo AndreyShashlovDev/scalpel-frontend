@@ -109,7 +109,7 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
       this.changeStrategyStatus(item.hash, StrategyStatusType.PAUSED)
 
     } else if (viewId === StrategyHolderButtonIds.CANCEL_ORDER_BUTTON_ID) {
-      this.changeStrategyStatus(item.hash, StrategyStatusType.CANCELED)
+      this.dialogProvider.getDialogs()?.openDeleteDialog(item.hash)
     }
   }
 
@@ -192,5 +192,9 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
 
   public onCreateNewStrategyClick(): void {
     this.router.openCreateStrategyPage()
+  }
+
+  public onDeleteStrategyClick(hash: string): void {
+    this.changeStrategyStatus(hash, StrategyStatusType.CANCELED)
   }
 }

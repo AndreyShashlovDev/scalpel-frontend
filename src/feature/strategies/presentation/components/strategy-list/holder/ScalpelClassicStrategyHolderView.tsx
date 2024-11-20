@@ -186,8 +186,8 @@ const ActionButtonsContainer = styled.div`
   justify-content: end;
   gap: 24px;
   margin-bottom: 24px;
-  cursor: pointer;
 `
+
 const InputWrapper = styled(AppInputView)`
   width: 100px;
 `
@@ -271,7 +271,17 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
 
   }, [item.options, item.gasLimit])
 
-  const getActionButtons = () => {
+  const getIconPlayPause = useMemo(() => {
+    if (PlayStatus.has(item.status)) {
+      return <PlayIconWrapper />
+
+    } else if (PauseStatus.has(item.status)) {
+      return <PauseIconWrapper />
+    }
+    return undefined
+  }, [item.status])
+
+  const getActionButtons = useCallback(() => {
     return (
       <ActionButtonsContainer>
         <AppIconButton
@@ -302,7 +312,7 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
         }
       </ActionButtonsContainer>
     )
-  }
+  }, [getIconPlayPause, item.status, item.waitChangeStatusCancel, item.waitChangeStatusPlayPause, onItemClick])
 
   const getFullView = useCallback(
     () => {
@@ -500,16 +510,6 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
       editMaxTokenPrice,
     ]
   )
-
-  const getIconPlayPause = useMemo(() => {
-    if (PlayStatus.has(item.status)) {
-      return <PlayIconWrapper />
-
-    } else if (PauseStatus.has(item.status)) {
-      return <PauseIconWrapper />
-    }
-    return undefined
-  }, [item.status])
 
   const getSwapStatusIcon = useCallback((status: SwapState): ReactNode => {
     if (status === SwapState.FAILED || status === SwapState.EXECUTION_FAILED || status === SwapState.CANCELLED) {

@@ -4,9 +4,17 @@ import styled from 'styled-components'
 import { ComponentSize, ComponentSizeProps } from './ComponentSize.ts'
 
 const BasicButton = styled(motion.button)<{ $disabled: boolean | undefined, size: ComponentSize }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
   font-size: 16px;
   width: 100%;
   max-width: 300px;
+  min-width: 80px;
+  
+  background-color: ${({theme}) => theme.color.button.normal.background.primary!};
+  border: 1px solid ${({theme}) => theme.color.button.normal.border.primary!};
   
   height: ${({size}) => {
     if (size === ComponentSize.SMALL) {
@@ -18,8 +26,8 @@ const BasicButton = styled(motion.button)<{ $disabled: boolean | undefined, size
 
   
   overflow: hidden;
-  padding: 0 8px;
-  border-radius: ${({theme}) => theme.size.borderRadius.small};
+  //padding: 0 8px;
+  border-radius: ${({theme}) => theme.size.borderRadius.medium};
 
   cursor: ${({$disabled}) => {
     if ($disabled) {
@@ -37,7 +45,15 @@ const BasicButton = styled(motion.button)<{ $disabled: boolean | undefined, size
     }
   }};
 
-  //background: ${({theme}) => theme.color.button.normal.background.primary};
+  > span {
+    color: ${({theme, $disabled}) => {
+      if ($disabled) {
+        return theme.color.button.disabled!.text.primary
+      } else {
+        return theme.color.button.normal.text.primary
+      }
+    }};
+  }
 `
 
 export interface AppButtonProps extends ComponentSizeProps {

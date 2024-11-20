@@ -7,6 +7,6 @@ export class CommonDarkTheme extends CommonLightTheme {
 
     this.color.background = '#080404FF'
     this.color.text.primary = '#d9d9d9'
-    this.color.button.normal.text.primary = '#213547'
+    this.color.button.normal.text.primary = '#fafafa'
   }
 }

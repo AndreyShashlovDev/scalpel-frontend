@@ -19,7 +19,7 @@ export class CommonLightTheme implements DefaultTheme {
           primary: '#ada6a6'
         },
         background: {
-          primary: '#ffffff'
+          primary: 'transparent'
         },
         border: {
           primary: '#ffffff'
@@ -30,7 +30,7 @@ export class CommonLightTheme implements DefaultTheme {
           primary: '#000000'
         },
         background: {
-          primary: '#ffffff'
+          primary: 'transparent'
         },
         border: {
           primary: '#ffffff'

@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { ForwardedRef, forwardRef, ReactNode, useCallback, useImperativeHandle, useRef, useState } from 'react'
+import { ForwardedRef, forwardRef, ReactNode, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import styled from 'styled-components'
 import { AppTitleView } from '../AppTitleView.tsx'
@@ -16,9 +16,10 @@ const BackgroundLayer = styled(motion.div)`
 `
 
 const TitleContainer = styled.div<{ $canClose: boolean }>`
+  width: 100%;
   display: grid;
-  grid-template-columns:  1fr ${({$canClose}) => $canClose ? '32px' : '0'};
-  padding-left: ${({$canClose}) => $canClose ? '32px' : '0'};
+  grid-template-columns:  1fr ${({$canClose}) => $canClose ? '56px' : '0'};
+  padding-left: ${({$canClose}) => $canClose ? '56px' : '0'};
 `
 
 const CloseButton = styled(motion.div)`
@@ -26,6 +27,31 @@ const CloseButton = styled(motion.div)`
   justify-content: center;
   align-items: center;
   cursor: pointer;
+`
+
+const DialogWindowContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
+
+const DialogWindowContent = styled.div`
+  width: 80%;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: ${({theme}) => theme.color.background};
+
+  border: 1px solid ${({theme}) => theme.color.button.normal.border.primary};
+`
+
+const ContentContainer = styled.div`
+  padding: 8px;
 `
 
 export interface DialogCallback<T> {
@@ -39,10 +65,11 @@ export interface BasicDialogProps {
   onOpen?: (data?: unknown) => void
   onClose?: (data?: unknown) => void
   canClose?: boolean
+  isFullScreen?: boolean
 }
 
 export const BasicDialogView = forwardRef((
-  {title, content, onOpen, onClose, canClose}: BasicDialogProps,
+  {title, content, onOpen, onClose, canClose, isFullScreen}: BasicDialogProps,
   ref: ForwardedRef<DialogCallback<unknown>>
 ) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -82,27 +109,50 @@ export const BasicDialogView = forwardRef((
     closeDialog,
   }), [openDialog, closeDialog])
 
+  const getTitleView = useMemo(() => {
+    return (
+      <TitleContainer $canClose={canClose ?? true}>
+        {title && typeof title === 'string' ? <AppTitleView text={title} /> : title}
+        {(canClose ?? true) && (
+          <CloseButton
+            whileTap={{scale: 0.95}}
+            onClick={() => closeDialog()}
+          >
+            X
+          </CloseButton>
+        )
+        }
+      </TitleContainer>
+    )
+  }, [title, canClose, closeDialog])
+
   return (
     createPortal(
       <AnimatePresence>
         {isOpen && (
           <BackgroundLayer>
-            <TitleContainer $canClose={canClose ?? true}>
-              {title && typeof title === 'string' ? <AppTitleView text={title} /> : title}
-              {(canClose ?? true) && (
-                <CloseButton
-                  whileTap={{scale: 0.95}}
-                  onClick={() => closeDialog()}
-                >
-                  X
-                </CloseButton>
-              )
-              }
+            {
+              isFullScreen
+                ? (
+                  <>
+                  {getTitleView}
+                    <div>
+                    {content}
+                  </div>
+                  </>
+                )
+                : (
+                  <DialogWindowContainer>
+                    <DialogWindowContent>
+                      {getTitleView}
+                      <ContentContainer>
+                        {content}
+                      </ContentContainer>
+                    </DialogWindowContent>
+                  </DialogWindowContainer>
+                )
+            }
 
-            </TitleContainer>
-            <div>
-              {content}
-            </div>
           </BackgroundLayer>
         )}
 

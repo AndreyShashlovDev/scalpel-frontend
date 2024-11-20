@@ -10,6 +10,7 @@ import useObservable from '../../../hooks/useObservable.ts'
 import { getDIValue } from '../../../Injections.ts'
 import { StrategiesPagePresenter } from '../domain/StrategiesPagePresenter.ts'
 import { StrategyDialogProvider } from '../domain/StrategyDialogProvider.ts'
+import { DialogDeleteCallBack, DialogDeleteView } from './components/DialogDeleteView.tsx'
 import { DialogLogsCallBack, DialogLogsView } from './components/DialogLogsView.tsx'
 import { DialogSwapsCallBack, DialogSwapsView } from './components/DialogSwapsView.tsx'
 import { StrategyListView } from './components/strategy-list/StrategyListView.tsx'
@@ -38,6 +39,7 @@ export const StrategiesPageView = () => {
 
   const dialogSwapsRef = useRef<DialogSwapsCallBack | null>(null)
   const dialogLogsRef = useRef<DialogLogsCallBack | null>(null)
+  const dialogDeleteRef = useRef<DialogDeleteCallBack | null>(null)
   const listScrollContainerRef = useRef<HTMLDivElement | null>(null)
 
   useLayoutEffect(() => {
@@ -49,6 +51,9 @@ export const StrategiesPageView = () => {
       },
       openLogsDialog(strategyHash: string): void {
         dialogLogsRef.current?.openDialog({strategyHash})
+      },
+      openDeleteDialog(strategyHash: string): void {
+        dialogDeleteRef.current?.openDialog({strategyHash})
       }
     })
 
@@ -93,6 +98,10 @@ export const StrategiesPageView = () => {
 
       <DialogSwapsView ref={dialogSwapsRef} />
       <DialogLogsView ref={dialogLogsRef} />
+      <DialogDeleteView
+        onClickDelete={(hash: string) => presenter.onDeleteStrategyClick(hash)}
+        ref={dialogDeleteRef}
+      />
     </PageLayoutWrapper>
   )
 }

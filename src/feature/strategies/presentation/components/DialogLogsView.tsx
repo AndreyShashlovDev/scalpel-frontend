@@ -17,6 +17,7 @@ export const DialogLogsView = forwardRef((
 
   return (
     <BasicDialogView
+      isFullScreen={true}
       title={<PageHeaderView text={`Logs`} />}
       // @ts-expect-error is ok
       ref={ref}

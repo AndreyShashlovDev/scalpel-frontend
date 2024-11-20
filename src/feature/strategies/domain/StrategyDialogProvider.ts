@@ -6,6 +6,8 @@ export interface StrategyDialogCallBacks extends DialogRouter {
   openSwapsDialog(strategyHash: string, chain: ChainType): void
 
   openLogsDialog(strategyHash: string): void
+
+  openDeleteDialog(strategyHash: string): void
 }
 
 export class StrategyDialogProvider extends DialogProvider<StrategyDialogCallBacks> {

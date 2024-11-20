@@ -18,6 +18,7 @@ export const DialogSwapsView = forwardRef((
 
   return (
     <BasicDialogView
+      isFullScreen={true}
       title={<PageHeaderView text={`Swaps`} />}
       // @ts-expect-error is ok
       ref={ref}
