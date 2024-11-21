@@ -110,6 +110,9 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
 
     } else if (viewId === StrategyHolderButtonIds.CANCEL_ORDER_BUTTON_ID) {
       this.dialogProvider.getDialogs()?.openDeleteDialog(item.hash)
+
+    } else if (viewId === StrategyHolderButtonIds.OPEN_ANALYTICS_BUTTON_ID) {
+      this.dialogProvider.getDialogs()?.openAnalyticsDialog(item.hash)
     }
   }
 

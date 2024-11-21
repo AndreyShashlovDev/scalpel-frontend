@@ -1,9 +1,9 @@
 import { JsonObject } from '../../../../utils/types.ts'
 
-export class SwapHistoryResponse {
+export class SimpleHistoryResponse {
 
-  public static valueOfJson(json: JsonObject<SwapHistoryResponse>): SwapHistoryResponse {
-    return new SwapHistoryResponse(
+  public static valueOfJson(json: JsonObject<SimpleHistoryResponse>): SimpleHistoryResponse {
+    return new SimpleHistoryResponse(
       json.date,
       json.value
     )

@@ -5,7 +5,7 @@ import { AppSourceService } from '../../../../common/repository/data/source/AppS
 import { ChangeOptionsRequest } from '../model/ChangeOptionsRequest.ts'
 import { CompositeStrategyResponse } from '../model/CompositeStrategyResponse.ts'
 import { StrategyResponse, StrategyStatusType } from '../model/StrategyResponse.ts'
-import { SwapHistoryResponse } from '../model/SwapHistoryResponse.ts'
+import { SimpleHistoryResponse } from '../model/SimpleHistoryResponse.ts'
 import { StrategyRepository } from './StrategyRepository.ts'
 
 export class StrategyRepositoryImpl extends StrategyRepository {
@@ -28,7 +28,7 @@ export class StrategyRepositoryImpl extends StrategyRepository {
           StrategyResponse.valueOfJson(item.strategy),
           item.swaps.map(SwapResponse.valueOfJson),
           item.latestLog ? LogResponse.valueOfJson(item.latestLog) : undefined,
-          item.swapHistory.map(SwapHistoryResponse.valueOfJson),
+          item.swapHistory.map(SimpleHistoryResponse.valueOfJson),
         )),
         result.data.total,
         result.data.page

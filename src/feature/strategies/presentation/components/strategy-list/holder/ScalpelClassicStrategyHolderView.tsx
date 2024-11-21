@@ -11,6 +11,7 @@ import SaveIcon from '../../../../../../assets/icons/app/SaveIcon.svg'
 import SuccessIcon from '../../../../../../assets/icons/app/SuccessIcon.svg'
 import WarningIcon from '../../../../../../assets/icons/app/WarningIcon.svg'
 import { AppAddressView } from '../../../../../../common/app-ui/presentation/AppAddressView.tsx'
+import { AppButton } from '../../../../../../common/app-ui/presentation/AppButton.tsx'
 import { AppIconButton } from '../../../../../../common/app-ui/presentation/AppIconButton.tsx'
 import { AppInputView } from '../../../../../../common/app-ui/presentation/AppInputView.tsx'
 import { AppSpaceView } from '../../../../../../common/app-ui/presentation/AppSpaceView.tsx'
@@ -193,6 +194,12 @@ const ActionButtonsContainer = styled.div`
 
 const InputWrapper = styled(AppInputView)`
   width: 100px;
+`
+
+const AnalyticsButtonWrapper = styled(AppButton)`
+  width: 40%;
+  max-width: 145px;
+  margin-top: 8px;
 `
 
 const ProfitValueContainer = styled.div<{ color?: 'green' | undefined }>`
@@ -591,6 +598,12 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
           {item.totalUsdProfit}
         </ProfitValueContainer>
       </ElementContainer>
+
+      <AnalyticsButtonWrapper
+        onClick={() => onItemClick(StrategyHolderButtonIds.OPEN_ANALYTICS_BUTTON_ID)}
+        size={ComponentSize.SMALL}
+        text={'Analytics'}
+      />
 
       {isMoreInfo ? getFullView() : undefined}
       <SwapsLogsBlock onClick={() => onItemClick(StrategyHolderButtonIds.OPEN_LOGS_BUTTON_ID)}>

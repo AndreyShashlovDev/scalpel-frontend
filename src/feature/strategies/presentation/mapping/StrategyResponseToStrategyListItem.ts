@@ -6,7 +6,7 @@ import { SwapResponse } from '../../../../common/repository/data/model/SwapRespo
 import { DateUtils } from '../../../../utils/DateUtils.ts'
 import { JsonObject } from '../../../../utils/types.ts'
 import { StrategyResponse, StrategyStatusType } from '../../data/model/StrategyResponse.ts'
-import { SwapHistoryResponse } from '../../data/model/SwapHistoryResponse.ts'
+import { SimpleHistoryResponse } from '../../data/model/SimpleHistoryResponse.ts'
 import { ScalpelClassicStrategyOptions } from '../components/strategy-list/holder/ScalpelClassicStrategyHolderView.tsx'
 import { CurrencyUiModel } from '../model/CurrencyUiModel.ts'
 import { LogUiModel } from '../model/LogUiModel.ts'
@@ -50,7 +50,7 @@ export const StrategyResponseToStrategyListItem = (
   strategy: StrategyResponse,
   swaps: SwapResponse[] | SwapUiModel[],
   logs: LogResponse[] | LogUiModel[],
-  swapHistory: SwapHistoryResponse[] | SwapHistoryUiModel[],
+  swapHistory: SimpleHistoryResponse[] | SwapHistoryUiModel[],
 ) => {
   const mapOfToken = new Map([
     [strategy.currencyA.address, strategy.currencyA],
@@ -92,7 +92,7 @@ export const StrategyResponseToStrategyListItem = (
 
   const history: SwapHistoryUiModel[] = swapHistory[0] instanceof SwapHistoryUiModel
     ? swapHistory as SwapHistoryUiModel[]
-    : (swapHistory as SwapHistoryResponse[]).map(item => new SwapHistoryUiModel(
+    : (swapHistory as SimpleHistoryResponse[]).map(item => new SwapHistoryUiModel(
       new Date(item.date * 1000),
       strategy.currencyA.valueTo(item.value)
     ))
