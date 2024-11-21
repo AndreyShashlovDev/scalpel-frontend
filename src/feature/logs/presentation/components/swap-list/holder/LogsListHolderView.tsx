@@ -8,6 +8,8 @@ const Container = styled(motion.div)`
   border: 1px solid #747474;
   padding: 12px;
   border-radius: ${({theme}) => theme.size.borderRadius.small};
+  max-width: 640px;
+  width: 100%;
 `
 
 const DateContainer = styled.div`

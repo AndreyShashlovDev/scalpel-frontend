@@ -136,6 +136,7 @@ const SwapsLogsBlock = styled.div`
   }
 `
 const LogsContainer = styled.div`
+  cursor: pointer;
   font-size: 10px !important;
   display: flex;
   justify-content: space-between;
@@ -150,6 +151,7 @@ const LogItemContainer = styled.div`
 `
 
 const SwapContainer = styled.div`
+  cursor: pointer;
   font-size: 10px !important;
   display: grid;
   padding: 0 8px;

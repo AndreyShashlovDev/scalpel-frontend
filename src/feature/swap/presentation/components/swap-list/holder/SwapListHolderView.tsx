@@ -13,6 +13,8 @@ const Container = styled(motion.div)`
   padding: 12px;
   border-radius: ${({theme}) => theme.size.borderRadius.small};
   font-size: small;
+  max-width: 640px;
+  width: 100%;
 `
 
 const DateContainer = styled.div`
@@ -65,18 +67,21 @@ export const SwapListHolderView = forwardRef(({item}: SwapListHolderProps, ref: 
           size={ComponentSize.SMALLEST}
         />
         {item.currencyToSymbol}</CurrenciesContainer>
-      <div>{item.valueFrom} &#10230; {item.valueTo}</div>
+      <div>{item.valueFrom ?? '?'} &#10230; {item.valueTo ?? '?'}</div>
       <AppSpaceView />
       {item.txHash && <div>tx hash: <AppTxHashView hash={item.txHash} chain={item.chain} /></div>}
       {item.txFee && (
         <TxFeeContainer>
+          <span>tx fee:</span>
+          %&nbsp;
           <TokenIconView
             chain={item.chain}
             address={'0xffffffffffffffffffffffffffffffffffffffff'}
             symbol={ChainNativeCurrency.get(item.chain)?.symbol ?? ''}
             size={ComponentSize.SMALLEST}
           />
-          <span>tx fee: {item.txFee}</span>
+          %&nbsp;
+          {item.txFee}
         </TxFeeContainer>
       )
       }

@@ -11,8 +11,8 @@ export class SwapListItemModel implements ListItem {
   public readonly currencyToSymbol: string
   public readonly currencyFrom: string
   public readonly currencyTo: string
-  public readonly valueFrom: number
-  public readonly valueTo: number
+  public readonly valueFrom: number | undefined
+  public readonly valueTo: number | undefined
   public readonly scalpelFeeAmount?: string
   public readonly accumulatorFeeAmount?: string
   public readonly txHash?: string
@@ -29,8 +29,8 @@ export class SwapListItemModel implements ListItem {
     currencyToSymbol: string,
     currencyFrom: string,
     currencyTo: string,
-    valueFrom: number,
-    valueTo: number,
+    valueFrom: number | undefined,
+    valueTo: number | undefined,
     scalpelFeeAmount: string | undefined,
     accumulatorFeeAmount: string | undefined,
     txHash: string | undefined,

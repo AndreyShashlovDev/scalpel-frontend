@@ -6,6 +6,10 @@ import { SwapListHolderView } from './holder/SwapListHolderView.tsx'
 
 const ListWrapper = styled(InfiniteScrollListView)`
   background: ${({theme}) => theme.color.background};
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   
   > div {
     margin-bottom: 8px;
