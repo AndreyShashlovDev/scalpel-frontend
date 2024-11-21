@@ -14,6 +14,16 @@ const Container = styled(PageLayoutView)`
   height: 100vh;
 `
 
+const ChartTitleContainer = styled.div`
+  font-size: ${({theme}) => theme.size.fontSize.medium};
+  padding: 12px;
+`
+
+const ChartContainer = styled.div`
+  width: 95%;
+  height: 300px;
+`
+
 export interface AnalyticsPageProps {
   strategyHash?: string
 }
@@ -47,7 +57,12 @@ export const AnalyticsPageView = ({strategyHash}: AnalyticsPageProps) => {
           ? <div>Something when wrong</div>
           : chartModel
             ? (
-              <SwapPriceChartView model={chartModel} />
+              <div>
+                <ChartTitleContainer>Show latest {Math.round(chartModel.data.length / 144)} days</ChartTitleContainer>
+                <ChartContainer>
+                  <SwapPriceChartView model={chartModel} />
+                </ChartContainer>
+              </div>
             )
             : undefined
       }
