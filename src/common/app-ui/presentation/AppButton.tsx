@@ -17,8 +17,12 @@ const BasicButton = styled(motion.button)<{ $disabled: boolean | undefined, size
   border: 1px solid ${({theme}) => theme.color.button.normal.border.primary!};
   
   height: ${({size}) => {
+    
     if (size === ComponentSize.SMALL) {
       return '24px'
+      
+    } else if (size === ComponentSize.SMALLEST) {
+      return '18px'
     }
 
     return '34px'

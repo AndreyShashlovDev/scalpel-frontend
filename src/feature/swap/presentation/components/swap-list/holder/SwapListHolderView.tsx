@@ -7,6 +7,7 @@ import { ComponentSize } from '../../../../../../common/app-ui/presentation/Comp
 import { TokenIconView } from '../../../../../../common/app-ui/presentation/TokenIconView.tsx'
 import { ChainNativeCurrency } from '../../../../../../utils/ChainNativeCurrency.ts'
 import { SwapListItemModel } from '../../../model/SwapListItemModel.ts'
+import { SwapStateView } from '../SwapStatusView.tsx'
 
 const Container = styled(motion.div)`
   border: 1px solid #747474;
@@ -49,7 +50,7 @@ export const SwapListHolderView = forwardRef(({item}: SwapListHolderProps, ref: 
       }}
       ref={ref}
     >
-      <div>State: {item.stateText}</div>
+      <div>State:&nbsp;<SwapStateView state={item.state} /></div>
       <AppSpaceView />
       <CurrenciesContainer>
         <TokenIconView
@@ -73,14 +74,13 @@ export const SwapListHolderView = forwardRef(({item}: SwapListHolderProps, ref: 
       {item.txFee && (
         <TxFeeContainer>
           <span>tx fee:</span>
-          %&nbsp;
+          &nbsp;
           <TokenIconView
             chain={item.chain}
             address={'0xffffffffffffffffffffffffffffffffffffffff'}
             symbol={ChainNativeCurrency.get(item.chain)?.symbol ?? ''}
             size={ComponentSize.SMALLEST}
           />
-          %&nbsp;
           {item.txFee}
         </TxFeeContainer>
       )

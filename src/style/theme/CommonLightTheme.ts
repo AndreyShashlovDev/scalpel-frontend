@@ -4,7 +4,9 @@ export class CommonLightTheme implements DefaultTheme {
 
   public readonly color = {
     common: {
-      green: '#a6db57'
+      green: '#a6db57',
+      red: '#db5757',
+      orange: "#dba257"
     },
     overlay: 'rgba(14,14,14,0.54)',
     background: '#ffffff',

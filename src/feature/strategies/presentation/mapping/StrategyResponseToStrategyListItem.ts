@@ -4,24 +4,16 @@ import { LogResponse } from '../../../../common/repository/data/model/LogRespons
 import { StrategyType } from '../../../../common/repository/data/model/StrategyType.ts'
 import { SwapResponse } from '../../../../common/repository/data/model/SwapResponse.ts'
 import { DateUtils } from '../../../../utils/DateUtils.ts'
+import { NumberShortener } from '../../../../utils/Shortener.ts'
 import { JsonObject } from '../../../../utils/types.ts'
-import { StrategyResponse, StrategyStatusType } from '../../data/model/StrategyResponse.ts'
 import { SimpleHistoryResponse } from '../../data/model/SimpleHistoryResponse.ts'
+import { StrategyResponse } from '../../data/model/StrategyResponse.ts'
 import { ScalpelClassicStrategyOptions } from '../components/strategy-list/holder/ScalpelClassicStrategyHolderView.tsx'
 import { CurrencyUiModel } from '../model/CurrencyUiModel.ts'
 import { LogUiModel } from '../model/LogUiModel.ts'
 import { StrategyListItem } from '../model/StrategyListItem.ts'
 import { SwapHistoryUiModel } from '../model/SwapHistoryUiModel.ts'
 import { SwapUiModel } from '../model/SwapUiModel.ts'
-
-const mapStrategyStatus = new Map<StrategyStatusType, string>([
-  [StrategyStatusType.CREATED, 'Created'],
-  [StrategyStatusType.APPROVE_IN_PROGRESS, 'Tokens approve in progress'],
-  [StrategyStatusType.IN_PROGRESS, 'In progress'],
-  [StrategyStatusType.USER_ACTION_REQUIRED, 'User action required'],
-  [StrategyStatusType.PAUSED, 'Paused'],
-  [StrategyStatusType.CANCELED, 'Canceled'],
-])
 
 const convertOptionsByStrategy = (
   type: StrategyType,
@@ -68,8 +60,8 @@ export const StrategyResponseToStrategyListItem = (
         to.address,
         from.symbol,
         to.symbol,
-        from.valueTo(item.valueFrom),
-        to.valueTo(item.valueTo),
+        NumberShortener(from.valueTo(item.valueFrom)),
+        item.valueTo ? NumberShortener(to.valueTo(item.valueTo)) : '?',
         item.txHash,
         item.state,
         DateUtils.toFormat(item.updateAt, DateUtils.DATE_FORMAT_SHORT),
@@ -120,22 +112,21 @@ export const StrategyResponseToStrategyListItem = (
       strategy.currencyB.name,
       strategy.currencyB.address,
     ),
-    currencyBPrice,
-    strategy.currencyA.valueTo(strategy.totalAmountA),
-    strategy.currencyB.valueTo(strategy.totalAmountB),
+    NumberShortener(currencyBPrice ?? 0),
+    NumberShortener(strategy.currencyA.valueTo(strategy.totalAmountA)),
+    NumberShortener(strategy.currencyB.valueTo(strategy.totalAmountB)),
     convertOptionsByStrategy(strategy.type, strategy.options, strategy.currencyA),
-    initialAmountA,
+    NumberShortener(initialAmountA),
     strategy.approvedA,
     strategy.approvedB,
     strategy.status,
-    mapStrategyStatus.get(strategy.status) ?? 'unknown',
     Number(ethers.formatUnits(strategy.gasLimit, 9)),
     DateUtils.toFormat(strategy.createdAt, DateUtils.DATE_FORMAT_SHORT),
     swapsUiModels,
     false /*waitChangeStatusPlayPause: boolean*/,
     false /*waitChangeStatusCancel: boolean*/,
     logsModels,
-    totalUsdProfit,
+    NumberShortener(totalUsdProfit),
     history,
   )
 }

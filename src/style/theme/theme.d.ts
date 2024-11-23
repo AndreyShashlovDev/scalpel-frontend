@@ -8,6 +8,8 @@ declare module 'styled-components' {
     color: {
       common: {
         green: string
+        red: string
+        orange: string
       },
       overlay: string
       background: string

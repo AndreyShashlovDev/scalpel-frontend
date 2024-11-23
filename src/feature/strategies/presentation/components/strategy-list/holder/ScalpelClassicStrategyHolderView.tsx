@@ -23,6 +23,7 @@ import { SwapState } from '../../../../../../common/repository/data/model/SwapRe
 import { StrategyStatusType } from '../../../../data/model/StrategyResponse.ts'
 import { StrategyHolderButtonIds } from '../../../../domain/StrategyHolderButtonIds.ts'
 import { StrategyListItem } from '../../../model/StrategyListItem.ts'
+import { StrategyStatusView } from '../StrategyStatusView.tsx'
 
 const ArrowIconContainer = styled.div`
   display: flex;
@@ -99,16 +100,17 @@ const Container = styled(motion.div)`
 
 const ContainerHeader = styled.div`
   display: grid;
-  grid-template-columns: 36px 50px 1fr 1fr 30px;
+  grid-template-columns: 25px 50px 1fr 1fr 30px;
   align-items: center;
   padding-bottom: 12px;
   text-align: center;
   margin-bottom: 12px;
   border-bottom: 1px solid;
+  gap: 8px;
 
   > div {
     display: flex;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
   }
 `
@@ -178,6 +180,7 @@ const TextUnderline = styled.span`
 `
 
 const HeaderButtonContainer = styled.div`
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -200,6 +203,7 @@ const AnalyticsButtonWrapper = styled(AppButton)`
   width: 40%;
   max-width: 145px;
   margin-top: 8px;
+  font-size: ${({theme}) => theme.size.fontSize.small};
 `
 
 const ProfitValueContainer = styled.div<{ color?: 'green' | undefined }>`
@@ -573,13 +577,15 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
             {item.totalAmountB}
         </ElementContainer>
         </div>
-        <HeaderButtonContainer onClick={() => setIsMoreInfo(!isMoreInfo)}>
-          <EditIconWrapper />
-        </HeaderButtonContainer>
+        <div>
+          <HeaderButtonContainer onClick={() => setIsMoreInfo(!isMoreInfo)}>
+            <EditIconWrapper />
+          </HeaderButtonContainer>
+        </div>
       </ContainerHeader>
 
       <ElementContainer>
-        Status: {item.statusText}
+        Status:&nbsp;<StrategyStatusView status={item.status} />
       </ElementContainer>
 
       <ElementContainer>

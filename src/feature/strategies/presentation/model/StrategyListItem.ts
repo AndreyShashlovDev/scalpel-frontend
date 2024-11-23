@@ -23,7 +23,6 @@ export class StrategyListItem<T> implements ListItem {
   public readonly approvedA: boolean
   public readonly approvedB: boolean
   public readonly status: StrategyStatusType
-  public readonly statusText: string
   public readonly gasLimit: number
   public readonly createdAt: string
   public readonly swaps: SwapUiModel[]
@@ -48,7 +47,6 @@ export class StrategyListItem<T> implements ListItem {
     approvedA: boolean,
     approvedB: boolean,
     status: StrategyStatusType,
-    statusText: string,
     gasLimit: number,
     createdAt: string,
     swaps: SwapUiModel[],
@@ -72,7 +70,6 @@ export class StrategyListItem<T> implements ListItem {
     this.approvedA = approvedA
     this.approvedB = approvedB
     this.status = status
-    this.statusText = statusText
     this.gasLimit = gasLimit
     this.createdAt = createdAt
     this.swaps = swaps

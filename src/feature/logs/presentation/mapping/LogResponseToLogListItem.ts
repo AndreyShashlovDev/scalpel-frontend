@@ -7,5 +7,5 @@ export const LogResponseToLogListItem = (log: LogResponse) => new LogListItemMod
   log.id,
   log.type,
   log.log,
-  DateUtils.toFormat(log.createdAt, DateUtils.DATE_FORMAT_SHORT2)
+  DateUtils.toFormat(log.createdAt, DateUtils.DATE_FORMAT_SHORT)
 )

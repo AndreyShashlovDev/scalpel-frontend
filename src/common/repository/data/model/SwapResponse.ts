@@ -36,7 +36,7 @@ export class SwapResponse {
   public readonly currencyFrom: string
   public readonly currencyTo: string
   public readonly valueFrom: string
-  public readonly valueTo: string
+  public readonly valueTo?: string
   public readonly scalpelFeeAmount?: string
   public readonly accumulatorFeeAmount?: string
   public readonly txHash?: string
@@ -50,7 +50,7 @@ export class SwapResponse {
     currencyFrom: string,
     currencyTo: string,
     valueFrom: string,
-    valueTo: string,
+    valueTo: string | undefined,
     scalpelFeeAmount: string | undefined,
     accumulatorFeeAmount: string | undefined,
     txHash: string | undefined,
