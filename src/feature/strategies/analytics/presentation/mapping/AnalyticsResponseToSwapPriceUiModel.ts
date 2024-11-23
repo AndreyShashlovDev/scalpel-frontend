@@ -8,7 +8,7 @@ export const AnalyticsResponseToSwapPriceUiModel = (
   range: AnalyticsRange
 ): AnalyticsChartUiModel => {
 
-  const roundToTenMinutes = (unixtime: number) => Math.round(unixtime / 600) * 600
+  const roundToTenMinutes = (unixtime: number) => Math.floor(unixtime / 600) * 600
   const toUsdt = (value: string): number => Number((Number(value) / 10 ** 6).toFixed(2))
 
 // maps rounded by 10 minutes

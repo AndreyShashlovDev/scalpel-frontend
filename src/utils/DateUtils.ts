@@ -2,12 +2,15 @@ import DateTimeFormatOptions = Intl.DateTimeFormatOptions
 
 export class DateUtils {
 
-  public static readonly FORMAT_HH: DateTimeFormatOptions = {
+  public static readonly FORMAT_HH_MMM: DateTimeFormatOptions = {
     hour: '2-digit',
+    minute: '2-digit'
   }
 
-  public static readonly FORMAT_DD: DateTimeFormatOptions = {
+  public static readonly FORMAT_DD_HH_MM: DateTimeFormatOptions = {
     day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
   }
 
   public static readonly FORMAT_MMM_DD: DateTimeFormatOptions = {
