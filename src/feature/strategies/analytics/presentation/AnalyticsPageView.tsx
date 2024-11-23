@@ -5,6 +5,7 @@ import { LoadingView } from '../../../../common/app-ui/presentation/LoadingView.
 import { PageLayoutView } from '../../../../common/app-ui/presentation/PageLayoutView.tsx'
 import useObservable from '../../../../hooks/useObservable.ts'
 import { getDIValue } from '../../../../Injections.ts'
+import { AnalyticsRange } from '../data/analytics-repository/AnalyticsRange.ts'
 import { AnalyticsPagePresenter } from '../domain/AnalyticsPagePresenter.ts'
 import '../domain/AnalyticsPagePresenterModule.ts'
 import { SwapPriceChartView } from './components/SwapPriceChartView.tsx'
@@ -15,10 +16,30 @@ const Container = styled(PageLayoutView)`
 `
 
 const ChartTitleContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-size: ${({theme}) => theme.size.fontSize.medium};
   padding: 12px;
 `
 
+const RangeSelectorContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  height: 32px;
+  gap: 8px;
+
+  font-size: ${({theme}) => theme.size.fontSize.medium};
+
+  > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+  }
+`
 const ChartContainer = styled.div`
   width: 95%;
   height: 300px;
@@ -58,7 +79,15 @@ export const AnalyticsPageView = ({strategyHash}: AnalyticsPageProps) => {
           : chartModel
             ? (
               <div>
-                <ChartTitleContainer>Show latest {Math.round(chartModel.data.length / 144)} days</ChartTitleContainer>
+                <ChartTitleContainer>
+                  <div>Show latest {Math.round(chartModel.data.length / 144)} days</div>
+                  <RangeSelectorContainer>
+                    <div onClick={() => presenter.onChartRangeChange(AnalyticsRange.DAY)}>1d</div>
+                    <div onClick={() => presenter.onChartRangeChange(AnalyticsRange.WEEK)}>7d</div>
+                    <div onClick={() => presenter.onChartRangeChange(AnalyticsRange.MONTH)}>30d</div>
+                    <div onClick={() => presenter.onChartRangeChange(AnalyticsRange.ALL)}>ALL</div>
+                  </RangeSelectorContainer>
+                </ChartTitleContainer>
                 <ChartContainer>
                   <SwapPriceChartView model={chartModel} />
                 </ChartContainer>
