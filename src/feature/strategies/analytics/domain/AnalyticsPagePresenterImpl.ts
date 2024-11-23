@@ -54,7 +54,7 @@ export class AnalyticsPagePresenterImpl extends AnalyticsPagePresenter {
     this.fetchAnalytics = from(this.analyticsRepository.getAnalytics(this.strategyHash, this.chartDateRange))
       .subscribe({
         next: (result) => {
-          this.chartModel.next(AnalyticsResponseToSwapPriceUiModel(result))
+          this.chartModel.next(AnalyticsResponseToSwapPriceUiModel(result, this.chartDateRange))
           this.isLoading.next(false)
         }
       })
