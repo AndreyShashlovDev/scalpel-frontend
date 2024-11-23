@@ -8,7 +8,7 @@ export const AnalyticsResponseToSwapPriceUiModel = (
   range: AnalyticsRange
 ): AnalyticsChartUiModel => {
 
-  const roundToTenMinutes = (unixtime: number) => Math.floor(unixtime / 60) * 60
+  const roundToTenMinutes = (unixtime: number) => Math.round(unixtime / 600) * 600
   const toUsdt = (value: string): number => Number((Number(value) / 10 ** 6).toFixed(2))
 
 // maps rounded by 10 minutes
@@ -28,10 +28,10 @@ export const AnalyticsResponseToSwapPriceUiModel = (
   let rangeFormat = DateUtils.FORMAT_MMMM_DD
 
   if (range === AnalyticsRange.DAY) {
-    rangeFormat = DateUtils.FORMAT_HH
+    rangeFormat = DateUtils.FORMAT_DD_HH_MM
 
   } else if (range === AnalyticsRange.WEEK || range === AnalyticsRange.MONTH) {
-    rangeFormat = DateUtils.FORMAT_DD
+    rangeFormat = DateUtils.FORMAT_DD_HH_MM
 
   } else if (range === AnalyticsRange.ALL) {
     rangeFormat = DateUtils.FORMAT_MM_DD_YYYY
