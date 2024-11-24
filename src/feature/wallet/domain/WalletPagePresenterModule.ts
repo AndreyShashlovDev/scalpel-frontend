@@ -1,4 +1,5 @@
-import { WalletRepository } from '../../../common/repository/data/wallet/WalletRepository.ts'
+import { AppSourceService } from '../../../common/repository/data/source/AppSourceService.ts'
+import { WalletRepositoryImpl } from '../../../common/repository/data/wallet/WalletRepositoryImpl.ts'
 import { Factory, getDIValue, injectionKernel } from '../../../Injections.ts'
 import { WalletPagePresenter } from './WalletPagePresenter.ts'
 import { WalletPagePresenterImpl } from './WalletPagePresenterImpl.ts'
@@ -6,7 +7,9 @@ import { WalletPagePresenterImpl } from './WalletPagePresenterImpl.ts'
 injectionKernel.set(
   WalletPagePresenter,
   new Factory(
-    () => new WalletPagePresenterImpl(getDIValue(WalletRepository)),
+    () => new WalletPagePresenterImpl(
+      new WalletRepositoryImpl(getDIValue(AppSourceService)),
+    ),
     false
   )
 )

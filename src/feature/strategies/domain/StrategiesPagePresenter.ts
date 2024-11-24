@@ -18,7 +18,5 @@ export abstract class StrategiesPagePresenter extends BasicPresenter {
     data?: number | null
   ): void
 
-  public abstract onCreateNewStrategyClick(): void
-
   public abstract onDeleteStrategyClick(hash: string): void
 }

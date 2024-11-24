@@ -14,6 +14,7 @@ export class CommonLightTheme implements DefaultTheme {
     link: '#5496f1',
     text: {
       primary: '#000000',
+      secondary: '#ada6a6'
     },
     button: {
       disabled: {

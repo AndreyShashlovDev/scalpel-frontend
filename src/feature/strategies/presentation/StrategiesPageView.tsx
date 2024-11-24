@@ -1,7 +1,5 @@
 import { useLayoutEffect, useMemo, useRef } from 'react'
 import styled from 'styled-components'
-import AddIcon from '../../../assets/icons/app/AddIcon.svg'
-import { FloatingActionButtonView } from '../../../common/app-ui/presentation/FloatingActionButtonView.tsx'
 import { LoadingView } from '../../../common/app-ui/presentation/LoadingView.tsx'
 import { PageHeaderView } from '../../../common/app-ui/presentation/PageHeaderView.tsx'
 import { PageLayoutView } from '../../../common/app-ui/presentation/PageLayoutView.tsx'
@@ -16,11 +14,6 @@ import { DialogLogsCallBack, DialogLogsView } from './components/DialogLogsView.
 import { DialogSwapsCallBack, DialogSwapsView } from './components/DialogSwapsView.tsx'
 import { StrategyListView } from './components/strategy-list/StrategyListView.tsx'
 import '../domain/StrategiesPageModule.ts'
-
-const AddIconWrapper = styled(AddIcon)`
-  width: 100%;
-  height: auto;
-`
 
 const PageLayoutWrapper = styled(PageLayoutView)`
 `
@@ -70,46 +63,40 @@ export const StrategiesPageView = () => {
 
   return (
     <div>
-       <PageHeaderView text={'Orders:'} />
-    <PageLayoutWrapper
-      fetched={(strategies?.length ?? 0) > 0}
-      refresh={() => {
-        presenter.refresh()
-      }}
-    >
+      <PageHeaderView text={'Orders:'} />
+      <PageLayoutWrapper
+        fetched={(strategies?.length ?? 0) > 0}
+        refresh={() => {
+          presenter.refresh()
+        }}
+      >
       {
         isLastPage && (strategies?.length ?? 0) === 0
           ? 'List empty'
           : (strategies?.length ?? 0) === 0 && <LoadingView />
       }
 
-      <ListContainer ref={listScrollContainerRef}>
-        <StrategyListView
-          items={strategies ?? []}
-          onItemClick={(viewId, item, data) => presenter.onListItemClick(
-            viewId,
-            item,
-            data as number | null | undefined
-          )}
-          onNextFetch={() => presenter.fetchNextPage()}
-          hasNext={!isLastPage}
+        <ListContainer ref={listScrollContainerRef}>
+          <StrategyListView
+            items={strategies ?? []}
+            onItemClick={(viewId, item, data) => presenter.onListItemClick(
+              viewId,
+              item,
+              data as number | null | undefined
+            )}
+            onNextFetch={() => presenter.fetchNextPage()}
+            hasNext={!isLastPage}
+          />
+        </ListContainer>
+
+        <DialogSwapsView ref={dialogSwapsRef} />
+        <DialogLogsView ref={dialogLogsRef} />
+        <DialogAnalyticsView ref={dialogAnalyticsRef} />
+        <DialogDeleteView
+          onClickDelete={(hash: string) => presenter.onDeleteStrategyClick(hash)}
+          ref={dialogDeleteRef}
         />
-      </ListContainer>
-
-      <FloatingActionButtonView
-        scrollView={listScrollContainerRef}
-        icon={<AddIconWrapper />}
-        onClick={() => {presenter.onCreateNewStrategyClick()}}
-      />
-
-      <DialogSwapsView ref={dialogSwapsRef} />
-      <DialogLogsView ref={dialogLogsRef} />
-      <DialogAnalyticsView ref={dialogAnalyticsRef} />
-      <DialogDeleteView
-        onClickDelete={(hash: string) => presenter.onDeleteStrategyClick(hash)}
-        ref={dialogDeleteRef}
-      />
-    </PageLayoutWrapper>
+      </PageLayoutWrapper>
     </div>
   )
 }

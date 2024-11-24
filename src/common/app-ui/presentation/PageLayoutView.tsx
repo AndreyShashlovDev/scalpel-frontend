@@ -1,8 +1,10 @@
+import { motion } from 'framer-motion'
 import { MutableRefObject, ReactNode, useEffect, useRef } from 'react'
 import PullToRefresh from 'react-simple-pull-to-refresh'
 import styled from 'styled-components'
+import { useApp } from '../../../AppProvider.tsx'
 
-const Container = styled.div`
+const Container = styled(motion.div)`
   background-color: ${({theme}) => theme.color.background};
   color: ${({theme}) => theme.color.text.primary};
 `
@@ -27,6 +29,7 @@ export interface PageLayoutParams {
 }
 
 export const PageLayoutView = ({children, refresh, fetched, ...props}: PageLayoutParams) => {
+  const {visibilityAppMenu} = useApp()
 
   const refreshFunction = useRef<(() => Promise<unknown>) | null>(null) as MutableRefObject<unknown | null>
   const resolveRefresh = useRef<(() => void) | null>(null) as MutableRefObject<(() => void) | null>
@@ -56,7 +59,10 @@ export const PageLayoutView = ({children, refresh, fetched, ...props}: PageLayou
       }}
 
     >
-    <Container {...props}>
+    <Container
+      animate={{scale: visibilityAppMenu ? 0.95 : 1}}
+      {...props}
+    >
       {children}
     </Container>
   </PullRefreshWrapper>

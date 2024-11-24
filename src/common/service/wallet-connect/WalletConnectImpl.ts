@@ -69,7 +69,7 @@ export class WalletConnectImpl extends WalletConnect<WalletProvider> {
   }
 
   public async disconnect(): Promise<void> {
-    await this.ethersAdapter.disconnect()
+    await this.ethersAdapter.disconnect({})
   }
 
   public getConnection(): WalletProvider | undefined {

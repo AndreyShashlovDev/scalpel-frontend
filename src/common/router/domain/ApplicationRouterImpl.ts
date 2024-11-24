@@ -17,4 +17,8 @@ export class ApplicationRouterImpl extends ApplicationRouter {
   public openCreateStrategyPage(): void {
     this.navigateTo('/create-strategy', {replace: true})
   }
+
+  public openWalletsPage(): void {
+    this.navigateTo('/wallets', {replace: true})
+  }
 }

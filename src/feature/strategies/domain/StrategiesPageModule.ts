@@ -1,5 +1,4 @@
 import { AppSourceService } from '../../../common/repository/data/source/AppSourceService.ts'
-import { ApplicationRouter } from '../../../common/router/domain/ApplicationRouter.ts'
 import { Factory, getDIValue, injectionKernel } from '../../../Injections.ts'
 import { StrategyRepositoryImpl } from '../data/strategy-repository/StrategyRepositoryImpl.ts'
 import { StrategiesPagePresenter } from './StrategiesPagePresenter.ts'
@@ -14,7 +13,6 @@ injectionKernel.set(
     () => new StrategiesPagePresenterImpl(
       new StrategyRepositoryImpl(getDIValue(AppSourceService)),
       getDIValue(StrategyDialogProvider),
-      getDIValue(ApplicationRouter),
     ),
     false
   )

@@ -2,11 +2,13 @@ import { useLayoutEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { ComponentSize } from '../../../common/app-ui/presentation/ComponentSize.ts'
 import { LoadingView } from '../../../common/app-ui/presentation/LoadingView.tsx'
+import { PageHeaderView } from '../../../common/app-ui/presentation/PageHeaderView.tsx'
 import { PageLayoutView } from '../../../common/app-ui/presentation/PageLayoutView.tsx'
 import useObservable from '../../../hooks/useObservable.ts'
 import { getDIValue } from '../../../Injections.ts'
 import { WalletPagePresenter } from '../domain/WalletPagePresenter.ts'
 import { WalletListView } from './components/wallet-list/WalletListView.tsx'
+import '../domain/WalletPagePresenterModule.ts'
 
 const Container = styled(PageLayoutView)`
   overflow: hidden;
@@ -22,7 +24,7 @@ export interface LogsPageProps {
   strategyHash?: string
 }
 
-export const WalletPageView = ({strategyHash}: LogsPageProps) => {
+const WalletPageView = ({strategyHash}: LogsPageProps) => {
 
   const presenter = useMemo(() => getDIValue(WalletPagePresenter), [])
   const walletItemsList = useObservable(presenter.getWalletItems(), [])
@@ -35,22 +37,27 @@ export const WalletPageView = ({strategyHash}: LogsPageProps) => {
   }, [strategyHash, presenter])
 
   return (
-    <Container
-      refresh={() => presenter.refresh()}
-      fetched={!isLoading}
-    >
-      {
-        (isLoading) ? <LoadingView size={ComponentSize.STANDARD} /> : undefined
-      }
-      {
-        (!isLoading && walletItemsList.length === 0)
-          ? <div>List is empty</div>
-          : (
-            <ListContainer>
-              <WalletListView items={walletItemsList} />
-            </ListContainer>
-          )
-      }
-    </Container>
+    <div>
+      <PageHeaderView text={'Wallets:'} />
+      <Container
+        refresh={() => presenter.refresh()}
+        fetched={!isLoading}
+      >
+        {
+          (isLoading) ? <LoadingView size={ComponentSize.STANDARD} /> : undefined
+        }
+        {
+          (!isLoading && walletItemsList.length === 0)
+            ? <div>List is empty</div>
+            : (
+              <ListContainer>
+                <WalletListView items={walletItemsList} />
+              </ListContainer>
+            )
+        }
+      </Container>
+    </div>
   )
 }
+
+export default WalletPageView

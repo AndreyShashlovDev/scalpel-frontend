@@ -34,7 +34,7 @@ export const DialogDeleteView = forwardRef((
 
   return (
     <BasicDialogView
-      title={<PageHeaderView text={`Archive order?`} />}
+      title={<PageHeaderView text={`Archive order?`} hasMainMenu={false} />}
       // @ts-expect-error is ok
       ref={ref}
       // @ts-expect-error is ok

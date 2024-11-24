@@ -7,4 +7,6 @@ export abstract class ApplicationRouter extends BasicRouter {
   public abstract openStrategiesPage(): void
 
   public abstract openCreateStrategyPage(): void
+
+  public abstract openWalletsPage(): void
 }

@@ -19,7 +19,7 @@ export const EntrypointView = () => {
     () => {
       getDIValue(ApplicationRouter).setNavigate(nav)
     },
-    []
+    [nav]
   )
 
   return <LoadingContainer><LoadingView /></LoadingContainer>

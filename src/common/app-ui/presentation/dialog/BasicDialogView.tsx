@@ -20,6 +20,7 @@ const TitleContainer = styled.div<{ $canClose: boolean }>`
   display: grid;
   grid-template-columns:  1fr ${({$canClose}) => $canClose ? '56px' : '0'};
   padding-left: ${({$canClose}) => $canClose ? '56px' : '0'};
+  background: ${({theme}) => theme.color.background};
 `
 
 const CloseButton = styled(motion.div)`

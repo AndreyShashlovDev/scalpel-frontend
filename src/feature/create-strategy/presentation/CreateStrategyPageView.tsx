@@ -14,31 +14,34 @@ import useObservable from '../../../hooks/useObservable.ts'
 import { getDIValue } from '../../../Injections.ts'
 import { CreateStrategyPagePresenter } from '../domain/CreateStrategyPagePresenter.ts'
 import { State } from '../domain/CreateStrategyPagePresenterImpl.ts'
-import '../domain/CreateStrategyPagePresenterModule.ts'
 import { ClassicScalpelOptionsView } from './components/strategy-options/ClassicScalpelOptionsView.tsx'
+import '../domain/CreateStrategyPagePresenterModule.ts'
 
 const PlayIconWrapper = styled(PlayIcon)`
   width: 16px;
   height: auto;
 `
 
+const Wrapper = styled.div`
+  height: 100%;
+`
+
 const Container = styled(PageLayoutView)`
-  height: 100vh;
   overflow-y: hidden;
+  height: 100%;
 `
 
 const ScrollPageContainer = styled.div`
   overflow-y: auto;
-  height: calc(100vh - 32px);
   display: grid;
-  grid-template-rows: 1fr 60px;
+  grid-template-rows: 0.9fr 100px;
+  height: 100%;
 `
 
 const ContentContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
 `
 
 const ButtonNextContainer = styled.div`
@@ -272,28 +275,28 @@ const CreateStrategyPageView = () => {
   }
 
   return (
-    <Container>
+    <Wrapper>
       <PageHeaderView text={'Create strategy'} />
-      <ScrollPageContainer>
-        <div>
-          <ContentContainer>
-            {getViewByState()}
-          </ContentContainer>
+      <Container>
+        <ScrollPageContainer>
+            <ContentContainer>
+              {getViewByState()}
+            </ContentContainer>
 
-          <ButtonNextContainer>
-            <AppButton
-              onClick={() => presenter.onClickNext()}
-              text={state === State.OPTIONS
-                ? (isCreateIsLoading ? <LoadingView size={ComponentSize.SMALL} /> : 'Create')
-                : 'Next'
-              }
-              disabled={!isCanNext || isCreateIsLoading}
-            />
-          </ButtonNextContainer>
-          <AppSpaceView />
-        </div>
-      </ScrollPageContainer>
-    </Container>
+            <ButtonNextContainer>
+              <AppButton
+                onClick={() => presenter.onClickNext()}
+                text={state === State.OPTIONS
+                  ? (isCreateIsLoading ? <LoadingView size={ComponentSize.SMALL} /> : 'Create')
+                  : 'Next'
+                }
+                disabled={!isCanNext || isCreateIsLoading}
+              />
+            </ButtonNextContainer>
+            <AppSpaceView />
+        </ScrollPageContainer>
+      </Container>
+    </Wrapper>
   )
 }
 

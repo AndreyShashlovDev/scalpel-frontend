@@ -8,7 +8,6 @@ import { StrategyStatusType } from '../data/model/StrategyResponse.ts'
 import { StrategyRepository } from '../data/strategy-repository/StrategyRepository.ts'
 import { StrategyResponseToStrategyListItem } from '../presentation/mapping/StrategyResponseToStrategyListItem.ts'
 import { StrategyListItem } from '../presentation/model/StrategyListItem.ts'
-import { StrategyPageRouter } from '../router/StrategyPageRouter.ts'
 import { StrategiesPagePresenter } from './StrategiesPagePresenter.ts'
 import { StrategyDialogCallBacks } from './StrategyDialogProvider.ts'
 import { StrategyHolderButtonIds } from './StrategyHolderButtonIds.ts'
@@ -26,7 +25,6 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
   constructor(
     private readonly strategiesRepository: StrategyRepository,
     private readonly dialogProvider: BasicDialogProvider<StrategyDialogCallBacks>,
-    private readonly router: StrategyPageRouter,
   ) {
     super()
   }
@@ -191,10 +189,6 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
       console.error(e)
       this.strategiesList.next(this.strategiesList.value.concat([]))
     }
-  }
-
-  public onCreateNewStrategyClick(): void {
-    this.router.openCreateStrategyPage()
   }
 
   public onDeleteStrategyClick(hash: string): void {

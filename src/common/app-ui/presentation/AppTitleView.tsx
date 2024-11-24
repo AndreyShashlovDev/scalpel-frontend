@@ -1,7 +1,9 @@
+import { ReactElement } from 'react'
 import styled from 'styled-components'
 import { ComponentSize, ComponentSizeProps } from './ComponentSize.ts'
 
 const TitleContainer = styled.div<ComponentSizeProps>`
+  background: ${({theme}) => theme.color.background};
   color: ${({theme}) => theme.color.title};
   font-size: ${({size}) => {
     if (size === ComponentSize.LARGEST) {
@@ -27,8 +29,14 @@ const TitleContainer = styled.div<ComponentSizeProps>`
 
 export interface AppTitleProps extends ComponentSizeProps {
   text: string
+  children?: ReactElement
 }
 
-export const AppTitleView = ({text, size, ...props}: AppTitleProps) => {
-  return <TitleContainer size={size} {...props}>{text}</TitleContainer>
+export const AppTitleView = ({text, size, children, ...props}: AppTitleProps) => {
+  return (
+    <TitleContainer size={size} {...props}>
+      {text}
+      {children}
+    </TitleContainer>
+  )
 }

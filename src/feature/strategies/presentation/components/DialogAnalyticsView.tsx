@@ -18,7 +18,7 @@ export const DialogAnalyticsView = forwardRef((
   return (
     <BasicDialogView
       isFullScreen={true}
-      title={<PageHeaderView text={`Analytics`} />}
+      title={<PageHeaderView text={`Analytics`} hasMainMenu={false} />}
       // @ts-expect-error is ok
       ref={ref}
       // @ts-expect-error is ok
