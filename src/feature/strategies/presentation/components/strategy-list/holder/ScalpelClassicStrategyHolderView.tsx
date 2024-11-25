@@ -80,6 +80,7 @@ const DeleteIconWrapper = styled(DeleteIcon)`
 const ExitIconWrapper = styled(ExitIcon)`
   width: 24px;
   height: 24px;
+  rotate: 270deg;
 `
 
 const WarningIconWrapper = styled(WarningIcon)`
