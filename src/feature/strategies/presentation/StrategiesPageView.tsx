@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { LoadingView } from '../../../common/app-ui/presentation/LoadingView.tsx'
 import { PageHeaderView } from '../../../common/app-ui/presentation/PageHeaderView.tsx'
 import { PageLayoutView } from '../../../common/app-ui/presentation/PageLayoutView.tsx'
-import { ChainType } from '../../../common/repository/data/model/ChainType.ts'
 import useObservable from '../../../hooks/useObservable.ts'
 import { getDIValue } from '../../../Injections.ts'
 import { StrategiesPagePresenter } from '../domain/StrategiesPagePresenter.ts'
@@ -41,8 +40,8 @@ export const StrategiesPageView = () => {
     presenter.init()
 
     dialogProvider.setDialogCallback({
-      openSwapsDialog(strategyHash: string, chain: ChainType): void {
-        dialogSwapsRef.current?.openDialog({strategyHash, chain})
+      openSwapsDialog(strategyHash: string): void {
+        dialogSwapsRef.current?.openDialog({strategyHash})
       },
       openLogsDialog(strategyHash: string): void {
         dialogLogsRef.current?.openDialog({strategyHash})

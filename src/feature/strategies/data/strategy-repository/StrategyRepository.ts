@@ -1,7 +1,7 @@
 import { Pageable } from '../../../../common/repository/data/model/Pageable.ts'
 import { ChangeOptionsRequest } from '../model/ChangeOptionsRequest.ts'
 import { CompositeStrategyResponse } from '../model/CompositeStrategyResponse.ts'
-import { StrategyResponse, StrategyStatusType } from '../model/StrategyResponse.ts'
+import { StrategyResponse, StrategyStatusType } from '../../../../common/repository/data/model/StrategyResponse.ts'
 
 export abstract class StrategyRepository {
 

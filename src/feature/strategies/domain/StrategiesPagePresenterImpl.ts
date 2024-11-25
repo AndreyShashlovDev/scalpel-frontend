@@ -1,10 +1,9 @@
 import { BehaviorSubject, from, Observable, Subscription } from 'rxjs'
-import { ChainType } from '../../../common/repository/data/model/ChainType.ts'
 import { Pageable } from '../../../common/repository/data/model/Pageable.ts'
+import { StrategyStatusType } from '../../../common/repository/data/model/StrategyResponse.ts'
 import { BasicDialogProvider } from '../../../utils/arch/DialogProvider.ts'
 import { ChangeOptionsRequest } from '../data/model/ChangeOptionsRequest.ts'
 import { CompositeStrategyResponse } from '../data/model/CompositeStrategyResponse.ts'
-import { StrategyStatusType } from '../data/model/StrategyResponse.ts'
 import { StrategyRepository } from '../data/strategy-repository/StrategyRepository.ts'
 import { StrategyResponseToStrategyListItem } from '../presentation/mapping/StrategyResponseToStrategyListItem.ts'
 import { StrategyListItem } from '../presentation/model/StrategyListItem.ts'
@@ -83,7 +82,7 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
 
   public onListItemClick(viewId: number, item: StrategyListItem<unknown>, data?: number | null): void {
     if (viewId === StrategyHolderButtonIds.OPEN_SWAP_BUTTON_ID) {
-      this.onShowSwapsClick(item.hash, item.chain)
+      this.onShowSwapsClick(item.hash)
 
     } else if (viewId === StrategyHolderButtonIds.OPEN_LOGS_BUTTON_ID) {
       this.onShowLogsClick(item.hash)
@@ -164,8 +163,8 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
     }
   }
 
-  private onShowSwapsClick(strategyHash: string, chain: ChainType): void {
-    this.dialogProvider.getDialogs()?.openSwapsDialog(strategyHash, chain)
+  private onShowSwapsClick(strategyHash: string): void {
+    this.dialogProvider.getDialogs()?.openSwapsDialog(strategyHash)
   }
 
   private onShowLogsClick(strategyHash: string): void {

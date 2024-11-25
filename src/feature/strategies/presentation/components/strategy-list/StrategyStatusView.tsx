@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { StrategyStatusType } from '../../../data/model/StrategyResponse.ts'
+import { StrategyStatusType } from '../../../../../common/repository/data/model/StrategyResponse.ts'
 
 export interface StrategyStatusProps {
   status: StrategyStatusType

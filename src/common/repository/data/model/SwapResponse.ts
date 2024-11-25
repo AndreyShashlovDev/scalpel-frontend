@@ -21,6 +21,8 @@ export class SwapResponse {
       json.currencyTo,
       json.valueFrom,
       json.valueTo,
+      json.exchangeUsdPrice,
+      json.profit,
       json.scalpelFeeAmount,
       json.accumulatorFeeAmount,
       json.txHash,
@@ -37,6 +39,8 @@ export class SwapResponse {
   public readonly currencyTo: string
   public readonly valueFrom: string
   public readonly valueTo?: string
+  public readonly exchangeUsdPrice: string
+  public readonly profit: string | undefined
   public readonly scalpelFeeAmount?: string
   public readonly accumulatorFeeAmount?: string
   public readonly txHash?: string
@@ -51,6 +55,8 @@ export class SwapResponse {
     currencyTo: string,
     valueFrom: string,
     valueTo: string | undefined,
+    exchangeUsdPrice: string,
+    profit: string | undefined,
     scalpelFeeAmount: string | undefined,
     accumulatorFeeAmount: string | undefined,
     txHash: string | undefined,
@@ -64,6 +70,8 @@ export class SwapResponse {
     this.currencyTo = currencyTo
     this.valueFrom = valueFrom
     this.valueTo = valueTo
+    this.exchangeUsdPrice = exchangeUsdPrice
+    this.profit = profit
     this.scalpelFeeAmount = scalpelFeeAmount
     this.accumulatorFeeAmount = accumulatorFeeAmount
     this.txHash = txHash

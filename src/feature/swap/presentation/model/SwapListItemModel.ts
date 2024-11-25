@@ -11,8 +11,12 @@ export class SwapListItemModel implements ListItem {
   public readonly currencyToSymbol: string
   public readonly currencyFrom: string
   public readonly currencyTo: string
+  public readonly currencyB: string
   public readonly valueFrom: number | undefined
   public readonly valueTo: number | undefined
+  public readonly exchangeUsdPrice: number
+  public readonly profit: number | undefined
+  public readonly profitPercent: number | undefined
   public readonly scalpelFeeAmount?: string
   public readonly accumulatorFeeAmount?: string
   public readonly txHash?: string
@@ -28,8 +32,12 @@ export class SwapListItemModel implements ListItem {
     currencyToSymbol: string,
     currencyFrom: string,
     currencyTo: string,
+    currencyB: string,
     valueFrom: number | undefined,
     valueTo: number | undefined,
+    exchangeUsdPrice: number,
+    profit: number | undefined,
+    profitPercent: number | undefined,
     scalpelFeeAmount: string | undefined,
     accumulatorFeeAmount: string | undefined,
     txHash: string | undefined,
@@ -44,8 +52,12 @@ export class SwapListItemModel implements ListItem {
     this.currencyToSymbol = currencyToSymbol
     this.currencyFrom = currencyFrom
     this.currencyTo = currencyTo
+    this.currencyB = currencyB
     this.valueFrom = valueFrom
     this.valueTo = valueTo
+    this.exchangeUsdPrice = exchangeUsdPrice
+    this.profit = profit
+    this.profitPercent = profitPercent
     this.scalpelFeeAmount = scalpelFeeAmount
     this.accumulatorFeeAmount = accumulatorFeeAmount
     this.txHash = txHash

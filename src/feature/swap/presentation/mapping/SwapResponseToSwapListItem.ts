@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
-import { CurrencyResponse } from '../../../../common/repository/data/model/CurrencyResponse.ts'
+import { StrategyResponse } from '../../../../common/repository/data/model/StrategyResponse.ts'
 import { SwapResponse } from '../../../../common/repository/data/model/SwapResponse.ts'
 import { DateUtils } from '../../../../utils/DateUtils.ts'
 import { NumberShortener } from '../../../../utils/Shortener.ts'
@@ -8,11 +8,14 @@ import { SwapListItemModel } from '../model/SwapListItemModel.ts'
 
 export const SwapResponseToSwapListItem = (
   swap: SwapResponse,
-  currencies: Map<string, CurrencyResponse>
+  strategy: StrategyResponse,
 ) => {
+  const from = swap.currencyFrom === strategy.currencyA.address ? strategy.currencyA : strategy.currencyB
+  const to = swap.currencyTo === strategy.currencyA.address ? strategy.currencyA : strategy.currencyB
 
-  const from = currencies.get(swap.currencyFrom)
-  const to = currencies.get(swap.currencyTo)
+  const valueTo = swap.valueTo ? NumberShortener(to.valueTo(swap.valueTo)) : undefined
+  const profit = swap.profit ? NumberShortener(strategy.currencyA.valueTo(swap.profit)) : undefined
+  const profitPercent = profit && valueTo ? NumberShortener((profit / (valueTo - profit)) * 100) : undefined
 
   return new SwapListItemModel(
     swap.id.toString(),
@@ -22,8 +25,12 @@ export const SwapResponseToSwapListItem = (
     to?.symbol ?? 'unknown',
     swap.currencyFrom,
     swap.currencyTo,
-    swap.valueFrom && from ? NumberShortener(from.valueTo(swap.valueFrom)) : undefined,
-    swap.valueTo && to ? NumberShortener(to.valueTo(swap.valueTo)) : undefined,
+    strategy.currencyB.address,
+    swap.valueFrom ? NumberShortener(from.valueTo(swap.valueFrom)) : undefined,
+    valueTo,
+    NumberShortener(strategy.currencyA.valueTo(swap.exchangeUsdPrice)),
+    profit,
+    profitPercent,
     swap.scalpelFeeAmount,
     swap.accumulatorFeeAmount,
     swap.txHash,

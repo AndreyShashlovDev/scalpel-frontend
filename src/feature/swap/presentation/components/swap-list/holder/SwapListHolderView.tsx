@@ -28,10 +28,14 @@ const TxFeeContainer = styled.div`
   gap: 4px;
 `
 
-const CurrenciesContainer = styled.div`
+const GreenColor = styled.span`
+  color: ${({theme}) => theme.color.common.green}
+`
+const LineContainer = styled.div`
   display: flex;
   place-items: center;
   gap: 4px;
+  padding: 4px 0;
 `
 
 export interface SwapListHolderProps {
@@ -52,7 +56,8 @@ export const SwapListHolderView = forwardRef(({item}: SwapListHolderProps, ref: 
     >
       <div>State:&nbsp;<SwapStateView state={item.state} /></div>
       <AppSpaceView />
-      <CurrenciesContainer>
+      <LineContainer>
+        Pair:
         <TokenIconView
           chain={item.chain}
           address={item.currencyFrom}
@@ -67,14 +72,35 @@ export const SwapListHolderView = forwardRef(({item}: SwapListHolderProps, ref: 
           symbol={item.currencyToSymbol}
           size={ComponentSize.SMALLEST}
         />
-        {item.currencyToSymbol}</CurrenciesContainer>
-      <div>{item.valueFrom ?? '?'} &#10230; {item.valueTo ?? '?'}</div>
+        {item.currencyToSymbol}</LineContainer>
+      <div>Amounts: {item.valueFrom ?? '?'} &#10230; {item.valueTo ?? '?'}</div>
+      <LineContainer>
+        {item.currencyB === item.currencyTo ? item.currencyToSymbol : item.currencyFromSymbol} price:
+        ${item.exchangeUsdPrice}
+      </LineContainer>
+      {
+        item.profit
+          ? (
+            <LineContainer>
+              Profit:
+              <TokenIconView
+                chain={item.chain}
+                address={item.currencyB === item.currencyTo ? item.currencyFrom : item.currencyTo}
+                symbol={item.currencyB === item.currencyTo ? item.currencyFromSymbol : item.currencyToSymbol}
+                size={ComponentSize.SMALLEST}
+              />
+              <GreenColor>{Number(item.profit) > 0 ? '+' : '-'}{item.profit} ({item.profitPercent}%)</GreenColor>
+            </LineContainer>
+          )
+          : undefined
+      }
+
       <AppSpaceView />
       {item.txHash && <div>tx hash: <AppTxHashView hash={item.txHash} chain={item.chain} /></div>}
+      {}
       {item.txFee && (
         <TxFeeContainer>
           <span>tx fee:</span>
-          &nbsp;
           <TokenIconView
             chain={item.chain}
             address={'0xffffffffffffffffffffffffffffffffffffffff'}

@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { ComponentSize } from '../../../common/app-ui/presentation/ComponentSize.ts'
 import { LoadingView } from '../../../common/app-ui/presentation/LoadingView.tsx'
 import { PageLayoutView } from '../../../common/app-ui/presentation/PageLayoutView.tsx'
-import { ChainType } from '../../../common/repository/data/model/ChainType.ts'
 import useObservable from '../../../hooks/useObservable.ts'
 import { getDIValue } from '../../../Injections.ts'
 import { SwapPagePresenter } from '../domain/SwapPagePresenter.ts'
@@ -22,10 +21,9 @@ const ListContainer = styled.div`
 
 export interface SwapPageProps {
   strategyHash?: string
-  chain?: ChainType
 }
 
-export const SwapPageView = ({strategyHash, chain}: SwapPageProps) => {
+export const SwapPageView = ({strategyHash}: SwapPageProps) => {
 
   const presenter = useMemo(() => getDIValue(SwapPagePresenter), [])
   const swapItemsList = useObservable(presenter.getSwapItems(), [])
@@ -33,14 +31,14 @@ export const SwapPageView = ({strategyHash, chain}: SwapPageProps) => {
   const isLoading = useObservable(presenter.getIsLoading(), true)
 
   useLayoutEffect(() => {
-    if (strategyHash && chain) {
-      presenter.setupSwapData(strategyHash, chain)
+    if (strategyHash) {
+      presenter.setupSwapData(strategyHash)
     }
 
     presenter.init()
 
     return () => presenter.destroy()
-  }, [strategyHash, chain, presenter])
+  }, [strategyHash, presenter])
 
   return (
     <Container

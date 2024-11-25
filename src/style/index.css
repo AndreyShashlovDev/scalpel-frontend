@@ -9,7 +9,6 @@
 * {
   font-family: 'RussoOne', sans-serif;
   box-sizing: border-box;
-  font-size: small;
 }
 
 @media (min-width: 640px) {
@@ -80,6 +79,7 @@ body {
   min-width: 320px;
   min-height: 100%;
   height: 100%;
+  font-size: small;
 }
 
 h1 {

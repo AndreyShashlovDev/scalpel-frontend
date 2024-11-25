@@ -1,6 +1,6 @@
 import { LogResponse } from '../../../../common/repository/data/model/LogResponse.ts'
 import { SwapResponse } from '../../../../common/repository/data/model/SwapResponse.ts'
-import { StrategyResponse } from './StrategyResponse.ts'
+import { StrategyResponse } from '../../../../common/repository/data/model/StrategyResponse.ts'
 import { SimpleHistoryResponse } from './SimpleHistoryResponse.ts'
 
 export class CompositeStrategyResponse {

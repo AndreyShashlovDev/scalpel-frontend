@@ -1,10 +1,9 @@
 import { BehaviorSubject, forkJoin, Observable, Subscription } from 'rxjs'
-import { CurrencyRepository } from '../../../common/repository/data/currencies/CurrencyRepository.ts'
-import { ChainType } from '../../../common/repository/data/model/ChainType.ts'
-import { CurrencyResponse } from '../../../common/repository/data/model/CurrencyResponse.ts'
 import { Pageable } from '../../../common/repository/data/model/Pageable.ts'
 import { SortOrder } from '../../../common/repository/data/model/SortOrder.ts'
+import { StrategyResponse } from '../../../common/repository/data/model/StrategyResponse.ts'
 import { SwapResponse } from '../../../common/repository/data/model/SwapResponse.ts'
+import { StrategyRepository } from '../data/strategy-repository/StrategyRepository.ts'
 import { SwapRepository } from '../data/swap-repository/SwapRepository.ts'
 import { SwapResponseToSwapListItem } from '../presentation/mapping/SwapResponseToSwapListItem.ts'
 import { SwapListItemModel } from '../presentation/model/SwapListItemModel.ts'
@@ -18,16 +17,14 @@ export class SwapPagePresenterImpl extends SwapPagePresenter {
   private readonly isLastPage: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
   private readonly isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
 
-  private readonly currencies: Map<string, CurrencyResponse> = new Map()
-
   private swapsFetchSubscription: Subscription | undefined
   private strategyHash: string | undefined
-  private currentChain: ChainType | undefined
   private prevSwapsResponse: Pageable<SwapResponse> | undefined
+  private strategy: StrategyResponse | undefined
 
   constructor(
+    private readonly strategyRepository: StrategyRepository,
     private readonly swapRepository: SwapRepository,
-    private readonly currencyRepository: CurrencyRepository,
   ) {
     super()
   }
@@ -40,9 +37,8 @@ export class SwapPagePresenterImpl extends SwapPagePresenter {
     this.swapsFetchSubscription?.unsubscribe()
   }
 
-  public setupSwapData(hash: string, chain: ChainType): void {
-    this.strategyHash = hash
-    this.currentChain = chain
+  public setupSwapData(strategyHash: string): void {
+    this.strategyHash = strategyHash
   }
 
   public getSwapItems(): Observable<SwapListItemModel[]> {
@@ -57,18 +53,14 @@ export class SwapPagePresenterImpl extends SwapPagePresenter {
     return this.isLoading.asObservable()
   }
 
-  private async fetchCurrencies(): Promise<Map<string, CurrencyResponse>> {
-    if (this.currencies.size > 0) {
-      return this.currencies
+  private async fetchStrategy(): Promise<StrategyResponse> {
+    if (this.strategy) {
+      return this.strategy
     }
 
-    const response = await this.currencyRepository.getCurrencies(this.currentChain)
+    this.strategy = await this.strategyRepository.getStrategy(this.strategyHash ?? '')
 
-    response.forEach(item => {
-      this.currencies.set(item.address, item)
-    })
-
-    return this.currencies
+    return this.strategy
   }
 
   public onFetchNext(): void {
@@ -80,7 +72,7 @@ export class SwapPagePresenterImpl extends SwapPagePresenter {
     this.swapsFetchSubscription?.unsubscribe()
 
     this.swapsFetchSubscription = forkJoin([
-      this.fetchCurrencies(),
+      this.fetchStrategy(),
       this.swapRepository.getSwaps(
         this.strategyHash,
         (this.prevSwapsResponse?.page ?? 0) + 1,
@@ -89,9 +81,9 @@ export class SwapPagePresenterImpl extends SwapPagePresenter {
       )
     ])
       .subscribe({
-        next: ([currenciesMap, swapsList]) => {
+        next: ([strategy, swapsList]) => {
           const transform = swapsList.data.map(item => {
-            return SwapResponseToSwapListItem(item, currenciesMap)
+            return SwapResponseToSwapListItem(item, strategy)
           })
           const list = this.swapsItems.value.concat(transform)
 

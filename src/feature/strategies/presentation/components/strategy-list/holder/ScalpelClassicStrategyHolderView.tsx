@@ -20,7 +20,7 @@ import { ComponentSize } from '../../../../../../common/app-ui/presentation/Comp
 import { LoadingView } from '../../../../../../common/app-ui/presentation/LoadingView.tsx'
 import { TokenIconView } from '../../../../../../common/app-ui/presentation/TokenIconView.tsx'
 import { SwapState } from '../../../../../../common/repository/data/model/SwapResponse.ts'
-import { StrategyStatusType } from '../../../../data/model/StrategyResponse.ts'
+import { StrategyStatusType } from '../../../../../../common/repository/data/model/StrategyResponse.ts'
 import { StrategyHolderButtonIds } from '../../../../domain/StrategyHolderButtonIds.ts'
 import { StrategyListItem } from '../../../model/StrategyListItem.ts'
 import { StrategyStatusView } from '../StrategyStatusView.tsx'
@@ -129,7 +129,6 @@ const StableCoinContainer = styled.span<{ $highlight: boolean }>`
 const SwapsLogsBlock = styled.div`
   margin-top: 12px;
   margin-bottom: 12px;
-
   > div {
     margin-top: 4px;
   }
@@ -140,12 +139,12 @@ const SwapsLogsBlock = styled.div`
 `
 const LogsContainer = styled.div`
   cursor: pointer;
-  font-size: 10px !important;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border: 1px solid gray;
   padding-right: 8px;
+  font-size: ${({theme}) => theme.size.fontSize.smaller};
 `
 
 const LogItemContainer = styled.div`
@@ -155,7 +154,6 @@ const LogItemContainer = styled.div`
 
 const SwapContainer = styled.div`
   cursor: pointer;
-  font-size: 10px !important;
   display: grid;
   padding: 0 8px;
   grid-template-columns: 20px 1fr 100px;
@@ -163,6 +161,10 @@ const SwapContainer = styled.div`
   gap: 8px;
   align-items: center;
   border: 1px solid gray;
+  font-size: ${({theme}) => theme.size.fontSize.smaller};
+`
+
+const SwapItemDateContainer = styled.span`
   text-align: end;
 `
 
@@ -640,7 +642,9 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
                 symbol={swap.symbolFrom}
                 size={ComponentSize.SMALLEST}
               />
-              <span>{swap.amountFrom}</span>
+              <span>
+                {swap.amountFrom} {swap.addressFrom === item.currencyB.address ? ` ($${swap.exchangeUsdPrice})` : ''}
+              </span>
               <span>&#10230;</span>
               <TokenIconView
                 chain={item.chain}
@@ -648,9 +652,11 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
                 symbol={swap.symbolTo}
                 size={ComponentSize.SMALLEST}
               />
-              <span>{swap.amountTo}</span>
+              <span>
+                {swap.amountTo}{swap.addressTo === item.currencyB.address ? ` ($${swap.exchangeUsdPrice})` : ''}
+              </span>
             </SwapSubItem>
-            <div>{swap.date}</div>
+            <SwapItemDateContainer>{swap.date}</SwapItemDateContainer>
           </SwapContainer>
         ))}
       </SwapsLogsBlock>

@@ -4,7 +4,7 @@ import { SwapResponse } from '../../../../common/repository/data/model/SwapRespo
 import { AppSourceService } from '../../../../common/repository/data/source/AppSourceService.ts'
 import { ChangeOptionsRequest } from '../model/ChangeOptionsRequest.ts'
 import { CompositeStrategyResponse } from '../model/CompositeStrategyResponse.ts'
-import { StrategyResponse, StrategyStatusType } from '../model/StrategyResponse.ts'
+import { StrategyResponse, StrategyStatusType } from '../../../../common/repository/data/model/StrategyResponse.ts'
 import { SimpleHistoryResponse } from '../model/SimpleHistoryResponse.ts'
 import { StrategyRepository } from './StrategyRepository.ts'
 

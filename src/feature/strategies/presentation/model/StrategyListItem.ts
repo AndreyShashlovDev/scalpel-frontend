@@ -1,7 +1,7 @@
 import { ListItem } from '../../../../common/app-ui/presentation/AppInfiniteScrollView.tsx'
 import { ChainType } from '../../../../common/repository/data/model/ChainType.ts'
 import { JsonObject } from '../../../../utils/types.ts'
-import { StrategyStatusType } from '../../data/model/StrategyResponse.ts'
+import { StrategyStatusType } from '../../../../common/repository/data/model/StrategyResponse.ts'
 import { CurrencyUiModel } from './CurrencyUiModel.ts'
 import { LogUiModel } from './LogUiModel.ts'
 import { SwapHistoryUiModel } from './SwapHistoryUiModel.ts'

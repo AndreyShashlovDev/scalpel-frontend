@@ -8,6 +8,7 @@ export class SwapUiModel {
   public readonly symbolTo: string
   public readonly amountFrom: number
   public readonly amountTo: number | string
+  public readonly exchangeUsdPrice: number
   public readonly txHash?: string
   public readonly state: SwapState
   public readonly date: string
@@ -19,6 +20,7 @@ export class SwapUiModel {
     symbolTo: string,
     amountFrom: number,
     amountTo: number | string,
+    exchangeUsdPrice: number,
     txHash: string | undefined,
     state: SwapState,
     date: string
@@ -29,6 +31,7 @@ export class SwapUiModel {
     this.symbolTo = symbolTo
     this.amountFrom = amountFrom
     this.amountTo = amountTo
+    this.exchangeUsdPrice = exchangeUsdPrice
     this.txHash = txHash
     this.state = state
     this.date = date

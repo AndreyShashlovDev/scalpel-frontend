@@ -32,6 +32,13 @@ export class DateUtils {
     year: 'numeric',
   }
 
+  public static readonly DATE_FORMAT_SHORT_NUMERIC: DateTimeFormatOptions = {
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    month: 'numeric',
+  }
+
   public static readonly DATE_FORMAT_SHORT: DateTimeFormatOptions = {
     day: '2-digit',
     hour: '2-digit',
