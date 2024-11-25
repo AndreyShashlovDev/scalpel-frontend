@@ -54,7 +54,7 @@ export const SwapListHolderView = forwardRef(({item}: SwapListHolderProps, ref: 
       }}
       ref={ref}
     >
-      <div>State:&nbsp;<SwapStateView state={item.state} /></div>
+      <div>Status:&nbsp;<SwapStateView state={item.state} /></div>
       <AppSpaceView />
       <LineContainer>
         Pair:
