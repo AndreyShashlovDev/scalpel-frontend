@@ -1,10 +1,10 @@
 import { LogResponse } from '../../../../common/repository/data/model/LogResponse.ts'
 import { Pageable } from '../../../../common/repository/data/model/Pageable.ts'
+import { StrategyResponse, StrategyStatusType } from '../../../../common/repository/data/model/StrategyResponse.ts'
 import { SwapResponse } from '../../../../common/repository/data/model/SwapResponse.ts'
 import { AppSourceService } from '../../../../common/repository/data/source/AppSourceService.ts'
 import { ChangeOptionsRequest } from '../model/ChangeOptionsRequest.ts'
 import { CompositeStrategyResponse } from '../model/CompositeStrategyResponse.ts'
-import { StrategyResponse, StrategyStatusType } from '../../../../common/repository/data/model/StrategyResponse.ts'
 import { SimpleHistoryResponse } from '../model/SimpleHistoryResponse.ts'
 import { StrategyRepository } from './StrategyRepository.ts'
 
@@ -83,6 +83,16 @@ export class StrategyRepositoryImpl extends StrategyRepository {
     const result = await this.appSourceService.post<void>(`/strategy/${orderHash}/status`, {
       query: new Map([['status', status.toString()]])
     })
+
+    if (result.success) {
+      return
+    }
+
+    throw new Error()
+  }
+
+  public async forceExecute(orderHash: string): Promise<void> {
+    const result = await this.appSourceService.post<void>(`/strategy/${orderHash}/execute`)
 
     if (result.success) {
       return

@@ -1,7 +1,7 @@
 import { Pageable } from '../../../../common/repository/data/model/Pageable.ts'
+import { StrategyResponse, StrategyStatusType } from '../../../../common/repository/data/model/StrategyResponse.ts'
 import { ChangeOptionsRequest } from '../model/ChangeOptionsRequest.ts'
 import { CompositeStrategyResponse } from '../model/CompositeStrategyResponse.ts'
-import { StrategyResponse, StrategyStatusType } from '../../../../common/repository/data/model/StrategyResponse.ts'
 
 export abstract class StrategyRepository {
 
@@ -14,4 +14,6 @@ export abstract class StrategyRepository {
   public abstract getStrategy(hash: string): Promise<StrategyResponse>
 
   public abstract changeStatus(orderHash: string, status: StrategyStatusType): Promise<void>
+
+  public abstract forceExecute(orderHash: string): Promise<void>
 }

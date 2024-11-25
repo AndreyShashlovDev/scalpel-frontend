@@ -9,6 +9,8 @@ export interface StrategyDialogCallBacks extends DialogRouter {
   openDeleteDialog(strategyHash: string): void
 
   openAnalyticsDialog(strategyHash: string): void
+
+  openForceExecuteDialog(strategyHash: string): void
 }
 
 export class StrategyDialogProvider extends DialogProvider<StrategyDialogCallBacks> {

@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import ArrowIcon from '../../../../../../assets/icons/app/ArrowIcon.svg'
 import DeleteIcon from '../../../../../../assets/icons/app/DeleteIcon.svg'
 import EditIcon from '../../../../../../assets/icons/app/EditIcon.svg'
+import ExitIcon from '../../../../../../assets/icons/app/ExitIcon.svg'
 import FailIcon from '../../../../../../assets/icons/app/FailIcon.svg'
 import PauseIcon from '../../../../../../assets/icons/app/PauseIcon.svg'
 import PlayIcon from '../../../../../../assets/icons/app/PlayIcon.svg'
@@ -19,8 +20,8 @@ import { ChainIconView } from '../../../../../../common/app-ui/presentation/Chai
 import { ComponentSize } from '../../../../../../common/app-ui/presentation/ComponentSize.ts'
 import { LoadingView } from '../../../../../../common/app-ui/presentation/LoadingView.tsx'
 import { TokenIconView } from '../../../../../../common/app-ui/presentation/TokenIconView.tsx'
-import { SwapState } from '../../../../../../common/repository/data/model/SwapResponse.ts'
 import { StrategyStatusType } from '../../../../../../common/repository/data/model/StrategyResponse.ts'
+import { SwapState } from '../../../../../../common/repository/data/model/SwapResponse.ts'
 import { StrategyHolderButtonIds } from '../../../../domain/StrategyHolderButtonIds.ts'
 import { StrategyListItem } from '../../../model/StrategyListItem.ts'
 import { StrategyStatusView } from '../StrategyStatusView.tsx'
@@ -60,16 +61,23 @@ const EditIconWrapper = styled(EditIcon)`
   width: 16px;
   height: auto;
 `
+
 const PlayIconWrapper = styled(PlayIcon)`
   width: 24px;
   height: 24px;
 `
+
 const PauseIconWrapper = styled(PauseIcon)`
   width: 24px;
   height: 24px;
 `
 
 const DeleteIconWrapper = styled(DeleteIcon)`
+  width: 24px;
+  height: 24px;
+`
+
+const ExitIconWrapper = styled(ExitIcon)`
   width: 24px;
   height: 24px;
 `
@@ -129,6 +137,7 @@ const StableCoinContainer = styled.span<{ $highlight: boolean }>`
 const SwapsLogsBlock = styled.div`
   margin-top: 12px;
   margin-bottom: 12px;
+
   > div {
     margin-top: 4px;
   }
@@ -308,6 +317,21 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
           text={item.waitChangeStatusCancel ? <LoadingView size={ComponentSize.SMALL} /> : <DeleteIconWrapper />}
           size={ComponentSize.SMALL}
         />
+
+        {
+          item.status !== StrategyStatusType.CANCELED &&
+          item.status !== StrategyStatusType.APPROVE_IN_PROGRESS &&
+          item.status !== StrategyStatusType.CREATED
+            ? (
+              <AppIconButton
+                disabled={item.waitForceExecute}
+                onClick={() => {onItemClick(StrategyHolderButtonIds.FORCE_EXECUTE_ORDER_BUTTON_ID)}}
+                text={item.waitForceExecute ? <LoadingView size={ComponentSize.SMALL} /> : <ExitIconWrapper />}
+                size={ComponentSize.SMALL}
+              />
+            )
+            : undefined
+        }
 
         {
           getIconPlayPause && (

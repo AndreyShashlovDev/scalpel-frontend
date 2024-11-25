@@ -1,13 +1,13 @@
 import { ethers } from 'ethers'
 import { CurrencyResponse } from '../../../../common/repository/data/model/CurrencyResponse.ts'
 import { LogResponse } from '../../../../common/repository/data/model/LogResponse.ts'
+import { StrategyResponse } from '../../../../common/repository/data/model/StrategyResponse.ts'
 import { StrategyType } from '../../../../common/repository/data/model/StrategyType.ts'
 import { SwapResponse } from '../../../../common/repository/data/model/SwapResponse.ts'
 import { DateUtils } from '../../../../utils/DateUtils.ts'
 import { NumberShortener } from '../../../../utils/Shortener.ts'
 import { JsonObject } from '../../../../utils/types.ts'
 import { SimpleHistoryResponse } from '../../data/model/SimpleHistoryResponse.ts'
-import { StrategyResponse } from '../../../../common/repository/data/model/StrategyResponse.ts'
 import { ScalpelClassicStrategyOptions } from '../components/strategy-list/holder/ScalpelClassicStrategyHolderView.tsx'
 import { CurrencyUiModel } from '../model/CurrencyUiModel.ts'
 import { LogUiModel } from '../model/LogUiModel.ts'
@@ -55,7 +55,6 @@ export const StrategyResponseToStrategyListItem = (
       const from = mapOfToken.get(item.currencyFrom)!
       const to = mapOfToken.get(item.currencyTo)!
 
-      console.log(item.exchangeUsdPrice)
       return new SwapUiModel(
         from.address,
         to.address,
@@ -127,6 +126,7 @@ export const StrategyResponseToStrategyListItem = (
     swapsUiModels,
     false /*waitChangeStatusPlayPause: boolean*/,
     false /*waitChangeStatusCancel: boolean*/,
+    false, /* wait force execute */
     logsModels,
     NumberShortener(totalUsdProfit),
     history,

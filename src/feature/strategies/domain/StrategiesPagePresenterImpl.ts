@@ -1,3 +1,4 @@
+import * as console from 'node:console'
 import { BehaviorSubject, from, Observable, Subscription } from 'rxjs'
 import { Pageable } from '../../../common/repository/data/model/Pageable.ts'
 import { StrategyStatusType } from '../../../common/repository/data/model/StrategyResponse.ts'
@@ -110,6 +111,50 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
 
     } else if (viewId === StrategyHolderButtonIds.OPEN_ANALYTICS_BUTTON_ID) {
       this.dialogProvider.getDialogs()?.openAnalyticsDialog(item.hash)
+
+    } else if (viewId === StrategyHolderButtonIds.FORCE_EXECUTE_ORDER_BUTTON_ID) {
+      this.dialogProvider.getDialogs()?.openForceExecuteDialog(item.hash)
+    }
+  }
+
+  public onForceExecuteClick(hash: string): void {
+    this.forceExecuteStrategy(hash)
+      .then(() => {})
+      .catch(e => console.error(e))
+  }
+
+  private async forceExecuteStrategy(orderHash: string): Promise<void> {
+    try {
+      const updatedListForWait = this.strategiesList.value.map(item => {
+        if (item.hash === orderHash) {
+          return item.copy({waitForceExecute: true})
+        }
+        return item
+      })
+      this.strategiesList.next(updatedListForWait)
+
+      await this.strategiesRepository.forceExecute(orderHash)
+      const strategy = await this.strategiesRepository.getStrategy(orderHash)
+
+      const updatedList = this.strategiesList.value.map(item => {
+        if (item.hash === strategy.orderHash) {
+          return StrategyResponseToStrategyListItem(strategy, item.swaps, item.logs, item.swapsHistory)
+        }
+        return item
+      })
+
+      this.strategiesList.next(updatedList)
+
+    } catch (e) {
+      console.error(e)
+      const updatedList = this.strategiesList.value.map(item => {
+        if (item.hash === orderHash) {
+          return item.copy({waitForceExecute: false})
+        }
+        return item
+      })
+      this.strategiesList.next(updatedList)
+
     }
   }
 

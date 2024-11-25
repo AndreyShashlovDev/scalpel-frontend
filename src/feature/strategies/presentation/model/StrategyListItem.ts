@@ -1,7 +1,7 @@
 import { ListItem } from '../../../../common/app-ui/presentation/AppInfiniteScrollView.tsx'
 import { ChainType } from '../../../../common/repository/data/model/ChainType.ts'
-import { JsonObject } from '../../../../utils/types.ts'
 import { StrategyStatusType } from '../../../../common/repository/data/model/StrategyResponse.ts'
+import { JsonObject } from '../../../../utils/types.ts'
 import { CurrencyUiModel } from './CurrencyUiModel.ts'
 import { LogUiModel } from './LogUiModel.ts'
 import { SwapHistoryUiModel } from './SwapHistoryUiModel.ts'
@@ -28,6 +28,7 @@ export class StrategyListItem<T> implements ListItem {
   public readonly swaps: SwapUiModel[]
   public readonly waitChangeStatusPlayPause: boolean
   public readonly waitChangeStatusCancel: boolean
+  public readonly waitForceExecute: boolean
   public readonly logs: LogUiModel[]
   public readonly totalUsdProfit: number
   public readonly swapsHistory: SwapHistoryUiModel[]
@@ -52,6 +53,7 @@ export class StrategyListItem<T> implements ListItem {
     swaps: SwapUiModel[],
     waitChangeStatusPlayPause: boolean,
     waitChangeStatusCancel: boolean,
+    waitForceExecute: boolean,
     logs: LogUiModel[],
     totalUsdProfit: number,
     swapsHistory: SwapHistoryUiModel[],
@@ -75,6 +77,7 @@ export class StrategyListItem<T> implements ListItem {
     this.swaps = swaps
     this.waitChangeStatusPlayPause = waitChangeStatusPlayPause
     this.waitChangeStatusCancel = waitChangeStatusCancel
+    this.waitForceExecute = waitForceExecute
     this.logs = logs
     this.totalUsdProfit = totalUsdProfit
     this.swapsHistory = swapsHistory

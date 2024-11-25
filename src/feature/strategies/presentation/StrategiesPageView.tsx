@@ -9,6 +9,7 @@ import { StrategiesPagePresenter } from '../domain/StrategiesPagePresenter.ts'
 import { StrategyDialogProvider } from '../domain/StrategyDialogProvider.ts'
 import { DialogAnalyticsCallBack, DialogAnalyticsView } from './components/DialogAnalyticsView.tsx'
 import { DialogDeleteCallBack, DialogDeleteView } from './components/DialogDeleteView.tsx'
+import { DialogForceExecuteCallBack, DialogForceExecuteView } from './components/DialogForceExecuteView.tsx'
 import { DialogLogsCallBack, DialogLogsView } from './components/DialogLogsView.tsx'
 import { DialogSwapsCallBack, DialogSwapsView } from './components/DialogSwapsView.tsx'
 import { StrategyListView } from './components/strategy-list/StrategyListView.tsx'
@@ -34,6 +35,7 @@ export const StrategiesPageView = () => {
   const dialogLogsRef = useRef<DialogLogsCallBack | null>(null)
   const dialogDeleteRef = useRef<DialogDeleteCallBack | null>(null)
   const dialogAnalyticsRef = useRef<DialogAnalyticsCallBack | null>(null)
+  const dialogForceExecuteRef = useRef<DialogForceExecuteCallBack | null>(null)
   const listScrollContainerRef = useRef<HTMLDivElement | null>(null)
 
   useLayoutEffect(() => {
@@ -51,6 +53,9 @@ export const StrategiesPageView = () => {
       },
       openAnalyticsDialog(strategyHash: string): void {
         dialogAnalyticsRef.current?.openDialog({strategyHash})
+      },
+      openForceExecuteDialog(strategyHash: string): void {
+        dialogForceExecuteRef.current?.openDialog({strategyHash})
       }
     })
 
@@ -94,6 +99,10 @@ export const StrategiesPageView = () => {
         <DialogDeleteView
           onClickDelete={(hash: string) => presenter.onDeleteStrategyClick(hash)}
           ref={dialogDeleteRef}
+        />
+        <DialogForceExecuteView
+          ref={dialogForceExecuteRef}
+          onExecuteClick={(hash: string) => presenter.onForceExecuteClick(hash)}
         />
       </PageLayoutWrapper>
     </div>

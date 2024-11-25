@@ -19,4 +19,6 @@ export class StrategyHolderButtonIds {
   public static PLAY_ORDER_BUTTON_ID = 9
 
   public static PAUSE_ORDER_BUTTON_ID = 10
+
+  public static FORCE_EXECUTE_ORDER_BUTTON_ID = 11
 }
