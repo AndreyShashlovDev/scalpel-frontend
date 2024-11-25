@@ -48,5 +48,5 @@ export const AnalyticsResponseToSwapPriceUiModel = (
     }
   })
 
-  return new AnalyticsChartUiModel(result)
+  return new AnalyticsChartUiModel(result, response.maxDays)
 }

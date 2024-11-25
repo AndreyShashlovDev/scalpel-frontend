@@ -30,19 +30,20 @@ const RangeSelectorContainer = styled.div`
   gap: 8px;
 
   font-size: ${({theme}) => theme.size.fontSize.medium};
-
-  > div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 32px;
-    height: 32px;
-    cursor: pointer;
-  }
 `
 const ChartContainer = styled.div`
   width: 95%;
   height: 300px;
+`
+
+const ChartDateRangeContainer = styled.div<{ $selected: boolean }>`
+  text-decoration: ${({$selected}) => $selected ? 'underline' : 'unset'};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
 `
 
 export interface AnalyticsPageProps {
@@ -53,6 +54,7 @@ export const AnalyticsPageView = ({strategyHash}: AnalyticsPageProps) => {
 
   const presenter = useMemo(() => getDIValue(AnalyticsPagePresenter), [])
   const chartModel = useObservable(presenter.getChartModel(), undefined)
+  const selectedChartRange = useObservable(presenter.getSelectedChartRange(), undefined)
   const isLoading = useObservable(presenter.getIsLoading(), true)
 
   useLayoutEffect(() => {
@@ -80,12 +82,32 @@ export const AnalyticsPageView = ({strategyHash}: AnalyticsPageProps) => {
             ? (
               <div>
                 <ChartTitleContainer>
-                  <div>Show latest {Math.round(chartModel.data.length / 144)} days</div>
+                  <div>Show {Math.round(chartModel.data.length / 144)} of {chartModel.maxDays} days.</div>
                   <RangeSelectorContainer>
-                    <div onClick={() => presenter.onChartRangeChange(AnalyticsRange.DAY)}>1d</div>
-                    <div onClick={() => presenter.onChartRangeChange(AnalyticsRange.WEEK)}>7d</div>
-                    <div onClick={() => presenter.onChartRangeChange(AnalyticsRange.MONTH)}>30d</div>
-                    <div onClick={() => presenter.onChartRangeChange(AnalyticsRange.ALL)}>ALL</div>
+                    <ChartDateRangeContainer
+                      $selected={selectedChartRange === AnalyticsRange.DAY}
+                      onClick={() => presenter.onChartRangeChange(AnalyticsRange.DAY)}
+                    >
+                      1d
+                    </ChartDateRangeContainer>
+                    <ChartDateRangeContainer
+                      $selected={selectedChartRange === AnalyticsRange.WEEK}
+                      onClick={() => presenter.onChartRangeChange(AnalyticsRange.WEEK)}
+                    >
+                      7d
+                    </ChartDateRangeContainer>
+                    <ChartDateRangeContainer
+                      $selected={selectedChartRange === AnalyticsRange.MONTH}
+                      onClick={() => presenter.onChartRangeChange(AnalyticsRange.MONTH)}
+                    >
+                      30d
+                    </ChartDateRangeContainer>
+                    <ChartDateRangeContainer
+                      $selected={selectedChartRange === AnalyticsRange.ALL}
+                      onClick={() => presenter.onChartRangeChange(AnalyticsRange.ALL)}
+                    >
+                      ALL
+                    </ChartDateRangeContainer>
                   </RangeSelectorContainer>
                 </ChartTitleContainer>
                 <ChartContainer>

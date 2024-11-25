@@ -11,6 +11,8 @@ export abstract class AnalyticsPagePresenter extends BasicPresenter {
 
   public abstract getChartModel(): Observable<AnalyticsChartUiModel | undefined>
 
+  public abstract getSelectedChartRange(): Observable<AnalyticsRange>
+
   public abstract refresh(): void
 
   public abstract onChartRangeChange(range: AnalyticsRange): void

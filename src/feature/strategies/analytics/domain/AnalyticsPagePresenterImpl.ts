@@ -12,7 +12,7 @@ export class AnalyticsPagePresenterImpl extends AnalyticsPagePresenter {
 
   private fetchAnalytics: Subscription | undefined
 
-  private chartDateRange: AnalyticsRange = AnalyticsRange.DAY
+  private chartDateRange = new BehaviorSubject<AnalyticsRange>(AnalyticsRange.DAY)
   private strategyHash: string | undefined
 
   constructor(private readonly analyticsRepository: AnalyticsRepository) {
@@ -44,6 +44,10 @@ export class AnalyticsPagePresenterImpl extends AnalyticsPagePresenter {
     return this.isLoading.asObservable()
   }
 
+  public getSelectedChartRange(): Observable<AnalyticsRange> {
+    return this.chartDateRange.asObservable()
+  }
+
   public loadData(): void {
     if (!this.strategyHash) {
       return
@@ -51,17 +55,17 @@ export class AnalyticsPagePresenterImpl extends AnalyticsPagePresenter {
     this.isLoading.next(true)
     this.fetchAnalytics?.unsubscribe()
 
-    this.fetchAnalytics = from(this.analyticsRepository.getAnalytics(this.strategyHash, this.chartDateRange))
+    this.fetchAnalytics = from(this.analyticsRepository.getAnalytics(this.strategyHash, this.chartDateRange.value))
       .subscribe({
         next: (result) => {
-          this.chartModel.next(AnalyticsResponseToSwapPriceUiModel(result, this.chartDateRange))
+          this.chartModel.next(AnalyticsResponseToSwapPriceUiModel(result, this.chartDateRange.value))
           this.isLoading.next(false)
         }
       })
   }
 
   public onChartRangeChange(range: AnalyticsRange): void {
-    this.chartDateRange = range
+    this.chartDateRange.next(range)
     this.loadData()
   }
 }
