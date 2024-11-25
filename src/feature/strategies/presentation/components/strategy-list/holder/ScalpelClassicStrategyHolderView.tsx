@@ -154,7 +154,7 @@ const LogsContainer = styled.div`
   align-items: center;
   border: 1px solid gray;
   padding-right: 8px;
-  font-size: ${({theme}) => theme.size.fontSize.smaller};
+  font-size: ${({theme}) => theme.size.fontSize.small};
 `
 
 const LogItemContainer = styled.div`
@@ -166,12 +166,12 @@ const SwapContainer = styled.div`
   cursor: pointer;
   display: grid;
   padding: 0 8px;
-  grid-template-columns: 20px 1fr 100px;
+  grid-template-columns: 20px 1fr fit-content(100px);
   justify-content: center;
   gap: 8px;
   align-items: center;
   border: 1px solid gray;
-  font-size: ${({theme}) => theme.size.fontSize.smaller};
+  font-size: ${({theme}) => theme.size.fontSize.small};
 `
 
 const SwapItemDateContainer = styled.span`
