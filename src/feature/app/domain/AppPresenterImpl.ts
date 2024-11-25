@@ -59,7 +59,7 @@ export class AppPresenterImpl extends AppPresenter {
       this.router.openWalletsPage()
 
     } else if (id === AppMainMenuIds.TRANSACTIONS_MENU_ID) {
-      return
+      this.router.openTransactionsPage()
     }
 
     this.selectedMenuItem.next(Number(id))

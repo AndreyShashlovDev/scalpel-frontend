@@ -21,4 +21,8 @@ export class ApplicationRouterImpl extends ApplicationRouter {
   public openWalletsPage(): void {
     this.navigateTo('/wallets', {replace: true})
   }
+
+  public openTransactionsPage(): void {
+    this.navigateTo('/transactions', {replace: true})
+  }
 }
