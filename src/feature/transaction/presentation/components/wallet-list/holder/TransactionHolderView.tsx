@@ -80,7 +80,7 @@ export const TransactionHolderView = forwardRef(({item}: WalletListHolderProps, 
         ? <LineContainer>Nonce: {item.nonce}</LineContainer>
         : undefined
       }
-      <LineContainer>To:&nbsp;<AppAddressView address={item.address} /></LineContainer>
+      <LineContainer>To:&nbsp;<AppAddressView address={item.recipientAddress} /></LineContainer>
       <LineContainer>Method: <Capitalize>{item.callData.method}</Capitalize></LineContainer>
       {item.executedAt
         ? <LineContainer>Executed at: {item.executedAt}</LineContainer>
@@ -92,10 +92,12 @@ export const TransactionHolderView = forwardRef(({item}: WalletListHolderProps, 
       }
       {item.txFee
         ? (
-          <LineContainer>Fee: &nbsp;<ChainIconView
-            chain={item.chain}
-            size={ComponentSize.SMALLEST}
-          />
+          <LineContainer>
+            Fee:&nbsp;
+            <ChainIconView
+              chain={item.chain}
+              size={ComponentSize.SMALLEST}
+            />
             {item.txFee}
           </LineContainer>
         )
