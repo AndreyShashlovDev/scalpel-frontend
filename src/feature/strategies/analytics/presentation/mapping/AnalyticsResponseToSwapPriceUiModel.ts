@@ -9,7 +9,7 @@ export const AnalyticsResponseToSwapPriceUiModel = (
 ): AnalyticsChartUiModel => {
 
   const roundToTenMinutes = (unixtime: number) => Math.floor(unixtime / 600) * 600
-  const toUsdt = (value: string): number => Number((Number(value) / 10 ** 6).toFixed(2))
+  const toUsdt = (value: string): number => Number((Number(value) / 10 ** 6).toFixed(3))
 
 // maps rounded by 10 minutes
   const swapAByDate = new Map(
