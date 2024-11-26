@@ -22,15 +22,17 @@ const ListWrapper = styled(InfiniteScrollListView)`
 
 export interface WalletListViewProps {
   items: WalletListItemModel[]
+  hasNext: boolean
+  onFetchNext: () => void
 }
 
-export const WalletListView = ({items}: WalletListViewProps) => {
+export const WalletListView = ({items, hasNext, onFetchNext}: WalletListViewProps) => {
 
   return (
     <ListWrapper
       items={items}
-      onNextFetch={() => {}}
-      hasNext={false}
+      onNextFetch={() => onFetchNext}
+      hasNext={hasNext}
       loadingElement={<LoadingView />}
       getHolderView={(item, _, ref) => {
         return <WalletHolderView

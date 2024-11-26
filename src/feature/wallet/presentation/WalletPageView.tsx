@@ -29,6 +29,7 @@ const WalletPageView = ({strategyHash}: LogsPageProps) => {
   const presenter = useMemo(() => getDIValue(WalletPagePresenter), [])
   const walletItemsList = useObservable(presenter.getWalletItems(), [])
   const isLoading = useObservable(presenter.getIsLoading(), true)
+  const isLastPage = useObservable(presenter.getIsLastPage(), true)
 
   useLayoutEffect(() => {
     presenter.init()
@@ -51,7 +52,11 @@ const WalletPageView = ({strategyHash}: LogsPageProps) => {
             ? <div>List is empty</div>
             : (
               <ListContainer>
-                <WalletListView items={walletItemsList} />
+                <WalletListView
+                  hasNext={!isLastPage}
+                  onFetchNext={() => presenter.fetchNext()}
+                  items={walletItemsList}
+                />
               </ListContainer>
             )
         }

@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { ChainType } from '../../repository/data/model/ChainType.ts'
 import { ComponentSize, ComponentSizeProps } from './ComponentSize.ts'
 
-const Container = styled.div<ComponentSizeProps>`
+const ImgContainer = styled.div<ComponentSizeProps>`
 
   border-radius: 50%;
 
@@ -77,8 +77,17 @@ const Container = styled.div<ComponentSizeProps>`
   }
 `
 
+const Container = styled.span`
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 8px;
+  text-transform: capitalize;
+`
+
 export interface ChainIconProps extends ComponentSizeProps {
   chain: ChainType
+  showChainName?: boolean
 }
 
 const mapChainName: Map<ChainType, string> = new Map([
@@ -88,10 +97,13 @@ const mapChainName: Map<ChainType, string> = new Map([
 
 const url = 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/<chain>/info/logo.png'
 
-export const ChainIconView = ({chain, size}: ChainIconProps) => {
+export const ChainIconView = ({chain, size, showChainName}: ChainIconProps) => {
   return (
-    <Container size={size}>
-      <img src={url.replace('<chain>', mapChainName.get(chain) ?? '')} alt={chain} />
+    <Container>
+      <ImgContainer size={size}>
+        <img src={url.replace('<chain>', mapChainName.get(chain) ?? '')} alt={chain} />
+      </ImgContainer>
+      {showChainName ? mapChainName.get(chain) : undefined}
     </Container>
   )
 }

@@ -8,5 +8,9 @@ export abstract class WalletPagePresenter extends BasicPresenter {
 
   public abstract getIsLoading(): Observable<boolean>
 
+  public abstract getIsLastPage(): Observable<boolean>
+
+  public abstract fetchNext(): void
+  
   public abstract refresh(): void
 }
