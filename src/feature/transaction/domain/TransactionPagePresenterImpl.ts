@@ -34,6 +34,9 @@ export class TransactionPagePresenterImpl extends TransactionPagePresenter {
 
   public refresh(): void {
     this.transactionItems.next([])
+    this.isLastPage.next(true)
+    this.transactionLatestResult = undefined
+
     this.fetchNext()
   }
 
@@ -70,7 +73,7 @@ export class TransactionPagePresenterImpl extends TransactionPagePresenter {
             result.total <= list.length ||
             result.data.length < TransactionPagePresenterImpl.PAGE_LIMIT
           )
-          
+
           this.isLoading.next(false)
         }
       })

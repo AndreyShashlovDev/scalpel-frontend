@@ -30,6 +30,7 @@ export const StrategiesPageView = () => {
   const dialogProvider = useMemo(() => getDIValue(StrategyDialogProvider), [])
   const strategies = useObservable(presenter.getStrategiesList(), undefined)
   const isLastPage = useObservable(presenter.getIsLastPage(), true)
+  const isLoading = useObservable(presenter.getIsLoading(), true)
 
   const dialogSwapsRef = useRef<DialogSwapsCallBack | null>(null)
   const dialogLogsRef = useRef<DialogLogsCallBack | null>(null)
@@ -69,15 +70,15 @@ export const StrategiesPageView = () => {
     <div>
       <PageHeaderView text={'Orders:'} />
       <PageLayoutWrapper
-        fetched={(strategies?.length ?? 0) > 0}
+        fetched={!isLoading}
         refresh={() => {
           presenter.refresh()
         }}
       >
       {
-        isLastPage && (strategies?.length ?? 0) === 0
-          ? 'List empty'
-          : (strategies?.length ?? 0) === 0 && <LoadingView />
+        !isLoading && (strategies?.length ?? 0) === 0
+          ? <div>List empty</div>
+          : isLoading && <LoadingView />
       }
 
         <ListContainer ref={listScrollContainerRef}>

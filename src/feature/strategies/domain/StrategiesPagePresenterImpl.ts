@@ -17,7 +17,8 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
   private static PAGE_LIMIT: number = 5
 
   private readonly strategiesList = new BehaviorSubject<StrategyListItem<unknown>[]>([])
-  private readonly isLastPage = new BehaviorSubject<boolean>(false)
+  private readonly isLastPage = new BehaviorSubject<boolean>(true)
+  private readonly isLoading = new BehaviorSubject<boolean>(true)
   private strategiesLatestResult: Pageable<CompositeStrategyResponse> | undefined
 
   private listFetchSubscriber: Subscription | undefined
@@ -38,7 +39,7 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
   }
 
   public refresh(): void {
-    this.isLastPage.next(false)
+    this.isLastPage.next(true)
     this.strategiesLatestResult = undefined
     this.strategiesList.next([])
     this.fetchNextPage()
@@ -48,12 +49,17 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
     return this.strategiesList.asObservable()
   }
 
+  public getIsLoading(): Observable<boolean> {
+    return this.isLoading.asObservable()
+  }
+
   public getIsLastPage(): Observable<boolean> {
     return this.isLastPage.asObservable()
   }
 
   public fetchNextPage(): void {
     this.listFetchSubscriber?.unsubscribe()
+    this.isLoading.next(true)
 
     this.listFetchSubscriber = from(this.strategiesRepository.getCompositeStrategies(
       (this.strategiesLatestResult?.page ?? 0) + 1,
@@ -77,6 +83,7 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
             result.total <= list.length ||
             result.data.length < StrategiesPagePresenterImpl.PAGE_LIMIT
           )
+          this.isLoading.next(false)
         }
       })
   }

@@ -31,6 +31,9 @@ export class WalletPagePresenterImpl extends WalletPagePresenter {
 
   public refresh(): void {
     this.walletItems.next([])
+    this.walletsLatestResult = undefined
+    this.isLastPage.next(true)
+
     this.fetchNext()
   }
 

@@ -8,6 +8,8 @@ export abstract class StrategiesPagePresenter extends BasicPresenter {
 
   public abstract getStrategiesList(): Observable<StrategyListItem<unknown>[]>
 
+  public abstract getIsLoading(): Observable<boolean>
+
   public abstract getIsLastPage(): Observable<boolean>
 
   public abstract fetchNextPage(): void

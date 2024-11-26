@@ -102,7 +102,7 @@ export class SwapPagePresenterImpl extends SwapPagePresenter {
 
   public refresh(): void {
     this.prevSwapsResponse = undefined
-    this.isLastPage.next(false)
+    this.isLastPage.next(true)
     this.swapsItems.next([])
     this.onFetchNext()
   }
