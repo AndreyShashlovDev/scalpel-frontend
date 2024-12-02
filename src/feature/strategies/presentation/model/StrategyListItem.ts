@@ -18,6 +18,7 @@ export class StrategyListItem<T> implements ListItem {
   public readonly currencyBUsdPrice: number | undefined
   public readonly totalAmountA: number
   public readonly totalAmountB: number
+  public readonly adaptiveUsdPrice: number | undefined
   public readonly options: JsonObject<T>
   public readonly initialAmountA: number
   public readonly approvedA: boolean
@@ -43,6 +44,7 @@ export class StrategyListItem<T> implements ListItem {
     currencyBUsdPrice: number | undefined,
     totalAmountA: number,
     totalAmountB: number,
+    adaptiveUsdPrice: number | undefined,
     options: JsonObject<T>,
     initialAmountA: number,
     approvedA: boolean,
@@ -67,6 +69,7 @@ export class StrategyListItem<T> implements ListItem {
     this.currencyBUsdPrice = currencyBUsdPrice
     this.totalAmountA = totalAmountA
     this.totalAmountB = totalAmountB
+    this.adaptiveUsdPrice = adaptiveUsdPrice
     this.options = options
     this.initialAmountA = initialAmountA
     this.approvedA = approvedA

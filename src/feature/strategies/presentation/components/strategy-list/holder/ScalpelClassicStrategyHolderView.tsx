@@ -632,6 +632,14 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
         </ProfitValueContainer>
       </ElementContainer>
 
+      {
+        item.adaptiveUsdPrice && (
+          <ElementContainer>
+            Exchange adaptive price: ${item.adaptiveUsdPrice}
+          </ElementContainer>
+        )
+      }
+
       <AnalyticsButtonWrapper
         onClick={() => onItemClick(StrategyHolderButtonIds.OPEN_ANALYTICS_BUTTON_ID)}
         size={ComponentSize.SMALL}

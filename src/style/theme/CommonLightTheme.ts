@@ -6,7 +6,7 @@ export class CommonLightTheme implements DefaultTheme {
     common: {
       green: '#a6db57',
       red: '#db5757',
-      orange: "#dba257"
+      orange: "#dbc957"
     },
     overlay: 'rgba(14,14,14,0.54)',
     background: '#ffffff',

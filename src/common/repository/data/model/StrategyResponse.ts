@@ -1,7 +1,7 @@
+import { JsonObject } from '../../../../utils/types.ts'
 import { ChainType } from './ChainType.ts'
 import { CurrencyResponse } from './CurrencyResponse.ts'
 import { StrategyType } from './StrategyType.ts'
-import { JsonObject } from '../../../../utils/types.ts'
 
 export enum StrategyStatusType {
   CREATED = 'CREATED',
@@ -24,6 +24,7 @@ export class StrategyResponse {
       CurrencyResponse.valueOfJson(json.currencyB),
       json.totalAmountA,
       json.totalAmountB,
+      json.adaptiveUsdPrice,
       json.options,
       json.initialAmountA,
       json.approvedA,
@@ -42,6 +43,7 @@ export class StrategyResponse {
   public readonly currencyB: CurrencyResponse
   public readonly totalAmountA: string
   public readonly totalAmountB: string
+  public readonly adaptiveUsdPrice: string | undefined
   public readonly options: JsonObject<unknown>
   public readonly initialAmountA: string
   public readonly approvedA: boolean
@@ -59,6 +61,7 @@ export class StrategyResponse {
     currencyB: CurrencyResponse,
     totalAmountA: string,
     totalAmountB: string,
+    adaptiveUsdPrice: string | undefined,
     options: JsonObject<unknown>,
     initialAmountA: string,
     approvedA: boolean,
@@ -75,6 +78,7 @@ export class StrategyResponse {
     this.currencyB = currencyB
     this.totalAmountA = totalAmountA
     this.totalAmountB = totalAmountB
+    this.adaptiveUsdPrice = adaptiveUsdPrice
     this.options = options
     this.initialAmountA = initialAmountA
     this.approvedA = approvedA
