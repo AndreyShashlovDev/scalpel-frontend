@@ -5,7 +5,7 @@ import { AppSpaceView } from '../../../../../../common/app-ui/presentation/AppSp
 import { AppTxHashView } from '../../../../../../common/app-ui/presentation/AppTxHashView.tsx'
 import { ComponentSize } from '../../../../../../common/app-ui/presentation/ComponentSize.ts'
 import { TokenIconView } from '../../../../../../common/app-ui/presentation/TokenIconView.tsx'
-import { ChainNativeCurrency } from '../../../../../../utils/ChainNativeCurrency.ts'
+import { ChainNativeCurrency } from '../../../../../../utils/ChainsData.ts'
 import { SwapListItemModel } from '../../../model/SwapListItemModel.ts'
 import { SwapStateView } from '../SwapStatusView.tsx'
 

@@ -5,6 +5,7 @@ import { AppAddressView } from '../../../../../../common/app-ui/presentation/App
 import { AppTxHashView } from '../../../../../../common/app-ui/presentation/AppTxHashView.tsx'
 import { ChainIconView } from '../../../../../../common/app-ui/presentation/ChainIconView.tsx'
 import { ComponentSize } from '../../../../../../common/app-ui/presentation/ComponentSize.ts'
+import { ChainName } from '../../../../../../utils/ChainsData.ts'
 import { TxStatus } from '../../../../data/model/TransactionResponse.ts'
 import { TransactionListItemModel } from '../../../model/TransactionListItemModel.ts'
 
@@ -24,6 +25,11 @@ const LineContainer = styled.div`
   margin-bottom: 4px;
   text-wrap: nowrap;
 `
+const TextWrapContainer = styled.span`
+  text-wrap: wrap;
+  overflow-wrap: break-word;
+  word-break: break-all;
+`
 
 const DateContainer = styled(LineContainer)`
   justify-content: end;
@@ -42,7 +48,7 @@ const StatusColor = styled.div<{ $status: TxStatus | undefined }>`
         return theme.color.common.green
 
       case TxStatus.CANCELED:
-        return theme.color.common.orange
+        return theme.color.common.red
 
       case TxStatus.FAILED:
         return theme.color.common.red
@@ -71,10 +77,10 @@ export const TransactionHolderView = forwardRef(({item}: WalletListHolderProps, 
     >
       <LineContainer>Status: <StatusColor $status={item.success}>{item.statusText}</StatusColor></LineContainer>
       {item.errorReason
-        ? <LineContainer>Error: {item.errorReason}</LineContainer>
+        ? <LineContainer>Error: <TextWrapContainer>{item.errorReason}</TextWrapContainer></LineContainer>
         : undefined
       }
-      <LineContainer>Chain:&nbsp;<ChainIconView chain={item.chain} size={ComponentSize.SMALLEST} /></LineContainer>
+      <LineContainer>Chain: {ChainName.get(item.chain)}</LineContainer>
       <LineContainer>Wallet:&nbsp;<AppAddressView address={item.address} /></LineContainer>
       {item.nonce
         ? <LineContainer>Nonce: {item.nonce}</LineContainer>

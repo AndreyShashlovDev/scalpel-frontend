@@ -22,11 +22,11 @@ const StatusContainer = styled.span<{ $status?: StrategyStatusType }>`
         return theme.color.common.green
 
       case StrategyStatusType.CANCELED:
+      case StrategyStatusType.USER_ACTION_REQUIRED:
         return theme.color.common.red
 
       case StrategyStatusType.PAUSED:
       case StrategyStatusType.CREATED:
-      case StrategyStatusType.USER_ACTION_REQUIRED:
         return theme.color.common.orange
 
       default:

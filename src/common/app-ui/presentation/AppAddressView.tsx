@@ -6,6 +6,9 @@ const AddressContainer = styled.span`
   width: 100%;
   overflow: hidden;
   color: ${({theme}) => theme.color.link};
+  text-wrap: wrap;
+  overflow-wrap: break-word;
+  word-break: break-all;
 `
 
 export const AppAddressView = ({address}: { address: string }) => {

@@ -16,6 +16,21 @@ const DateContainer = styled.div`
   text-align: end;
 `
 
+const LineContainer = styled.div`
+  display: flex;
+  justify-content: start;
+  align-items: start;
+  gap: 4px;
+  margin-bottom: 4px;
+  text-wrap: nowrap;
+`
+
+const WrapTextContainer = styled.span`
+  text-wrap: wrap;
+  overflow-wrap: break-word;
+  word-break: break-all;
+`
+
 export interface LogsListHolderProps {
   item: LogListItemModel
 }
@@ -38,7 +53,7 @@ export const LogsListHolderView = forwardRef(({item}: LogsListHolderProps, ref: 
       <AppSpaceView />
       {
         Object.entries(item.log).map(([key, value]) => (
-          <div key={key}>{key}: {`${value}`}</div>
+          <LineContainer key={key}>{key}: <WrapTextContainer>{`${value}`}</WrapTextContainer></LineContainer>
         ))
       }
       <DateContainer>{item.createdAt}</DateContainer>
