@@ -10,6 +10,7 @@ export class WalletListItemModel implements ListItem {
   public readonly totalOrders: number
   public readonly activeOrders: number
   public readonly totalUsdProfit: number
+  public readonly totalFee: Map<ChainType, { eth: number, usd: number | undefined }>
   public readonly currencies: Map<ChainType, WalletCurrency[]>
 
   constructor(
@@ -18,6 +19,7 @@ export class WalletListItemModel implements ListItem {
     totalOrders: number,
     activeOrders: number,
     totalUsdProfit: number,
+    totalFee: Map<ChainType, { eth: number, usd: number | undefined }>,
     currencies: Map<ChainType, WalletCurrency[]>
   ) {
     this.hash = address
@@ -26,6 +28,7 @@ export class WalletListItemModel implements ListItem {
     this.totalOrders = totalOrders
     this.activeOrders = activeOrders
     this.totalUsdProfit = totalUsdProfit
+    this.totalFee = totalFee
     this.currencies = currencies
   }
 }

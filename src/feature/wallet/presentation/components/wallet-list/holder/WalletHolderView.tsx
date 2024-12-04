@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { AppAddressView } from '../../../../../../common/app-ui/presentation/AppAddressView.tsx'
 import { ChainIconView } from '../../../../../../common/app-ui/presentation/ChainIconView.tsx'
 import { ComponentSize } from '../../../../../../common/app-ui/presentation/ComponentSize.ts'
+import { LoadingView } from '../../../../../../common/app-ui/presentation/LoadingView.tsx'
 import { TokenIconView } from '../../../../../../common/app-ui/presentation/TokenIconView.tsx'
 import { NumberShortener } from '../../../../../../utils/Shortener.ts'
 import { WalletListItemModel } from '../../../model/WalletListItemModel.ts'
@@ -26,6 +27,25 @@ const LineContainer = styled.div`
 const ChainTitleContainer = styled.div`
   margin-bottom: 8px;
   border-bottom: 1px solid ${({theme}) => theme.color.button.normal.border.primary!};
+`
+
+const FeeContainer = styled.div`
+  margin: 8px 0;
+  padding: 4px;
+  border: 1px solid ${({theme}) => theme.color.button.normal.border.primary!};
+  border-radius: ${({theme}) => theme.size.borderRadius.small};
+`
+
+const FeeTitleContainer = styled.div`
+  margin-bottom: 8px;
+  border-bottom: 1px solid ${({theme}) => theme.color.button.normal.border.primary!};
+`
+
+const FeeItemContainer = styled.div`
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 4px;
 `
 
 const CurrencyContainer = styled.div`
@@ -67,6 +87,24 @@ export const WalletHolderView = forwardRef(({item}: WalletListHolderProps, ref: 
       <LineContainer>Total orders: {item.totalOrders}</LineContainer>
       <LineContainer>Active orders: {item.activeOrders}</LineContainer>
       <LineContainer>Total profit: <GreenColor>${NumberShortener(item.totalUsdProfit)}</GreenColor></LineContainer>
+      <FeeContainer>
+        <FeeTitleContainer>Total fee:</FeeTitleContainer>
+        {
+          Array.from((item.totalFee.entries()))
+            .map(([chain, fee]) => (
+              <FeeItemContainer key={chain}>
+                <ChainIconView
+                  chain={chain}
+                  size={ComponentSize.SMALLEST}
+                />
+                &nbsp;
+                {NumberShortener(fee.eth, 5)}
+                &nbsp;
+                {fee.usd ? `($${NumberShortener(fee.usd)})` : <LoadingView size={ComponentSize.SMALLEST} />}
+              </FeeItemContainer>
+            ))
+        }
+      </FeeContainer>
       {
         Array.from(item.currencies.keys()).map(chain => (
           <CurrencyContainer>
@@ -76,7 +114,7 @@ export const WalletHolderView = forwardRef(({item}: WalletListHolderProps, ref: 
             {
               Array.from((item.currencies.get(chain)?.values() ?? []))
                 .map(({amount, currency}) => (
-                  <CurrencyItemContainer>
+                  <CurrencyItemContainer key={currency.address + currency.chain}>
                     <TokenIconView
                       chain={currency.chain}
                       address={currency.address}

@@ -1,4 +1,5 @@
 import { JsonObject } from '../../../../utils/types.ts'
+import { ChainType } from './ChainType.ts'
 import { CurrencyResponse } from './CurrencyResponse.ts'
 
 export class WalletCurrency {
@@ -28,6 +29,7 @@ export class WalletStatisticResponse {
       json.totalOrders,
       json.activeOrders,
       json.totalUsdProfit,
+      json.txFee,
       json.currencies.map(WalletCurrency.valueOfJson)
     )
   }
@@ -37,6 +39,7 @@ export class WalletStatisticResponse {
   public readonly totalOrders: number
   public readonly activeOrders: number
   public readonly totalUsdProfit: number
+  public readonly txFee: Record<ChainType, string>
   public readonly currencies: WalletCurrency[]
 
   constructor(
@@ -45,6 +48,7 @@ export class WalletStatisticResponse {
     totalOrders: number,
     activeOrders: number,
     totalUsdProfit: number,
+    txFee: Record<ChainType, string>,
     currencies: WalletCurrency[]
   ) {
     this.address = address
@@ -52,6 +56,7 @@ export class WalletStatisticResponse {
     this.totalOrders = totalOrders
     this.activeOrders = activeOrders
     this.totalUsdProfit = totalUsdProfit
+    this.txFee = txFee
     this.currencies = currencies
   }
 }
