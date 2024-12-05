@@ -1,3 +1,4 @@
+import { CurrencyRepository } from '../../../common/repository/data/currencies/CurrencyRepository.ts'
 import { AppSourceService } from '../../../common/repository/data/source/AppSourceService.ts'
 import { WalletRepositoryImpl } from '../../../common/repository/data/wallet/WalletRepositoryImpl.ts'
 import { EthereumServiceStrategy } from '../../../common/service/ethereum-service/EthereumServiceStrategy.ts'
@@ -11,7 +12,8 @@ injectionKernel.set(
   new Factory(
     () => new WalletPagePresenterImpl(
       new WalletRepositoryImpl(getDIValue(AppSourceService)),
-      new GetErc20BalanceInteractor(getDIValue(EthereumServiceStrategy))
+      new GetErc20BalanceInteractor(getDIValue(EthereumServiceStrategy)),
+      getDIValue(CurrencyRepository),
     ),
     false
   )

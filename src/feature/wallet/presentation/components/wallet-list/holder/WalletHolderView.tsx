@@ -119,7 +119,10 @@ export const WalletHolderView = forwardRef((
                 &nbsp;
                 {NumberShortener(fee.eth, 5)}
                 &nbsp;
-                {fee.usd ? `($${NumberShortener(fee.usd)})` : <LoadingView size={ComponentSize.SMALLEST} />}
+                {fee.usd !== undefined
+                  ? `($${NumberShortener(fee.usd)})`
+                  : <LoadingView size={ComponentSize.SMALLEST} />
+                }
               </FeeItemContainer>
             ))
         }

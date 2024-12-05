@@ -43,7 +43,7 @@ export class CurrencyResponse {
     this.price = price
   }
 
-  public valueTo(value: string): number {
-    return Number(new BigNumber(value).div(this.decimal).toFixed(4, BigNumber.ROUND_DOWN))
+  public valueTo(value: string, decimals: number = 4): number {
+    return Number(new BigNumber(value).div(this.decimal).toFixed(decimals, BigNumber.ROUND_DOWN))
   }
 }

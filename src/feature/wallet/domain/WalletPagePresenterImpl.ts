@@ -1,5 +1,7 @@
 import { BehaviorSubject, from, Observable, Subscription } from 'rxjs'
+import { CurrencyRepository } from '../../../common/repository/data/currencies/CurrencyRepository.ts'
 import { ChainType } from '../../../common/repository/data/model/ChainType.ts'
+import { CurrencyResponse } from '../../../common/repository/data/model/CurrencyResponse.ts'
 import { Pageable } from '../../../common/repository/data/model/Pageable.ts'
 import { WalletStatisticResponse } from '../../../common/repository/data/model/WalletStatisticResponse.ts'
 import { WalletRepository } from '../../../common/repository/data/wallet/WalletRepository.ts'
@@ -19,16 +21,19 @@ export class WalletPagePresenterImpl extends WalletPagePresenter {
 
   private walletsLatestResult: Pageable<WalletStatisticResponse> | undefined
   private walletsFetchSubscription: Subscription | undefined
+  private readonly currencies = new Map<ChainType, Map<Address, CurrencyResponse>>()
 
   constructor(
     private readonly walletRepository: WalletRepository,
-    private readonly getBalancesInteractor: GetErc20BalanceInteractor
+    private readonly getBalancesInteractor: GetErc20BalanceInteractor,
+    private readonly currencyRepository: CurrencyRepository,
   ) {
     super()
   }
 
   public ready(): void {
-    this.fetchNext()
+    this.fetchNativePrices()
+      .finally(() => this.fetchNext())
   }
 
   public destroy(): void {
@@ -40,7 +45,8 @@ export class WalletPagePresenterImpl extends WalletPagePresenter {
     this.walletsLatestResult = undefined
     this.isLastPage.next(true)
 
-    this.fetchNext()
+    this.fetchNativePrices()
+      .finally(() => this.fetchNext())
   }
 
   public getWalletItems(): Observable<WalletListItemModel[]> {
@@ -53,6 +59,15 @@ export class WalletPagePresenterImpl extends WalletPagePresenter {
 
   public getIsLastPage(): Observable<boolean> {
     return this.isLastPage.asObservable()
+  }
+
+  private async fetchNativePrices(): Promise<void> {
+    const allCurrencies = await this.currencyRepository.getCurrencies()
+    allCurrencies.forEach(currency => {
+      const byChain = this.currencies.get(currency.chain) ?? new Map<Address, CurrencyResponse>()
+      byChain.set(currency.address, currency)
+      this.currencies.set(currency.chain, byChain)
+    })
   }
 
   private async fetchBalances(walletResponses: WalletStatisticResponse[]): Promise<void> {
@@ -76,7 +91,11 @@ export class WalletPagePresenterImpl extends WalletPagePresenter {
         const walletResponse = mapOfWallets.get(wallet.address)
 
         if (walletResponse) {
-          return WalletResponseToWalletListItem(walletResponse, result.get(wallet.address) ?? new Map())
+          return WalletResponseToWalletListItem(
+            walletResponse,
+            result.get(wallet.address) ?? new Map(),
+            this.currencies
+          )
         }
         return wallet
       })
@@ -101,7 +120,7 @@ export class WalletPagePresenterImpl extends WalletPagePresenter {
 
           const list = this.walletItems
             .value
-            .concat(result.data.map(item => WalletResponseToWalletListItem(item, new Map())))
+            .concat(result.data.map(item => WalletResponseToWalletListItem(item, new Map(), this.currencies)))
 
           this.walletItems.next(list)
           this.isLastPage.next(
