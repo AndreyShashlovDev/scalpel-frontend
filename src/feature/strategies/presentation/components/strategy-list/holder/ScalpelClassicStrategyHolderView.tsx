@@ -307,53 +307,63 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
     return undefined
   }, [item.status])
 
-  const getActionButtons = useCallback(() => {
-    return (
-      <ActionButtonsContainer>
+  const getActionButtons = useCallback(
+    () => {
+      return (
+        <ActionButtonsContainer>
         <AppIconButton
           disabled={item.waitChangeStatusCancel}
           onClick={() => {
             onItemClick(StrategyHolderButtonIds.CANCEL_ORDER_BUTTON_ID)
           }}
-          text={item.waitChangeStatusCancel ? <LoadingView size={ComponentSize.SMALL} /> : <DeleteIconWrapper />}
-          size={ComponentSize.SMALL}
+          icon={item.waitChangeStatusCancel ? <LoadingView size={ComponentSize.SMALL} /> : <DeleteIconWrapper />}
+          size={ComponentSize.STANDARD}
         />
 
-        {
-          item.status !== StrategyStatusType.CANCELED &&
-          item.status !== StrategyStatusType.APPROVE_IN_PROGRESS &&
-          item.status !== StrategyStatusType.CREATED
-            ? (
+          {
+            item.status !== StrategyStatusType.CANCELED &&
+            item.status !== StrategyStatusType.APPROVE_IN_PROGRESS &&
+            item.status !== StrategyStatusType.CREATED
+              ? (
+                <AppIconButton
+                  disabled={item.waitForceExecute}
+                  onClick={() => {onItemClick(StrategyHolderButtonIds.FORCE_EXECUTE_ORDER_BUTTON_ID)}}
+                  icon={item.waitForceExecute ? <LoadingView size={ComponentSize.SMALL} /> : <ExitIconWrapper />}
+                  size={ComponentSize.STANDARD}
+                />
+              )
+              : undefined
+          }
+
+          {
+            getIconPlayPause && (
               <AppIconButton
-                disabled={item.waitForceExecute}
-                onClick={() => {onItemClick(StrategyHolderButtonIds.FORCE_EXECUTE_ORDER_BUTTON_ID)}}
-                text={item.waitForceExecute ? <LoadingView size={ComponentSize.SMALL} /> : <ExitIconWrapper />}
-                size={ComponentSize.SMALL}
+                disabled={item.waitChangeStatusPlayPause}
+                onClick={() => {
+                  if (PlayStatus.has(item.status)) {
+                    onItemClick(StrategyHolderButtonIds.PLAY_ORDER_BUTTON_ID)
+
+                  } else if (PauseStatus.has(item.status)) {
+                    onItemClick(StrategyHolderButtonIds.PAUSE_ORDER_BUTTON_ID)
+                  }
+                }}
+                icon={item.waitChangeStatusPlayPause ? <LoadingView size={ComponentSize.SMALL} /> : getIconPlayPause}
+                size={ComponentSize.STANDARD}
               />
             )
-            : undefined
-        }
-
-        {
-          getIconPlayPause && (
-            <AppIconButton
-              disabled={item.waitChangeStatusPlayPause}
-              onClick={() => {
-                if (PlayStatus.has(item.status)) {
-                  onItemClick(StrategyHolderButtonIds.PLAY_ORDER_BUTTON_ID)
-
-                } else if (PauseStatus.has(item.status)) {
-                  onItemClick(StrategyHolderButtonIds.PAUSE_ORDER_BUTTON_ID)
-                }
-              }}
-              text={item.waitChangeStatusPlayPause ? <LoadingView size={ComponentSize.SMALL} /> : getIconPlayPause}
-              size={ComponentSize.SMALL}
-            />
-          )
-        }
+          }
       </ActionButtonsContainer>
-    )
-  }, [getIconPlayPause, item.status, item.waitChangeStatusCancel, item.waitChangeStatusPlayPause, onItemClick])
+      )
+    },
+    [
+      item.waitForceExecute,
+      getIconPlayPause,
+      item.status,
+      item.waitChangeStatusCancel,
+      item.waitChangeStatusPlayPause,
+      onItemClick
+    ]
+  )
 
   const getFullView = useCallback(
     () => {

@@ -30,15 +30,17 @@ export class CommonLightTheme implements DefaultTheme {
       },
       normal: {
         text: {
-          primary: '#000000'
+          primary: '#000000',
+          error: '#db5757',
         },
         background: {
           primary: 'transparent'
         },
         border: {
-          primary: '#ffffff'
+          primary: '#ffffff',
+          error: '#db5757',
         }
-      }
+      },
     }
   }
 

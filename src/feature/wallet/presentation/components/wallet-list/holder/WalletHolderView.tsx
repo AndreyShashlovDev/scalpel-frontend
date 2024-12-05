@@ -1,10 +1,14 @@
 import { motion } from 'framer-motion'
-import { ForwardedRef, forwardRef } from 'react'
+import { ForwardedRef, forwardRef, useState } from 'react'
 import styled from 'styled-components'
+import EditIcon from '../../../../../../assets/icons/app/EditIcon.svg'
+import SaveIcon from '../../../../../../assets/icons/app/SaveIcon.svg'
 import { AppAddressView } from '../../../../../../common/app-ui/presentation/AppAddressView.tsx'
 import { AppButton } from '../../../../../../common/app-ui/presentation/AppButton.tsx'
+import { AppIconButton } from '../../../../../../common/app-ui/presentation/AppIconButton.tsx'
 import { ChainIconView } from '../../../../../../common/app-ui/presentation/ChainIconView.tsx'
 import { ComponentSize } from '../../../../../../common/app-ui/presentation/ComponentSize.ts'
+import { ComponentVariant } from '../../../../../../common/app-ui/presentation/ComponentVariant.ts'
 import { LoadingView } from '../../../../../../common/app-ui/presentation/LoadingView.tsx'
 import { TokenIconView } from '../../../../../../common/app-ui/presentation/TokenIconView.tsx'
 import { NumberShortener } from '../../../../../../utils/Shortener.ts'
@@ -63,7 +67,7 @@ const CurrencyItemContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 4px;
-  padding: 4px;
+  padding: 8px;
 `
 
 const CurrencyItemAmountContainer = styled.div`
@@ -81,6 +85,13 @@ const WithdrawButtonWrapper = styled(AppButton)`
   width: 60px;
 `
 
+const ActionsContainer = styled.div`
+  display: flex;
+  flex-flow: wrap;
+  gap: 8px;
+  padding: 12px 0;
+`
+
 export interface WalletListHolderProps {
   item: WalletListItemModel
   onItemClick: (viewId: number, data: unknown) => void
@@ -90,6 +101,9 @@ export const WalletHolderView = forwardRef((
   {item, onItemClick}: WalletListHolderProps,
   ref: ForwardedRef<HTMLDivElement>
 ) => {
+
+  const [isEditName, setIsEditName] = useState(false)
+
   return (
     <Container
       initial={{opacity: 0}}
@@ -102,10 +116,23 @@ export const WalletHolderView = forwardRef((
       ref={ref}
     >
       <LineContainer>Address:&nbsp;<AppAddressView address={item.address} /></LineContainer>
-      <LineContainer>Name: {item.name}</LineContainer>
+      <LineContainer>Name: {item.name}&nbsp;
+        <AppIconButton
+          icon={isEditName ? <SaveIcon /> : <EditIcon />}
+          size={ComponentSize.SMALL}
+          onClick={() => {setIsEditName(!isEditName)}}
+        />
+      </LineContainer>
       <LineContainer>Total orders: {item.totalOrders}</LineContainer>
       <LineContainer>Active orders: {item.activeOrders}</LineContainer>
       <LineContainer>Total profit: <GreenColor>${NumberShortener(item.totalUsdProfit)}</GreenColor></LineContainer>
+      <ActionsContainer>
+        <AppButton
+          variant={ComponentVariant.DANGER}
+          size={ComponentSize.SMALL}
+          onClick={() => {}} text={'Export private key'}
+        />
+      </ActionsContainer>
       <FeeContainer>
         <FeeTitleContainer>Total fee:</FeeTitleContainer>
         {
@@ -120,7 +147,7 @@ export const WalletHolderView = forwardRef((
                 {NumberShortener(fee.eth, 5)}
                 &nbsp;
                 {fee.usd !== undefined
-                  ? `($${NumberShortener(fee.usd)})`
+                  ? `( $${NumberShortener(fee.usd)} )`
                   : <LoadingView size={ComponentSize.SMALLEST} />
                 }
               </FeeItemContainer>
@@ -153,11 +180,17 @@ export const WalletHolderView = forwardRef((
                       : <LoadingView size={ComponentSize.SMALLEST} />
                     }
                     </CurrencyItemAmountContainer>
-                    <WithdrawButtonWrapper
-                      disabled={!actualBalance || actualBalance < amount}
-                      onClick={() => {onItemClick(1, currency)}}
-                      size={ComponentSize.SMALLEST} text={'Withdraw'}
-                    />
+                    {
+                      actualBalance && actualBalance > amount
+                        ? (
+                          <WithdrawButtonWrapper
+                            onClick={() => {onItemClick(1, currency)}}
+                            size={ComponentSize.SMALL}
+                            text={'Withdraw'}
+                          />
+                        )
+                        : undefined
+                    }
                   </CurrencyItemContainer>
                 ))
             }
