@@ -1,4 +1,4 @@
-import { JsonObject } from '../../../../utils/types.ts'
+import { Address, JsonObject } from '../../../../utils/types.ts'
 import { ChainType } from './ChainType.ts'
 
 export enum SwapState {
@@ -35,8 +35,8 @@ export class SwapResponse {
 
   public readonly id: number
   public readonly chain: ChainType
-  public readonly currencyFrom: string
-  public readonly currencyTo: string
+  public readonly currencyFrom: Address
+  public readonly currencyTo: Address
   public readonly valueFrom: string
   public readonly valueTo?: string
   public readonly exchangeUsdPrice: string
@@ -51,8 +51,8 @@ export class SwapResponse {
   constructor(
     id: number,
     chain: ChainType,
-    currencyFrom: string,
-    currencyTo: string,
+    currencyFrom: Address,
+    currencyTo: Address,
     valueFrom: string,
     valueTo: string | undefined,
     exchangeUsdPrice: string,

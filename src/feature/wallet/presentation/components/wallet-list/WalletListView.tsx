@@ -1,5 +1,7 @@
 import styled from 'styled-components'
-import InfiniteScrollListView from '../../../../../common/app-ui/presentation/AppInfiniteScrollView.tsx'
+import InfiniteScrollListView, {
+  ListItemHolder
+} from '../../../../../common/app-ui/presentation/AppInfiniteScrollView.tsx'
 import { LoadingView } from '../../../../../common/app-ui/presentation/LoadingView.tsx'
 import { WalletListItemModel } from '../../model/WalletListItemModel.ts'
 import { WalletHolderView } from './holder/WalletHolderView.tsx'
@@ -20,13 +22,12 @@ const ListWrapper = styled(InfiniteScrollListView)`
   }
 `
 
-export interface WalletListViewProps {
-  items: WalletListItemModel[]
+export interface WalletListViewProps extends ListItemHolder<WalletListItemModel> {
   hasNext: boolean
   onFetchNext: () => void
 }
 
-export const WalletListView = ({items, hasNext, onFetchNext}: WalletListViewProps) => {
+export const WalletListView = ({items, hasNext, onFetchNext, onClickItem}: WalletListViewProps) => {
 
   return (
     <ListWrapper
@@ -38,6 +39,7 @@ export const WalletListView = ({items, hasNext, onFetchNext}: WalletListViewProp
         return <WalletHolderView
           item={item as WalletListItemModel}
           key={item.hash}
+          onItemClick={(viewId, data) => onClickItem(item.hash, viewId, data)}
           ref={ref}
         />
       }}

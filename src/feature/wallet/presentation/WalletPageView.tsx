@@ -56,6 +56,7 @@ const WalletPageView = ({strategyHash}: LogsPageProps) => {
                   hasNext={!isLastPage}
                   onFetchNext={() => presenter.fetchNext()}
                   items={walletItemsList}
+                  onClickItem={(hash, viewId, data) => presenter.onListItemClick(hash, viewId, data)}
                 />
               </ListContainer>
             )

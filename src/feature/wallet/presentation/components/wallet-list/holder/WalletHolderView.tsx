@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { ForwardedRef, forwardRef } from 'react'
 import styled from 'styled-components'
 import { AppAddressView } from '../../../../../../common/app-ui/presentation/AppAddressView.tsx'
+import { AppButton } from '../../../../../../common/app-ui/presentation/AppButton.tsx'
 import { ChainIconView } from '../../../../../../common/app-ui/presentation/ChainIconView.tsx'
 import { ComponentSize } from '../../../../../../common/app-ui/presentation/ComponentSize.ts'
 import { LoadingView } from '../../../../../../common/app-ui/presentation/LoadingView.tsx'
@@ -25,6 +26,8 @@ const LineContainer = styled.div`
 `
 
 const ChainTitleContainer = styled.div`
+  display: flex;
+  gap: 8px;
   margin-bottom: 8px;
   border-bottom: 1px solid ${({theme}) => theme.color.button.normal.border.primary!};
 `
@@ -57,6 +60,14 @@ const CurrencyContainer = styled.div`
 
 const CurrencyItemContainer = styled.div`
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+`
+
+const CurrencyItemAmountContainer = styled.div`
+  display: flex;
   justify-content: start;
   align-items: center;
   gap: 4px;
@@ -66,11 +77,19 @@ const GreenColor = styled.span`
   color: ${({theme}) => theme.color.common.green}
 `
 
+const WithdrawButtonWrapper = styled(AppButton)`
+  width: 60px;
+`
+
 export interface WalletListHolderProps {
   item: WalletListItemModel
+  onItemClick: (viewId: number, data: unknown) => void
 }
 
-export const WalletHolderView = forwardRef(({item}: WalletListHolderProps, ref: ForwardedRef<HTMLDivElement>) => {
+export const WalletHolderView = forwardRef((
+  {item, onItemClick}: WalletListHolderProps,
+  ref: ForwardedRef<HTMLDivElement>
+) => {
   return (
     <Container
       initial={{opacity: 0}}
@@ -110,21 +129,32 @@ export const WalletHolderView = forwardRef(({item}: WalletListHolderProps, ref: 
           <CurrencyContainer>
             <ChainTitleContainer>
               <ChainIconView showChainName={true} chain={chain} size={ComponentSize.SMALLEST} />
+              (Total in-use / Total Balance)
             </ChainTitleContainer>
             {
               Array.from((item.currencies.get(chain)?.values() ?? []))
-                .map(({amount, currency}) => (
+                .map(({amount, currency, actualBalance}) => (
                   <CurrencyItemContainer key={currency.address + currency.chain}>
-                    <TokenIconView
-                      chain={currency.chain}
-                      address={currency.address}
-                      symbol={currency.symbol}
-                      size={ComponentSize.SMALLEST}
+                    <CurrencyItemAmountContainer>
+                      <TokenIconView
+                        chain={currency.chain}
+                        address={currency.address}
+                        symbol={currency.symbol}
+                        size={ComponentSize.SMALLEST}
+                      />
+                      &nbsp;
+                      {currency.symbol}
+                      &nbsp;
+                      {amount} / {actualBalance !== undefined
+                      ? actualBalance
+                      : <LoadingView size={ComponentSize.SMALLEST} />
+                    }
+                    </CurrencyItemAmountContainer>
+                    <WithdrawButtonWrapper
+                      disabled={!actualBalance || actualBalance < amount}
+                      onClick={() => {onItemClick(1, currency)}}
+                      size={ComponentSize.SMALLEST} text={'Withdraw'}
                     />
-                    &nbsp;
-                    {currency.symbol}
-                    &nbsp;
-                    {NumberShortener(currency.valueTo(amount))}
                   </CurrencyItemContainer>
                 ))
             }

@@ -1,9 +1,12 @@
 import { BehaviorSubject, from, Observable, Subscription } from 'rxjs'
+import { ChainType } from '../../../common/repository/data/model/ChainType.ts'
 import { Pageable } from '../../../common/repository/data/model/Pageable.ts'
 import { WalletStatisticResponse } from '../../../common/repository/data/model/WalletStatisticResponse.ts'
 import { WalletRepository } from '../../../common/repository/data/wallet/WalletRepository.ts'
+import { Address } from '../../../utils/types.ts'
 import { WalletResponseToWalletListItem } from '../presentation/mapping/WalletResponseToWalletListItem.ts'
 import { WalletListItemModel } from '../presentation/model/WalletListItemModel.ts'
+import { GetErc20BalanceInteractor } from './interactor/GetErc20BalanceInteractor.ts'
 import { WalletPagePresenter } from './WalletPagePresenter.ts'
 
 export class WalletPagePresenterImpl extends WalletPagePresenter {
@@ -17,7 +20,10 @@ export class WalletPagePresenterImpl extends WalletPagePresenter {
   private walletsLatestResult: Pageable<WalletStatisticResponse> | undefined
   private walletsFetchSubscription: Subscription | undefined
 
-  constructor(private readonly walletRepository: WalletRepository) {
+  constructor(
+    private readonly walletRepository: WalletRepository,
+    private readonly getBalancesInteractor: GetErc20BalanceInteractor
+  ) {
     super()
   }
 
@@ -49,6 +55,38 @@ export class WalletPagePresenterImpl extends WalletPagePresenter {
     return this.isLastPage.asObservable()
   }
 
+  private async fetchBalances(walletResponses: WalletStatisticResponse[]): Promise<void> {
+    try {
+      const mapOfCurrencies = walletResponses.reduce((acc, curr) => {
+        curr.currencies.forEach(currency => {
+          const byChain = acc.get(currency.currency.chain) ?? new Map<Address, Set<Address>>()
+          const byWallet = byChain.get(curr.address) ?? new Set<Address>()
+          byWallet.add(currency.currency.address)
+          byChain.set(curr.address, byWallet)
+          acc.set(currency.currency.chain, byChain)
+        })
+
+        return acc
+      }, new Map<ChainType, Map<Address, Set<Address>>>())
+
+      const result = await this.getBalancesInteractor.invoke({data: mapOfCurrencies})
+      const mapOfWallets = new Map(walletResponses.map(wallet => [wallet.address, wallet]))
+
+      const updatedList = this.walletItems.value.map(wallet => {
+        const walletResponse = mapOfWallets.get(wallet.address)
+
+        if (walletResponse) {
+          return WalletResponseToWalletListItem(walletResponse, result.get(wallet.address) ?? new Map())
+        }
+        return wallet
+      })
+
+      this.walletItems.next(updatedList)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   public fetchNext(): void {
     this.isLoading.next(true)
     this.walletsFetchSubscription?.unsubscribe()
@@ -63,16 +101,20 @@ export class WalletPagePresenterImpl extends WalletPagePresenter {
 
           const list = this.walletItems
             .value
-            .concat(result.data.map(WalletResponseToWalletListItem))
+            .concat(result.data.map(item => WalletResponseToWalletListItem(item, new Map())))
 
           this.walletItems.next(list)
           this.isLastPage.next(
             result.total <= list.length ||
             result.data.length < WalletPagePresenterImpl.PAGE_LIMIT
           )
-
+          this.fetchBalances(result.data)
           this.isLoading.next(false)
         }
       })
+  }
+
+  public onListItemClick(hash: string, viewId: number, data: unknown): void {
+    console.log(hash, viewId, data)
   }
 }

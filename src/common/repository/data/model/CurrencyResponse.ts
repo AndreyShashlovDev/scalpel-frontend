@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { JsonObject } from '../../../../utils/types.ts'
+import { Address, JsonObject } from '../../../../utils/types.ts'
 import { ChainType } from './ChainType.ts'
 import { CurrencyPriceResponse } from './CurrencyPriceResponse.ts'
 
@@ -19,7 +19,7 @@ export class CurrencyResponse {
 
   public readonly symbol: string
   public readonly name: string
-  public readonly address: string
+  public readonly address: Address
   public readonly chain: ChainType
   public readonly decimal: string
   public readonly isStable: boolean
@@ -28,7 +28,7 @@ export class CurrencyResponse {
   constructor(
     symbol: string,
     name: string,
-    address: string,
+    address: Address,
     chain: ChainType,
     decimal: string,
     isStable: boolean,

@@ -10,8 +10,8 @@ export interface ListItem {
 }
 
 export interface ListItemHolder<T extends ListItem> {
-  item: T
-  onClickItem: (viewId: number, data?: unknown) => void
+  items: T[]
+  onClickItem: (hash: string, viewId: number, data?: unknown) => void
 }
 
 export type Direction = 'top' | 'bottom' | 'unknown'

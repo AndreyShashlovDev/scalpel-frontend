@@ -14,9 +14,6 @@ export class EthereumServiceImpl extends EthereumService {
     private readonly chain: ChainType,
     readonly providerUrl: string,
     private readonly multicallAddress: Address,
-    private readonly scalpelContractAddress: Address,
-    private readonly usdContractAddress: Address,
-    private readonly wrapperNativeContractAddress: Address,
   ) {
     super()
     this.provider = new ethers.JsonRpcProvider(providerUrl)
@@ -28,18 +25,6 @@ export class EthereumServiceImpl extends EthereumService {
 
   public async createContract(address: Address, abi: Interface): Promise<Contract> {
     return new Contract(address, abi, this.provider)
-  }
-
-  public getScalpelContractAddress(): Address {
-    return this.scalpelContractAddress
-  }
-
-  public getUsdAddress(): Address {
-    return this.usdContractAddress
-  }
-
-  public getWrappedNativeAddress(): Address {
-    return this.wrapperNativeContractAddress
   }
 
   public async createWallet(pk: string): Promise<Wallet> {
@@ -87,8 +72,8 @@ export class EthereumServiceImpl extends EthereumService {
     return null
   }
 
-  public async getErc20Balances(query: Pair<Address, Address>[]): Promise<Map<Address, Record<Address, BigNumber>>> {
-    const result = new Map<Address, Record<Address, BigNumber>>()
+  public async getErc20Balances(query: Pair<Address, Address>[]): Promise<Map<Address, Map<Address, BigNumber>>> {
+    const result = new Map<Address, Map<Address, BigNumber>>()
 
     const abi = new Interface([
       'function balanceOf(' +
@@ -105,13 +90,14 @@ export class EthereumServiceImpl extends EthereumService {
     })
 
     const chunks = toChunk(calls, 50)
+
     for (const chunk of chunks) {
       const resultOfChunk: BigNumber[] = await this.multicall(abi, chunk)
 
       chunk.forEach((item, index) => {
         const account = item.params[0] as Address
-        const data = result.get(account) ?? {}
-        data[item.address] = new BigNumber(resultOfChunk[index].toString())
+        const data = result.get(account) ?? new Map<Address, BigNumber>()
+        data.set(item.address, new BigNumber(resultOfChunk[index].toString()))
         result.set(account, data)
       })
     }

@@ -1,11 +1,15 @@
 import { CurrencyRepository } from './common/repository/data/currencies/CurrencyRepository.ts'
 import { CurrencyRepositoryImpl } from './common/repository/data/currencies/CurrencyRepositoryImpl.ts'
+import { ChainType } from './common/repository/data/model/ChainType.ts'
 import { AppAuthHttpsService } from './common/repository/data/source/AppAuthHttpsService.ts'
 import { AppSourceService } from './common/repository/data/source/AppSourceService.ts'
 import { ApplicationRouter } from './common/router/domain/ApplicationRouter.ts'
 import { ApplicationRouterImpl } from './common/router/domain/ApplicationRouterImpl.ts'
 import { AppAuthService } from './common/service/auth/AppAuthService.ts'
 import { AppAuthServiceImpl } from './common/service/auth/AppAuthServiceImpl.ts'
+import { EthereumServiceImpl } from './common/service/ethereum-service/EthereumServiceImpl.ts'
+import { EthereumServiceStrategy } from './common/service/ethereum-service/EthereumServiceStrategy.ts'
+import { EthereumServiceStrategyImpl } from './common/service/ethereum-service/EthereumServiceStrategyImpl.ts'
 import { AppExceptionHandlerService } from './common/service/exception-handler/AppExceptionHandlerService.ts'
 import { ExceptionHandlerService } from './common/service/exception-handler/ExceptionHandlerService.ts'
 import { ExceptionNotifierService } from './common/service/exception-handler/ExceptionNotifierService.ts'
@@ -91,3 +95,24 @@ injectionKernel.set(
 )
 injectionKernel.set(ApplicationRouter, new Factory(() => new ApplicationRouterImpl(), true))
 injectionKernel.set(WalletConnect, new Factory(() => new WalletConnectImpl('882d3398012401b6a598b7a245adff21'), true))
+
+injectionKernel.set(EthereumServiceStrategy, new Factory(() => new EthereumServiceStrategyImpl(
+  new Map([
+    [
+      ChainType.ETHEREUM_MAIN_NET,
+      new EthereumServiceImpl(
+        ChainType.ETHEREUM_MAIN_NET,
+        'https://ethereum-rpc.publicnode.com',
+        '0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696',
+      ),
+    ],
+    [
+      ChainType.POLYGON,
+      new EthereumServiceImpl(
+        ChainType.POLYGON,
+        'https://1rpc.io/matic',
+        '0x11ce4B23bD875D7F5C6a31084f55fDe1e9A87507',
+      ),
+    ]
+  ])
+), true))

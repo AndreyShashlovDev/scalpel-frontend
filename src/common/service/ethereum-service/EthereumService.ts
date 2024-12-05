@@ -23,12 +23,6 @@ export abstract class EthereumService {
 
   public abstract createContract(address: Address, abi: Interface): Promise<Contract>
 
-  public abstract getScalpelContractAddress(): Address
-
-  public abstract getUsdAddress(): Address
-
-  public abstract getWrappedNativeAddress(): Address
-
   public abstract createWallet(pk: string): Promise<Wallet>
 
   public abstract estimateGas(data: TransactionRequest): Promise<BigNumber>
@@ -38,7 +32,7 @@ export abstract class EthereumService {
   public abstract getTransactionReceipt(txHash: string): Promise<TxReceipt | null>
 
   // Map<account,erc20Address>
-  public abstract getErc20Balances(query: Pair<Address, Address>[]): Promise<Map<Address, Record<Address, BigNumber>>>
+  public abstract getErc20Balances(query: Pair<Address, Address>[]): Promise<Map<Address, Map<Address, BigNumber>>>
 
   public abstract getNonce(address: Address): Promise<number>
 }

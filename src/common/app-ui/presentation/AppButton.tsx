@@ -8,7 +8,23 @@ const BasicButton = styled(motion.button)<{ $disabled: boolean | undefined, size
   justify-content: center;
   align-items: center;
   
-  font-size: 16px;
+  font-size: ${({size}) => {
+    if (size === ComponentSize.SMALL) {
+      return '12px'
+
+    } else if (size === ComponentSize.SMALLEST) {
+      return '10px'
+      
+    } else  if (size === ComponentSize.LARGE) {
+      return '16px'
+      
+    } else  if (size === ComponentSize.LARGEST) {
+      return '18px'
+    }
+    
+    return '14px'
+  }};
+  
   width: 100%;
   max-width: 300px;
   min-width: 80px;

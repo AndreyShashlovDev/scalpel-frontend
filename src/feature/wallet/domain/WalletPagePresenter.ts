@@ -11,6 +11,8 @@ export abstract class WalletPagePresenter extends BasicPresenter {
   public abstract getIsLastPage(): Observable<boolean>
 
   public abstract fetchNext(): void
-  
+
   public abstract refresh(): void
+
+  public abstract onListItemClick(hash: string, viewId: number, data: unknown): void
 }

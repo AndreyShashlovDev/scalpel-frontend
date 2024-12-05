@@ -1,11 +1,11 @@
-import { JsonObject } from '../../../../utils/types.ts'
+import { Address, JsonObject } from '../../../../utils/types.ts'
 import { ChainType } from './ChainType.ts'
 import { CurrencyResponse } from './CurrencyResponse.ts'
 
-export class WalletCurrency {
+export class WalletCurrencyResponse {
 
-  public static valueOfJson(json: JsonObject<WalletCurrency>): WalletCurrency {
-    return new WalletCurrency(
+  public static valueOfJson(json: JsonObject<WalletCurrencyResponse>): WalletCurrencyResponse {
+    return new WalletCurrencyResponse(
       CurrencyResponse.valueOfJson(json.currency),
       json.amount
     )
@@ -30,26 +30,26 @@ export class WalletStatisticResponse {
       json.activeOrders,
       json.totalUsdProfit,
       json.txFee,
-      json.currencies.map(WalletCurrency.valueOfJson)
+      json.currencies.map(WalletCurrencyResponse.valueOfJson)
     )
   }
 
-  public readonly address: string
+  public readonly address: Address
   public readonly name: string | undefined
   public readonly totalOrders: number
   public readonly activeOrders: number
   public readonly totalUsdProfit: number
   public readonly txFee: Record<ChainType, string>
-  public readonly currencies: WalletCurrency[]
+  public readonly currencies: WalletCurrencyResponse[]
 
   constructor(
-    address: string,
+    address: Address,
     name: string | undefined,
     totalOrders: number,
     activeOrders: number,
     totalUsdProfit: number,
     txFee: Record<ChainType, string>,
-    currencies: WalletCurrency[]
+    currencies: WalletCurrencyResponse[]
   ) {
     this.address = address
     this.name = name
