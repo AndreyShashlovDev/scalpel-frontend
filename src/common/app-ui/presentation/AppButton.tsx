@@ -87,7 +87,6 @@ const BasicButton = styled(motion.button)<{
       } else {
 
         if ($variant === ComponentVariant.DANGER) {
-          console.log('variant', $variant, theme.color.button.normal.text.error)
           return theme.color.button.normal.text.error
         }
 

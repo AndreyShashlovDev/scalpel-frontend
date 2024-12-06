@@ -1,5 +1,14 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { forwardRef, ReactElement, RefObject, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import {
+  forwardRef,
+  ReactElement,
+  RefObject,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState
+} from 'react'
 import styled from 'styled-components'
 
 const Container = styled(motion.div)`
@@ -49,10 +58,10 @@ const InfiniteScrollListView = forwardRef((
   const [isEndReached, setIsEndReached] = useState(false)
   const wasInit = useRef(false)
 
-  const findTopMargin = () => {
+  const findTopMargin = useCallback(() => {
     const firstEl = itemRefs.current.get(items[0]?.hash)
     return Math.abs(window.scrollY - Math.abs(firstEl?.getBoundingClientRect().top ?? 0))
-  }
+  }, [items])
 
   const findNextIndex = () => {
     const margin = findTopMargin()
@@ -70,7 +79,7 @@ const InfiniteScrollListView = forwardRef((
     }
   }
 
-  const moveToIndex = (index: number, to: Direction, smooth: boolean = true) => {
+  const moveToIndex = useCallback((index: number, to: Direction, smooth: boolean = true) => {
     const element = itemRefs.current.get(items[index]?.hash)
 
     if (element) {
@@ -100,7 +109,7 @@ const InfiniteScrollListView = forwardRef((
         })
       }
     }
-  }
+  }, [findTopMargin, items, scrollParent])
 
   useImperativeHandle(ref, () => ({
     findNextIndex,
@@ -138,10 +147,6 @@ const InfiniteScrollListView = forwardRef((
       observer.unobserve(value)
     })
 
-    if (items.length === 0) {
-      itemRefs.current?.clear()
-    }
-
     items.forEach((item) => {
       const element = itemRefs.current.get(item.hash)
 
@@ -156,8 +161,10 @@ const InfiniteScrollListView = forwardRef((
       moveToIndex(defaultIndexSelected, 'bottom', false)
     }
 
+    const itemsRefs = itemRefs.current
+
     return () => {
-      itemRefs.current.forEach((element) => {
+      itemsRefs.forEach((element) => {
         if (element) {
           observer.unobserve(element)
         }
@@ -166,7 +173,7 @@ const InfiniteScrollListView = forwardRef((
       observer.disconnect()
       callNextFetch.current = false
     }
-  }, [items])
+  }, [isEndReached, onNextFetch, hasNext, initialScrollY, moveToIndex, defaultIndexSelected, items])
 
   return (
     <Container {...props}>

@@ -32,6 +32,7 @@ const LineContainer = styled.div`
 const ChainTitleContainer = styled.div`
   display: flex;
   gap: 8px;
+  padding: 4px;
   margin-bottom: 8px;
   border-bottom: 1px solid ${({theme}) => theme.color.button.normal.border.primary!};
 `
@@ -44,6 +45,7 @@ const FeeContainer = styled.div`
 `
 
 const FeeTitleContainer = styled.div`
+  padding: 4px;
   margin-bottom: 8px;
   border-bottom: 1px solid ${({theme}) => theme.color.button.normal.border.primary!};
 `
@@ -53,6 +55,7 @@ const FeeItemContainer = styled.div`
   justify-content: start;
   align-items: center;
   gap: 4px;
+  padding: 4px 8px;
 `
 
 const CurrencyContainer = styled.div`

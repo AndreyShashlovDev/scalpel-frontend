@@ -44,6 +44,7 @@ export class WalletPagePresenterImpl extends WalletPagePresenter {
     this.walletItems.next([])
     this.walletsLatestResult = undefined
     this.isLastPage.next(true)
+    this.isLoading.next(true)
 
     this.fetchNativePrices()
       .finally(() => this.fetchNext())
