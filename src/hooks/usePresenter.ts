@@ -1,5 +1,5 @@
 import { useLayoutEffect, useMemo, useRef } from 'react'
-import { Abstract, destroyDiInstance, getDIValue, IS_PRODUCTION, Newable } from '../Injections.ts'
+import { Abstract, getDIValue, IS_PRODUCTION, Newable } from '../Injections.ts'
 import { BasicPresenter } from '../utils/arch/BasicPresenter.ts'
 
 export const usePresenter = <T extends BasicPresenter<A>, A>(
