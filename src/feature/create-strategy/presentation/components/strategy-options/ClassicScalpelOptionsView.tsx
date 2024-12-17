@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { AppAddressView } from '../../../../../common/app-ui/presentation/AppAddressView.tsx'
-import { AppInputView } from '../../../../../common/app-ui/presentation/AppInputView.tsx'
-import { AppSpaceView } from '../../../../../common/app-ui/presentation/AppSpaceView.tsx'
+import { AppAddressView } from '../../../../../common/app-ui/AppAddressView.tsx'
+import { AppInputView } from '../../../../../common/app-ui/AppInputView.tsx'
+import { AppSpaceView } from '../../../../../common/app-ui/AppSpaceView.tsx'
 import { ChainType } from '../../../../../common/repository/data/model/ChainType.ts'
 import { StrategyOptionsData, StrategyOptionsProps } from './StrategyOptionsProps.ts'
 

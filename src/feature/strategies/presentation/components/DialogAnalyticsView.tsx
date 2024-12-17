@@ -1,6 +1,6 @@
 import { ForwardedRef, forwardRef, useState } from 'react'
-import { BasicDialogView, DialogCallback } from '../../../../common/app-ui/presentation/dialog/BasicDialogView.tsx'
-import { PageHeaderView } from '../../../../common/app-ui/presentation/PageHeaderView.tsx'
+import { BasicDialogView, DialogCallback } from '../../../../common/app-ui/dialog/BasicDialogView.tsx'
+import { PageHeaderView } from '../../../../common/app-ui/PageHeaderView.tsx'
 import { AnalyticsPageView } from '../../analytics/presentation/AnalyticsPageView.tsx'
 
 type CallBackDataType = { strategyHash: string }

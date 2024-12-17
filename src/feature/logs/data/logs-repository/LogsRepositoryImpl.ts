@@ -1,6 +1,6 @@
+import { LogResponse } from '../../../../common/repository/data/model/LogResponse.ts'
 import { Pageable } from '../../../../common/repository/data/model/Pageable.ts'
 import { AppSourceService } from '../../../../common/repository/data/source/AppSourceService.ts'
-import { LogResponse } from '../../../../common/repository/data/model/LogResponse.ts'
 import { LogsRepository } from './LogsRepository.ts'
 
 export class LogsRepositoryImpl extends LogsRepository {
@@ -14,21 +14,25 @@ export class LogsRepositoryImpl extends LogsRepository {
     page: number,
     limit: number,
   ): Promise<Pageable<LogResponse>> {
-    const result = await this.appSourceService.get<Pageable<LogResponse>>(`/strategy/${strategyHash}/log/`, {
-      query: new Map([
-        ['page', page.toString()],
-        ['limit', limit.toString()],
-      ])
-    })
+    return this.appSourceService.get<Pageable<LogResponse>, Pageable<LogResponse>>(
+      {
+        path: `/strategy/${strategyHash}/log/`,
+        query: new Map([
+          ['page', page.toString()],
+          ['limit', limit.toString()],
+        ])
+      },
+      async (response) => {
+        if (response.success && response.data) {
+          return new Pageable(
+            response.data.data.map(LogResponse.valueOfJson),
+            response.data.total,
+            response.data.page
+          )
+        }
 
-    if (result.success && result.data) {
-      return new Pageable(
-        result.data.data.map(LogResponse.valueOfJson),
-        result.data.total,
-        result.data.page
-      )
-    }
-
-    throw new Error()
+        throw new Error()
+      }
+    )
   }
 }

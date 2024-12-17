@@ -1,8 +1,9 @@
 import styled from 'styled-components'
-import { ChainType } from '../../repository/data/model/ChainType.ts'
+import { ChainType } from '../repository/data/model/ChainType.ts'
 import { ComponentSize, ComponentSizeProps } from './ComponentSize.ts'
 
-const Container = styled.div<ComponentSizeProps>`
+const ImgContainer = styled.div<ComponentSizeProps>`
+
   border-radius: 50%;
 
   width: ${({size}) => {
@@ -76,10 +77,17 @@ const Container = styled.div<ComponentSizeProps>`
   }
 `
 
-export interface TokenIconProps extends ComponentSizeProps {
+const Container = styled.span`
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 8px;
+  text-transform: capitalize;
+`
+
+export interface ChainIconProps extends ComponentSizeProps {
   chain: ChainType
-  address: string
-  symbol: string
+  showChainName?: boolean
 }
 
 const mapChainName: Map<ChainType, string> = new Map([
@@ -87,18 +95,15 @@ const mapChainName: Map<ChainType, string> = new Map([
   [ChainType.ETHEREUM_MAIN_NET, 'ethereum'],
 ])
 
-const url = 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/<chain>/assets/<address>/logo.png'
-const nativeCurrencyUrl = 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/<chain>/info/logo.png'
-export const TokenIconView = ({chain, address, symbol, size}: TokenIconProps) => {
+const url = 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/<chain>/info/logo.png'
+
+export const ChainIconView = ({chain, size, showChainName}: ChainIconProps) => {
   return (
-    <Container size={size}>
-      <img
-        src={
-          address.toLowerCase() === '0xffffffffffffffffffffffffffffffffffffffff'
-            ? nativeCurrencyUrl.replace('<chain>', mapChainName.get(chain) ?? '')
-            : url.replace('<chain>', mapChainName.get(chain) ?? '').replace('<address>', address)
-        } alt={symbol}
-      />
+    <Container>
+      <ImgContainer size={size}>
+        <img src={url.replace('<chain>', mapChainName.get(chain) ?? '')} alt={chain} />
+      </ImgContainer>
+      {showChainName ? mapChainName.get(chain) : undefined}
     </Container>
   )
 }

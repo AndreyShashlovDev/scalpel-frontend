@@ -1,4 +1,5 @@
-import { ListItem } from '../../../../common/app-ui/presentation/AppInfiniteScrollView.tsx'
+import BigNumber from 'bignumber.js'
+import { ListItem } from '../../../../common/app-ui/AppInfiniteScrollView.tsx'
 import { ChainType } from '../../../../common/repository/data/model/ChainType.ts'
 import { CurrencyResponse } from '../../../../common/repository/data/model/CurrencyResponse.ts'
 import { Address } from '../../../../utils/types.ts'
@@ -8,11 +9,14 @@ export class WalletCurrencyUiModel {
   public readonly currency: CurrencyResponse
   public readonly amount: number
   public readonly actualBalance?: number
+  public readonly usdAmount: number
 
   constructor(currency: CurrencyResponse, amount: number, actualBalance: number | undefined) {
     this.currency = currency
     this.amount = amount
     this.actualBalance = actualBalance
+    console.log(this.amount, currency.price?.usdtPrice)
+    this.usdAmount = amount * new BigNumber(currency.price?.usdtPrice ?? 0).div(new BigNumber(10).pow(6)).toNumber()
   }
 }
 
@@ -26,6 +30,8 @@ export class WalletListItemModel implements ListItem {
   public readonly totalUsdProfit: number
   public readonly totalFee: Map<ChainType, { eth: number, usd: number | undefined }>
   public readonly currencies: Map<ChainType, WalletCurrencyUiModel[]>
+  public readonly totalValueWalletUsdt: Map<ChainType, number>
+  public readonly totalInitialValueWalletUsdt: number
 
   constructor(
     address: Address,
@@ -35,6 +41,8 @@ export class WalletListItemModel implements ListItem {
     totalUsdProfit: number,
     totalFee: Map<ChainType, { eth: number, usd: number | undefined }>,
     currencies: Map<ChainType, WalletCurrencyUiModel[]>,
+    totalValueWalletUsdt: Map<ChainType, number>,
+    totalInitialValueWalletUsdt: number,
   ) {
     this.hash = address
     this.address = address
@@ -44,6 +52,8 @@ export class WalletListItemModel implements ListItem {
     this.totalUsdProfit = totalUsdProfit
     this.totalFee = totalFee
     this.currencies = currencies
+    this.totalValueWalletUsdt = totalValueWalletUsdt
+    this.totalInitialValueWalletUsdt = totalInitialValueWalletUsdt
   }
 
   public copy(entity: Partial<WalletListItemModel>): WalletListItemModel {

@@ -48,6 +48,13 @@ export const WalletResponseToWalletListItem = (
     new Map<ChainType, WalletCurrencyUiModel[]>()
   )
 
+  const totalUsdAmounts = Array.from(currencies.entries()).reduce((acc, curr) => {
+    const [chain, items] = curr
+    const sum = items.reduce((total, currency) => total + currency.usdAmount, 0)
+
+    return acc.set(chain, sum)
+  }, new Map<ChainType, number>)
+
   return new WalletListItemModel(
     response.address,
     response.name,
@@ -56,5 +63,7 @@ export const WalletResponseToWalletListItem = (
     response.totalUsdProfit,
     fees,
     currencies,
+    totalUsdAmounts,
+    0
   )
 }

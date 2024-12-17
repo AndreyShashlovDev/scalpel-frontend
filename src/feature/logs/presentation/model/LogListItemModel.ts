@@ -1,4 +1,4 @@
-import { ListItem } from '../../../../common/app-ui/presentation/AppInfiniteScrollView.tsx'
+import { ListItem } from '../../../../common/app-ui/AppInfiniteScrollView.tsx'
 import { JsonObject } from '../../../../utils/types.ts'
 import { LogType } from '../../../../common/repository/data/model/LogResponse.ts'
 

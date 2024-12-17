@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { getDIValue } from '../../Injections.ts'
-import { LoadingView } from '../app-ui/presentation/LoadingView.tsx'
+import { LoadingView } from '../app-ui/LoadingView.tsx'
 import { ApplicationRouter } from './domain/ApplicationRouter.ts'
 
 const LoadingContainer = styled.div`

@@ -1,11 +1,11 @@
-import { useLayoutEffect, useMemo } from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { ComponentSize } from '../../../common/app-ui/presentation/ComponentSize.ts'
-import { LoadingView } from '../../../common/app-ui/presentation/LoadingView.tsx'
-import { PageHeaderView } from '../../../common/app-ui/presentation/PageHeaderView.tsx'
-import { PageLayoutView } from '../../../common/app-ui/presentation/PageLayoutView.tsx'
+import { ComponentSize } from '../../../common/app-ui/ComponentSize.ts'
+import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
+import { PageHeaderView } from '../../../common/app-ui/PageHeaderView.tsx'
+import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
 import useObservable from '../../../hooks/useObservable.ts'
-import { getDIValue } from '../../../Injections.ts'
+import { usePresenter } from '../../../hooks/usePresenter.ts'
 import { WalletPagePresenter } from '../domain/WalletPagePresenter.ts'
 import { WalletListView } from './components/wallet-list/WalletListView.tsx'
 import '../domain/WalletPagePresenterModule.ts'
@@ -20,32 +20,33 @@ const ListContainer = styled.div`
   height: calc(100vh - ${({theme}) => theme.size.header});
 `
 
-export interface LogsPageProps {
-  strategyHash?: string
-}
+const WalletPageView = () => {
 
-const WalletPageView = ({strategyHash}: LogsPageProps) => {
-
-  const presenter = useMemo(() => getDIValue(WalletPagePresenter), [])
+  const presenter = usePresenter(WalletPagePresenter)
   const walletItemsList = useObservable(presenter.getWalletItems(), [])
   const isLoading = useObservable(presenter.getIsLoading(), true)
   const isLastPage = useObservable(presenter.getIsLastPage(), true)
+  const isLoadingFinished = useObservable(presenter.getLoadingFinished(), undefined)
+  const [pullToRefreshLoading, setPullToRefreshLoading] = useState(false)
 
-  useLayoutEffect(() => {
-    presenter.init()
-
-    return () => presenter.destroy()
-  }, [strategyHash, presenter])
+  useEffect(() => {
+    if (isLoadingFinished) {
+      setPullToRefreshLoading(false)
+    }
+  }, [isLoadingFinished])
 
   return (
     <div>
-      <PageHeaderView text={'Wallets:'} />
+      <PageHeaderView text={'Wallets'} />
       <Container
-        refresh={() => presenter.refresh()}
+        refresh={() => {
+          setPullToRefreshLoading(true)
+          presenter.refresh()
+        }}
         fetched={!isLoading}
       >
         {
-          (isLoading) ? <LoadingView size={ComponentSize.STANDARD} /> : undefined
+          (isLoading && !pullToRefreshLoading)  ? <LoadingView size={ComponentSize.STANDARD} /> : undefined
         }
         {
           (!isLoading && walletItemsList.length === 0)
@@ -54,9 +55,9 @@ const WalletPageView = ({strategyHash}: LogsPageProps) => {
               <ListContainer>
                 <WalletListView
                   hasNext={!isLastPage}
-                  onFetchNext={() => presenter.fetchNext()}
+                  onNextFetch={() => presenter.fetchNext()}
                   items={walletItemsList}
-                  onClickItem={(hash, viewId, data) => presenter.onListItemClick(hash, viewId, data)}
+                  onItemClick={(hash, viewId, data) => presenter.onListItemClick(hash, viewId, data)}
                 />
               </ListContainer>
             )

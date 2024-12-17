@@ -14,7 +14,7 @@ const ButtonWrapper = styled(AppButton)<{ $size: string }>`
     border: none !important;
   `
   };
-  padding: 4px !important;
+  padding: 0px !important;
 `
 
 export interface AppIconButtonProps {
@@ -29,8 +29,12 @@ export const AppIconButton = ({icon, size, onClick, disabled}: AppIconButtonProp
   const getSize = useCallback(() => {
     if (size === ComponentSize.SMALL) {
       return '24px'
+
     } else if (size === ComponentSize.SMALLEST) {
       return '16px'
+
+    } else if (size === ComponentSize.LARGE) {
+      return '32px'
     }
 
     return '32px'

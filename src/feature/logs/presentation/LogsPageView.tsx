@@ -1,10 +1,10 @@
-import { useLayoutEffect, useMemo } from 'react'
+import { useLayoutEffect } from 'react'
 import styled from 'styled-components'
-import { ComponentSize } from '../../../common/app-ui/presentation/ComponentSize.ts'
-import { LoadingView } from '../../../common/app-ui/presentation/LoadingView.tsx'
-import { PageLayoutView } from '../../../common/app-ui/presentation/PageLayoutView.tsx'
+import { ComponentSize } from '../../../common/app-ui/ComponentSize.ts'
+import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
+import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
 import useObservable from '../../../hooks/useObservable.ts'
-import { getDIValue } from '../../../Injections.ts'
+import { usePresenter } from '../../../hooks/usePresenter.ts'
 import { LogsPagePresenter } from '../domain/LogsPagePresenter.ts'
 import '../domain/LogsPagePresenterModule.ts'
 import { LogsListView } from './components/swap-list/LogsListView.tsx'
@@ -25,7 +25,7 @@ export interface LogsPageProps {
 
 export const LogsPageView = ({strategyHash}: LogsPageProps) => {
 
-  const presenter = useMemo(() => getDIValue(LogsPagePresenter), [])
+  const presenter = usePresenter(LogsPagePresenter)
   const logItemsList = useObservable(presenter.getLogItems(), [])
   const isLastPage = useObservable(presenter.getIsLastPage(), true)
   const isLoading = useObservable(presenter.getIsLoading(), true)
@@ -34,10 +34,6 @@ export const LogsPageView = ({strategyHash}: LogsPageProps) => {
     if (strategyHash) {
       presenter.setStrategyHash(strategyHash)
     }
-
-    presenter.init()
-
-    return () => presenter.destroy()
   }, [strategyHash, presenter])
 
   return (

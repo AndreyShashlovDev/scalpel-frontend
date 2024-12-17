@@ -3,14 +3,15 @@ import { ForwardedRef, forwardRef, useState } from 'react'
 import styled from 'styled-components'
 import EditIcon from '../../../../../../assets/icons/app/EditIcon.svg'
 import SaveIcon from '../../../../../../assets/icons/app/SaveIcon.svg'
-import { AppAddressView } from '../../../../../../common/app-ui/presentation/AppAddressView.tsx'
-import { AppButton } from '../../../../../../common/app-ui/presentation/AppButton.tsx'
-import { AppIconButton } from '../../../../../../common/app-ui/presentation/AppIconButton.tsx'
-import { ChainIconView } from '../../../../../../common/app-ui/presentation/ChainIconView.tsx'
-import { ComponentSize } from '../../../../../../common/app-ui/presentation/ComponentSize.ts'
-import { ComponentVariant } from '../../../../../../common/app-ui/presentation/ComponentVariant.ts'
-import { LoadingView } from '../../../../../../common/app-ui/presentation/LoadingView.tsx'
-import { TokenIconView } from '../../../../../../common/app-ui/presentation/TokenIconView.tsx'
+import { AppAddressView } from '../../../../../../common/app-ui/AppAddressView.tsx'
+import { AppButton } from '../../../../../../common/app-ui/AppButton.tsx'
+import { AppIconButton } from '../../../../../../common/app-ui/AppIconButton.tsx'
+import { ListItemHolder } from '../../../../../../common/app-ui/AppInfiniteScrollView.tsx'
+import { ChainIconView } from '../../../../../../common/app-ui/ChainIconView.tsx'
+import { ComponentSize } from '../../../../../../common/app-ui/ComponentSize.ts'
+import { ComponentVariant } from '../../../../../../common/app-ui/ComponentVariant.ts'
+import { LoadingView } from '../../../../../../common/app-ui/LoadingView.tsx'
+import { TokenIconView } from '../../../../../../common/app-ui/TokenIconView.tsx'
 import { NumberShortener } from '../../../../../../utils/Shortener.ts'
 import { WalletListItemModel } from '../../../model/WalletListItemModel.ts'
 
@@ -73,6 +74,12 @@ const CurrencyItemContainer = styled.div`
   padding: 8px;
 `
 
+const CurrencyFooterContainer = styled.div`
+  display: flex;
+  gap: 8px;
+  padding: 8px 4px;
+  border-top: 1px solid ${({theme}) => theme.color.button.normal.border.primary!};
+`
 const CurrencyItemAmountContainer = styled.div`
   display: flex;
   justify-content: start;
@@ -95,9 +102,7 @@ const ActionsContainer = styled.div`
   padding: 12px 0;
 `
 
-export interface WalletListHolderProps {
-  item: WalletListItemModel
-  onItemClick: (viewId: number, data: unknown) => void
+export interface WalletListHolderProps extends ListItemHolder<WalletListItemModel> {
 }
 
 export const WalletHolderView = forwardRef((
@@ -159,7 +164,7 @@ export const WalletHolderView = forwardRef((
       </FeeContainer>
       {
         Array.from(item.currencies.keys()).map(chain => (
-          <CurrencyContainer>
+          <CurrencyContainer key={chain}>
             <ChainTitleContainer>
               <ChainIconView showChainName={true} chain={chain} size={ComponentSize.SMALLEST} />
               (Total in-use / Total Balance)
@@ -187,7 +192,7 @@ export const WalletHolderView = forwardRef((
                       actualBalance && actualBalance > amount
                         ? (
                           <WithdrawButtonWrapper
-                            onClick={() => {onItemClick(1, currency)}}
+                            onClick={() => {onItemClick(item.hash, 1, currency)}}
                             size={ComponentSize.SMALL}
                             text={'Withdraw'}
                           />
@@ -197,6 +202,9 @@ export const WalletHolderView = forwardRef((
                   </CurrencyItemContainer>
                 ))
             }
+            <CurrencyFooterContainer>
+              USD cost orders: <GreenColor>${item.totalValueWalletUsdt.get(chain)}</GreenColor>
+            </CurrencyFooterContainer>
           </CurrencyContainer>
         ))
       }

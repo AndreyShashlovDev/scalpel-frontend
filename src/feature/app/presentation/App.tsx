@@ -1,12 +1,13 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { useCallback, useLayoutEffect, useMemo } from 'react'
+import { useCallback } from 'react'
 import { RouterProvider } from 'react-router-dom'
 import styled, { createGlobalStyle, ThemeProvider } from 'styled-components'
 import { useApp } from '../../../AppProvider.tsx'
-import { AppMenuView } from '../../../common/app-ui/presentation/AppMenuView.tsx'
+import { AppMenuView } from '../../../common/app-ui/AppMenuView.tsx'
+import { SnackbarView } from '../../../common/app-ui/snackbar/presentation/SnackbarView.tsx'
 import { AppRouting } from '../../../common/router/AppRouting.tsx'
 import useObservable from '../../../hooks/useObservable.ts'
-import { getDIValue } from '../../../Injections.ts'
+import { usePresenter } from '../../../hooks/usePresenter.ts'
 import { useAppTheme } from '../../../style/theme/AppThemeProvider.tsx'
 import '../domain/AppPresenterModule.ts'
 import { AppPresenter } from '../domain/AppPresenter.ts'
@@ -28,25 +29,21 @@ const BasicContainer = styled(motion.div)`
 `
 
 function App() {
-  const presenter = useMemo(() => getDIValue(AppPresenter), [])
+  const presenter = usePresenter(AppPresenter)
   const menuItems = useObservable(presenter.getMainMenuItems(), [])
   const selectedMenuItemId = useObservable(presenter.getSelectedMenuItemId(), undefined)
   const routing = useCallback(() => AppRouting, [])
   const {theme} = useAppTheme()
   const {seVisibilityAppMenu, visibilityAppMenu} = useApp()
 
-  useLayoutEffect(() => {
-    presenter.init()
-
-    return () => presenter.destroy()
-  })
-
   return (
     <ThemeProvider theme={theme}>
-       <GlobalStyle />
+      <GlobalStyle />
       <BasicContainer>
         <AnimatePresence>
-          <RouterProvider router={routing()} />
+          <RouterProvider
+            router={routing()}
+          />
           <AppMenuView
             selected={selectedMenuItemId}
             items={menuItems}
@@ -57,6 +54,7 @@ function App() {
           />
         </AnimatePresence>
       </BasicContainer>
+      <SnackbarView />
     </ThemeProvider>
   )
 }

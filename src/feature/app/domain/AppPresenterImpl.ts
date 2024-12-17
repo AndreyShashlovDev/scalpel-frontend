@@ -1,5 +1,5 @@
 import { BehaviorSubject, Observable } from 'rxjs'
-import { MenuItem } from '../../../common/app-ui/presentation/AppMenuView.tsx'
+import { MenuItem } from '../../../common/app-ui/AppMenuView.tsx'
 import { AppException } from '../../../common/repository/data/source/exception/AppException.ts'
 import { UnauthorizedException } from '../../../common/repository/data/source/exception/UnauthorizedException.ts'
 import { ExceptionHandlerService } from '../../../common/service/exception-handler/ExceptionHandlerService.ts'

@@ -1,9 +1,10 @@
-import { useLayoutEffect, useMemo, useRef } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { LoadingView } from '../../../common/app-ui/presentation/LoadingView.tsx'
-import { PageHeaderView } from '../../../common/app-ui/presentation/PageHeaderView.tsx'
-import { PageLayoutView } from '../../../common/app-ui/presentation/PageLayoutView.tsx'
+import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
+import { PageHeaderView } from '../../../common/app-ui/PageHeaderView.tsx'
+import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
 import useObservable from '../../../hooks/useObservable.ts'
+import { usePresenter } from '../../../hooks/usePresenter.ts'
 import { getDIValue } from '../../../Injections.ts'
 import { StrategiesPagePresenter } from '../domain/StrategiesPagePresenter.ts'
 import { StrategyDialogProvider } from '../domain/StrategyDialogProvider.ts'
@@ -26,11 +27,12 @@ const ListContainer = styled.div`
 
 export const StrategiesPageView = () => {
 
-  const presenter = useMemo(() => getDIValue(StrategiesPagePresenter), [])
+  const presenter = usePresenter(StrategiesPagePresenter)
   const dialogProvider = useMemo(() => getDIValue(StrategyDialogProvider), [])
   const strategies = useObservable(presenter.getStrategiesList(), undefined)
   const isLastPage = useObservable(presenter.getIsLastPage(), true)
   const isLoading = useObservable(presenter.getIsLoading(), true)
+  const isLoadingFinished = useObservable(presenter.getLoadingFinished(), undefined)
 
   const dialogSwapsRef = useRef<DialogSwapsCallBack | null>(null)
   const dialogLogsRef = useRef<DialogLogsCallBack | null>(null)
@@ -38,10 +40,9 @@ export const StrategiesPageView = () => {
   const dialogAnalyticsRef = useRef<DialogAnalyticsCallBack | null>(null)
   const dialogForceExecuteRef = useRef<DialogForceExecuteCallBack | null>(null)
   const listScrollContainerRef = useRef<HTMLDivElement | null>(null)
+  const [pullToRefreshLoading, setPullToRefreshLoading] = useState(false)
 
   useLayoutEffect(() => {
-    presenter.init()
-
     dialogProvider.setDialogCallback({
       openSwapsDialog(strategyHash: string): void {
         dialogSwapsRef.current?.openDialog({strategyHash})
@@ -61,24 +62,30 @@ export const StrategiesPageView = () => {
     })
 
     return () => {
-      presenter.destroy()
       dialogProvider.destory()
     }
-  }, [presenter, dialogProvider])
+  }, [dialogProvider])
+
+  useEffect(() => {
+    if (isLoadingFinished) {
+      setPullToRefreshLoading(false)
+    }
+  }, [isLoadingFinished])
 
   return (
     <div>
-      <PageHeaderView text={'Orders:'} />
+      <PageHeaderView text={'Orders'} />
       <PageLayoutWrapper
         fetched={!isLoading}
         refresh={() => {
+          setPullToRefreshLoading(true)
           presenter.refresh()
         }}
       >
       {
         !isLoading && (strategies?.length ?? 0) === 0
           ? <div>List empty</div>
-          : isLoading && <LoadingView />
+          : isLoading && !pullToRefreshLoading && <LoadingView />
       }
 
         <ListContainer ref={listScrollContainerRef}>

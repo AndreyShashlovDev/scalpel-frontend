@@ -35,9 +35,15 @@ export class Factory<T> {
   }
 }
 
-type Newable<T> = new (...args: unknown[]) => T
+export class Singleton<T> extends Factory<T> {
+  constructor(creator: () => T) {
+    super(creator, true)
+  }
+}
 
-interface Abstract<T> {
+export type Newable<T> = new (...args: unknown[]) => T
+
+export interface Abstract<T> {
   prototype: T
 }
 
@@ -78,14 +84,16 @@ injectionKernel.set(AppAuthService, new Factory(() => new AppAuthServiceImpl(), 
 
 injectionKernel.set(
   AppSourceService,
-  new Factory(
-    () => new AppSourceService(new AppAuthHttpsService(
-      SCALPEL_ENDPOINT,
-      'api',
-      getDIValue(AppAuthService),
+  new Singleton(
+    () => new AppSourceService(
+      new AppAuthHttpsService(
+        SCALPEL_ENDPOINT,
+        'api',
+        getDIValue(AppAuthService),
+        getDIValue(ExceptionNotifierService)
+      ),
       getDIValue(ExceptionNotifierService)
-    )),
-    true
+    )
   )
 )
 

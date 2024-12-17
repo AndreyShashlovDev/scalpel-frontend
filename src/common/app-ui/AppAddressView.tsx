@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { AddressShortener } from '../../../utils/Shortener.ts'
+import { AddressShortener } from '../../utils/Shortener.ts'
 
 const AddressContainer = styled.span`
   white-space: nowrap;

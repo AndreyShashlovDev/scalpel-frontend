@@ -1,11 +1,10 @@
-import { useLayoutEffect, useMemo } from 'react'
 import styled from 'styled-components'
-import { ComponentSize } from '../../../common/app-ui/presentation/ComponentSize.ts'
-import { LoadingView } from '../../../common/app-ui/presentation/LoadingView.tsx'
-import { PageHeaderView } from '../../../common/app-ui/presentation/PageHeaderView.tsx'
-import { PageLayoutView } from '../../../common/app-ui/presentation/PageLayoutView.tsx'
+import { ComponentSize } from '../../../common/app-ui/ComponentSize.ts'
+import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
+import { PageHeaderView } from '../../../common/app-ui/PageHeaderView.tsx'
+import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
 import useObservable from '../../../hooks/useObservable.ts'
-import { getDIValue } from '../../../Injections.ts'
+import { usePresenter } from '../../../hooks/usePresenter.ts'
 import { TransactionPagePresenter } from '../domain/TransactionPagePresenter.ts'
 import { TransactionListView } from './components/wallet-list/TransactionListView.tsx'
 import '../domain/TransactionPagePresenterModule.ts'
@@ -20,26 +19,16 @@ const ListContainer = styled.div`
   height: calc(100vh - ${({theme}) => theme.size.header});
 `
 
-export interface LogsPageProps {
-  strategyHash?: string
-}
+const TransactionPageView = () => {
 
-const TransactionPageView = ({strategyHash}: LogsPageProps) => {
-
-  const presenter = useMemo(() => getDIValue(TransactionPagePresenter), [])
+  const presenter = usePresenter(TransactionPagePresenter)
   const itemModels = useObservable(presenter.getTransactionItems(), [])
   const isLoading = useObservable(presenter.getIsLoading(), true)
   const isLastPage = useObservable(presenter.getIsLastPage(), false)
 
-  useLayoutEffect(() => {
-    presenter.init()
-
-    return () => presenter.destroy()
-  }, [strategyHash, presenter])
-
   return (
     <div>
-      <PageHeaderView text={'Transactions:'} />
+      <PageHeaderView text={'Transactions'} />
       <Container
         refresh={() => presenter.refresh()}
         fetched={!isLoading}

@@ -11,20 +11,21 @@ import PlayIcon from '../../../../../../assets/icons/app/PlayIcon.svg'
 import SaveIcon from '../../../../../../assets/icons/app/SaveIcon.svg'
 import SuccessIcon from '../../../../../../assets/icons/app/SuccessIcon.svg'
 import WarningIcon from '../../../../../../assets/icons/app/WarningIcon.svg'
-import { AppAddressView } from '../../../../../../common/app-ui/presentation/AppAddressView.tsx'
-import { AppButton } from '../../../../../../common/app-ui/presentation/AppButton.tsx'
-import { AppIconButton } from '../../../../../../common/app-ui/presentation/AppIconButton.tsx'
-import { AppInputView } from '../../../../../../common/app-ui/presentation/AppInputView.tsx'
-import { AppSpaceView } from '../../../../../../common/app-ui/presentation/AppSpaceView.tsx'
-import { ChainIconView } from '../../../../../../common/app-ui/presentation/ChainIconView.tsx'
-import { ComponentSize } from '../../../../../../common/app-ui/presentation/ComponentSize.ts'
-import { LoadingView } from '../../../../../../common/app-ui/presentation/LoadingView.tsx'
-import { TokenIconView } from '../../../../../../common/app-ui/presentation/TokenIconView.tsx'
+import WithdrawIcon from '../../../../../../assets/icons/app/WithdrawIcon.svg'
+import { AppAddressView } from '../../../../../../common/app-ui/AppAddressView.tsx'
+import { AppButton } from '../../../../../../common/app-ui/AppButton.tsx'
+import { AppIconButton } from '../../../../../../common/app-ui/AppIconButton.tsx'
+import { AppInputView } from '../../../../../../common/app-ui/AppInputView.tsx'
+import { AppSpaceView } from '../../../../../../common/app-ui/AppSpaceView.tsx'
+import { ChainIconView } from '../../../../../../common/app-ui/ChainIconView.tsx'
+import { ComponentSize } from '../../../../../../common/app-ui/ComponentSize.ts'
+import { LoadingView } from '../../../../../../common/app-ui/LoadingView.tsx'
+import { TokenIconView } from '../../../../../../common/app-ui/TokenIconView.tsx'
 import { StrategyStatusType } from '../../../../../../common/repository/data/model/StrategyResponse.ts'
 import { SwapState } from '../../../../../../common/repository/data/model/SwapResponse.ts'
 import { StrategyHolderButtonIds } from '../../../../domain/StrategyHolderButtonIds.ts'
 import { StrategyListItem } from '../../../model/StrategyListItem.ts'
-import { StrategyStatusView } from '../StrategyStatusView.tsx'
+import { StrategyStatusView } from './StrategyStatusView.tsx'
 
 const ArrowIconContainer = styled.div`
   display: flex;
@@ -351,6 +352,12 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
                 size={ComponentSize.STANDARD}
               />
             )
+          }
+          {
+            <AppIconButton
+              onClick={() => onItemClick(StrategyHolderButtonIds.WITHDRAW_BUTTON_ID)}
+              icon={<WithdrawIcon />}
+            />
           }
       </ActionButtonsContainer>
       )

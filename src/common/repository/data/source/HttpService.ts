@@ -1,26 +1,30 @@
 import { JsonObject } from '../../../../utils/types.ts'
 
 export interface HttpRequest {
+  path: string
   query?: Map<string, string>
   body?: JsonObject<unknown>
 }
 
 export interface HttpService<T> {
 
-  get(path: string, request?: HttpRequest): Promise<T>
+  get(
+    request: HttpRequest,
+    transform: (response: T) => Promise<T>,
+  ): Promise<T>
 
   post(
-    path: string,
-    request?: HttpRequest,
+    request: HttpRequest,
+    transform: (response: T) => Promise<T>,
   ): Promise<T>
 
   delete(
-    path: string,
-    request?: HttpRequest,
+    request: HttpRequest,
+    transform: (response: T) => Promise<T>,
   ): Promise<T>
 
   put(
-    path: string,
-    request?: HttpRequest,
+    request: HttpRequest,
+    transform: (response: T) => Promise<T>,
   ): Promise<T>
 }

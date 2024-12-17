@@ -2,6 +2,7 @@ import { Pageable } from '../model/Pageable.ts'
 import { WalletResponse } from '../model/WalletResponse.ts'
 import { WalletStatisticResponse } from '../model/WalletStatisticResponse.ts'
 import { AppSourceService } from '../source/AppSourceService.ts'
+import { UnknownException } from '../source/exception/UnknownException.ts'
 import { WalletRepository } from './WalletRepository.ts'
 
 export class WalletRepositoryImpl extends WalletRepository {
@@ -11,45 +12,55 @@ export class WalletRepositoryImpl extends WalletRepository {
   }
 
   public async createWallet(): Promise<string> {
-    const result = await this.appSourceService.post<string>('/wallet/')
+    return this.appSourceService.post<string, string>(
+      {
+        path: '/wallet/'
+      },
+      async (response) => {
+        if (response.success) {
+          return response.data!
+        }
 
-    if (result.success) {
-      return result.data!
-    }
-
-    throw new Error()
+        throw UnknownException.create()
+      }
+    )
   }
 
   public async getWallets(): Promise<WalletResponse[]> {
-    const result = await this.appSourceService.get<WalletResponse[]>('/wallet/')
+    return this.appSourceService.get<WalletResponse[], WalletResponse[]>(
+      {
+        path: '/wallet/'
+      },
+      async (response) => {
+        if (response.success) {
+          return response.data?.map(WalletResponse.valueOfJson) ?? []
+        }
 
-    if (result.success) {
-      return result.data?.map(WalletResponse.valueOfJson) ?? []
-    }
-
-    throw new Error()
+        throw new Error()
+      }
+    )
   }
 
   public async getStatistic(page: number, limit: number): Promise<Pageable<WalletStatisticResponse>> {
-    const result = await this.appSourceService.get<Pageable<WalletStatisticResponse>>(
-      '/wallet/statistic',
+    return this.appSourceService.get<Pageable<WalletStatisticResponse>, Pageable<WalletStatisticResponse>>(
       {
+        path: '/wallet/statistic',
         query: new Map([
           ['page', page.toString()],
           ['limit', limit.toString()]
         ])
+      },
+      async (response) => {
+        if (response.success && Array.isArray(response.data?.data)) {
+          return new Pageable(
+            response.data.data.map(WalletStatisticResponse.valueOfJson),
+            response.data?.total,
+            response.data?.page
+          )
+        }
+
+        throw UnknownException.create()
       }
     )
-
-    if (result.success && Array.isArray(result.data?.data)) {
-      return new Pageable(
-        result.data.data.map(WalletStatisticResponse.valueOfJson),
-        result.data?.total,
-        result.data?.page
-      )
-    }
-
-    throw new Error()
   }
-
 }

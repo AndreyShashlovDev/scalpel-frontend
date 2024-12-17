@@ -2,6 +2,7 @@ import { Pageable } from '../../../../common/repository/data/model/Pageable.ts'
 import { SortOrder } from '../../../../common/repository/data/model/SortOrder.ts'
 import { SwapResponse } from '../../../../common/repository/data/model/SwapResponse.ts'
 import { AppSourceService } from '../../../../common/repository/data/source/AppSourceService.ts'
+import { UnknownException } from '../../../../common/repository/data/source/exception/UnknownException.ts'
 import { SwapRepository, SwapsSortOrder } from './SwapRepository.ts'
 
 export class SwapRepositoryImpl extends SwapRepository {
@@ -16,22 +17,26 @@ export class SwapRepositoryImpl extends SwapRepository {
     limit: number,
     order: SortOrder<SwapsSortOrder>
   ): Promise<Pageable<SwapResponse>> {
-    const result = await this.appSourceService.get<Pageable<SwapResponse>>(`/strategy/${strategyHash}/swap`, {
-      query: new Map([
-        ['page', page.toString()],
-        ['limit', limit.toString()],
-        ['order', order.toQuery()]
-      ])
-    })
+    return this.appSourceService.get<Pageable<SwapResponse>, Pageable<SwapResponse>>(
+      {
+        path: `/strategy/${strategyHash}/swap`,
+        query: new Map([
+          ['page', page.toString()],
+          ['limit', limit.toString()],
+          ['order', order.toQuery()]
+        ])
+      },
+      async (response) => {
+        if (response.success && response.data) {
+          return new Pageable(
+            response.data.data.map(SwapResponse.valueOfJson),
+            response.data.total,
+            response.data.page
+          )
+        }
 
-    if (result.success && result.data) {
-      return new Pageable(
-        result.data.data.map(SwapResponse.valueOfJson),
-        result.data.total,
-        result.data.page
-      )
-    }
-
-    throw new Error()
+        throw UnknownException.create()
+      }
+    )
   }
 }

@@ -29,14 +29,17 @@ export class AppAuthHttpsService implements HttpService<Response> {
       })
   }
 
-  public get(path: string, request?: HttpRequest): Promise<Response> {
-    const url = this.getUrl(path)
+  public async get(
+    request: HttpRequest,
+    transform: (response: Response) => Promise<Response>,
+  ): Promise<Response> {
+    const url = this.getUrl(request.path)
 
     request?.query?.forEach((value, key) => {
       url.searchParams.set(key, value)
     })
 
-    return fetch(url, {method: 'GET', headers: this.getHeaders()})
+    return transform(await fetch(url, {method: 'GET', headers: this.getHeaders()})
       .then(async response => {
         if (!response.ok) {
           this.catchException(await response.json())
@@ -48,58 +51,60 @@ export class AppAuthHttpsService implements HttpService<Response> {
           throw e
         }
       )
+    )
   }
 
   public post(
-    path: string,
-    request?: HttpRequest,
+    request: HttpRequest,
+    transform: (response: Response) => Promise<Response>,
   ): Promise<Response> {
-    return this.modifyQuery('POST', path, request)
+    return this.modifyQuery('POST', request, transform)
   }
 
   public delete(
-    path: string,
-    request?: HttpRequest,
+    request: HttpRequest,
+    transform: (response: Response) => Promise<Response>,
   ): Promise<Response> {
-    return this.modifyQuery('DELETE', path, request)
+    return this.modifyQuery('DELETE', request, transform)
   }
 
   public put(
-    path: string,
-    request?: HttpRequest,
+    request: HttpRequest,
+    transform: (response: Response) => Promise<Response>,
   ): Promise<Response> {
-    return this.modifyQuery('PUT', path, request)
+    return this.modifyQuery('PUT', request, transform)
   }
 
-  public modifyQuery(
+  public async modifyQuery(
     method: 'POST' | 'DELETE' | 'PUT',
-    path: string,
-    request?: HttpRequest,
+    request: HttpRequest,
+    transform: (response: Response) => Promise<Response>,
   ): Promise<Response> {
-    const url = this.getUrl(path)
+    const url = this.getUrl(request.path)
 
     request?.query?.forEach((value, key) => {
       url.searchParams.set(key, value)
     })
 
-    return fetch(
-      url,
-      {
-        method,
-        body: request?.body ? JSON.stringify(request.body) : undefined,
-        headers: this.getHeaders(!!request?.body)
-      }
-    ).then(async response => {
-      if (!response.ok) {
-        this.catchException(await response.json())
-      }
-      return response
-    })
-      .catch(e => {
-          this.catchException(e)
-          throw e
+    return transform(await fetch(
+        url,
+        {
+          method,
+          body: request?.body ? JSON.stringify(request.body) : undefined,
+          headers: this.getHeaders(!!request?.body)
         }
-      )
+      ).then(async response => {
+        if (!response.ok) {
+          this.catchException(await response.json())
+        }
+        return response
+      })
+        .catch(e => {
+            this.catchException(e)
+            throw e
+          }
+        )
+    )
   }
 
   private getUrl(path: string): URL {
@@ -140,7 +145,7 @@ export class AppAuthHttpsService implements HttpService<Response> {
     }
 
     this.exceptionNotifierService.notify(appError)
-    
+
     throw appError
   }
 }

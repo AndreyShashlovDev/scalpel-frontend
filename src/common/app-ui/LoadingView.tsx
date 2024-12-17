@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { ClockLoader } from 'react-spinners'
+import { PuffLoader } from 'react-spinners'
 import styled, { useTheme } from 'styled-components'
 import { ComponentSize, ComponentSizeProps } from './ComponentSize.ts'
 
@@ -32,7 +32,7 @@ export const LoadingView = ({size}: LoadingProps) => {
 
   return (
     <LoaderWrapper>
-      <ClockLoader color={theme.color.text.primary} size={sizeToPx()} />
+      <PuffLoader color={theme.color.text.primary} size={sizeToPx()} speedMultiplier={2} />
     </LoaderWrapper>
   )
 }

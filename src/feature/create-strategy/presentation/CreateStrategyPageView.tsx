@@ -1,17 +1,17 @@
-import { useCallback, useLayoutEffect, useMemo } from 'react'
+import { useCallback } from 'react'
 import styled from 'styled-components'
 import PlayIcon from '../../../assets/icons/app/PlayIcon.svg'
-import { AppAddressView } from '../../../common/app-ui/presentation/AppAddressView.tsx'
-import { AppButton } from '../../../common/app-ui/presentation/AppButton.tsx'
-import { AppComboBoxView } from '../../../common/app-ui/presentation/AppComboBoxView.tsx'
-import { AppSpaceView } from '../../../common/app-ui/presentation/AppSpaceView.tsx'
-import { ComponentSize } from '../../../common/app-ui/presentation/ComponentSize.ts'
-import { LoadingView } from '../../../common/app-ui/presentation/LoadingView.tsx'
-import { PageHeaderView } from '../../../common/app-ui/presentation/PageHeaderView.tsx'
-import { PageLayoutView } from '../../../common/app-ui/presentation/PageLayoutView.tsx'
+import { AppAddressView } from '../../../common/app-ui/AppAddressView.tsx'
+import { AppButton } from '../../../common/app-ui/AppButton.tsx'
+import { AppComboBoxView } from '../../../common/app-ui/AppComboBoxView.tsx'
+import { AppSpaceView } from '../../../common/app-ui/AppSpaceView.tsx'
+import { ComponentSize } from '../../../common/app-ui/ComponentSize.ts'
+import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
+import { PageHeaderView } from '../../../common/app-ui/PageHeaderView.tsx'
+import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
 import { StrategyType } from '../../../common/repository/data/model/StrategyType.ts'
 import useObservable from '../../../hooks/useObservable.ts'
-import { getDIValue } from '../../../Injections.ts'
+import { usePresenter } from '../../../hooks/usePresenter.ts'
 import { CreateStrategyPagePresenter } from '../domain/CreateStrategyPagePresenter.ts'
 import { State } from '../domain/CreateStrategyPagePresenterImpl.ts'
 import { ClassicScalpelOptionsView } from './components/strategy-options/ClassicScalpelOptionsView.tsx'
@@ -79,7 +79,7 @@ const BodyContainer = styled.div`
 
 const CreateStrategyPageView = () => {
 
-  const presenter = useMemo(() => getDIValue(CreateStrategyPagePresenter), [])
+  const presenter = usePresenter(CreateStrategyPagePresenter)
   const state = useObservable(presenter.getCurrentState(), State.CHAIN)
   const isCanNext = useObservable(presenter.isCanNext(), false)
   const canShowLoading = useObservable(presenter.isCanShowLoading(), true)
@@ -93,12 +93,6 @@ const CreateStrategyPageView = () => {
   const selectedTokenB = useObservable(presenter.getSelectedTokenB(), undefined)
   const selectedWallet = useObservable(presenter.getSelectedWallet(), undefined)
   const isCreateIsLoading = useObservable(presenter.getShowCreateLoading(), false)
-
-  useLayoutEffect(() => {
-    presenter.init()
-
-    return () => presenter.destroy()
-  }, [presenter])
 
   const descBodyView = useCallback(() => {
     const items = () => {

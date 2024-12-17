@@ -19,8 +19,15 @@ export interface ListItem {
 }
 
 export interface ListItemHolder<T extends ListItem> {
+  item: T
+  onItemClick: (hash: string, viewId: number, data?: unknown) => void
+}
+
+export interface ListItemsProps<T extends ListItem> {
   items: T[]
-  onClickItem: (hash: string, viewId: number, data?: unknown) => void
+  onNextFetch: () => void
+  hasNext: boolean
+  onItemClick: (hash: string, viewId: number, data?: unknown) => void
 }
 
 export type Direction = 'top' | 'bottom' | 'unknown'

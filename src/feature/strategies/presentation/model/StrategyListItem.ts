@@ -1,4 +1,4 @@
-import { ListItem } from '../../../../common/app-ui/presentation/AppInfiniteScrollView.tsx'
+import { ListItem } from '../../../../common/app-ui/AppInfiniteScrollView.tsx'
 import { ChainType } from '../../../../common/repository/data/model/ChainType.ts'
 import { StrategyStatusType } from '../../../../common/repository/data/model/StrategyResponse.ts'
 import { JsonObject } from '../../../../utils/types.ts'

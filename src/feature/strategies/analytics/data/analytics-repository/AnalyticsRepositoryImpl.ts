@@ -1,4 +1,5 @@
 import { AppSourceService } from '../../../../../common/repository/data/source/AppSourceService.ts'
+import { UnknownException } from '../../../../../common/repository/data/source/exception/UnknownException.ts'
 import { AnalyticsResponse } from '../model/AnalyticsResponse.ts'
 import { AnalyticsRange } from './AnalyticsRange.ts'
 import { AnalyticsRepository } from './AnalyticsRepository.ts'
@@ -13,19 +14,20 @@ export class AnalyticsRepositoryImpl extends AnalyticsRepository {
     strategyHash: string,
     range: AnalyticsRange,
   ): Promise<AnalyticsResponse> {
-    const result = await this.appSourceService.get<AnalyticsResponse>(
-      `/strategy/${strategyHash}/analytics/`,
+    return this.appSourceService.get<AnalyticsResponse, AnalyticsResponse>(
       {
+        path: `/strategy/${strategyHash}/analytics/`,
         query: new Map([
           ['range', range.toString()]
         ])
+      },
+      async (response) => {
+        if (response.success && response.data) {
+          return AnalyticsResponse.valueOfJson(response.data)
+        }
+
+        throw UnknownException.create('Cannot receive analytics')
       }
     )
-
-    if (result.success && result.data) {
-      return AnalyticsResponse.valueOfJson(result.data)
-    }
-
-    throw new Error()
   }
 }

@@ -1,11 +1,14 @@
 import { ChainType } from '../model/ChainType.ts'
 import { CurrencyResponse } from '../model/CurrencyResponse.ts'
 import { AppSourceService } from '../source/AppSourceService.ts'
+import { UnknownException } from '../source/exception/UnknownException.ts'
 import { CurrencyRepository } from './CurrencyRepository.ts'
 
 export class CurrencyRepositoryImpl extends CurrencyRepository {
 
-  constructor(private readonly appSourceService: AppSourceService) {
+  constructor(
+    private readonly appSourceService: AppSourceService,
+  ) {
     super()
   }
 
@@ -16,12 +19,19 @@ export class CurrencyRepositoryImpl extends CurrencyRepository {
       query.set('chain', chain)
     }
 
-    const result = await this.appSourceService.get<CurrencyResponse[]>(`/currency/`, {query})
+    return this.appSourceService.get<CurrencyResponse[], CurrencyResponse[]>(
+      {
+        path: `/currency/`,
+        query
+      },
 
-    if (result.success && result.data) {
-      return result.data.map(CurrencyResponse.valueOfJson)
-    }
+      async (response) => {
+        if (response.success && response.data) {
+          return response.data.map(CurrencyResponse.valueOfJson)
+        }
 
-    throw new Error()
+        throw UnknownException.create('Cannot get currency')
+      },
+    )
   }
 }

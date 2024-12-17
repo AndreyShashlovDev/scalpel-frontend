@@ -1,7 +1,7 @@
 import styled from 'styled-components'
-import { getTxHashUrl } from '../../../utils/ScanUrl.ts'
-import { TxHashShortener } from '../../../utils/Shortener.ts'
-import { ChainType } from '../../repository/data/model/ChainType.ts'
+import { getTxHashUrl } from '../../utils/ScanUrl.ts'
+import { TxHashShortener } from '../../utils/Shortener.ts'
+import { ChainType } from '../repository/data/model/ChainType.ts'
 
 const TxHashContainer = styled.span`
   white-space: nowrap;

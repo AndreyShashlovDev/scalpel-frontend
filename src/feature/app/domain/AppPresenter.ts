@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs'
-import { MenuItem } from '../../../common/app-ui/presentation/AppMenuView.tsx'
+import { MenuItem } from '../../../common/app-ui/AppMenuView.tsx'
 import { BasicPresenter } from '../../../utils/arch/BasicPresenter.ts'
 
 export abstract class AppPresenter extends BasicPresenter {

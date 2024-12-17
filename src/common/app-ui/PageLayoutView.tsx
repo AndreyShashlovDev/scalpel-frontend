@@ -2,7 +2,8 @@ import { motion } from 'framer-motion'
 import { MutableRefObject, ReactNode, useEffect, useRef } from 'react'
 import PullToRefresh from 'react-simple-pull-to-refresh'
 import styled from 'styled-components'
-import { useApp } from '../../../AppProvider.tsx'
+import { useApp } from '../../AppProvider.tsx'
+import { LoadingView } from './LoadingView.tsx'
 
 const Container = styled(motion.div)`
   background-color: ${({theme}) => theme.color.background};
@@ -45,6 +46,7 @@ export const PageLayoutView = ({children, refresh, fetched, ...props}: PageLayou
   return (
     <PullRefreshWrapper
       pullDownThreshold={130}
+      refreshingContent={<LoadingView />}
       maxPullDownDistance={130}
       isPullable={refresh !== undefined}
       onRefresh={async () => {

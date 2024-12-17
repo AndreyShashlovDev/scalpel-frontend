@@ -1,4 +1,4 @@
-import { BehaviorSubject, from, Observable, Subscription } from 'rxjs'
+import { BehaviorSubject, from, Observable, Subject, Subscription } from 'rxjs'
 import { CurrencyRepository } from '../../../common/repository/data/currencies/CurrencyRepository.ts'
 import { ChainType } from '../../../common/repository/data/model/ChainType.ts'
 import { CurrencyResponse } from '../../../common/repository/data/model/CurrencyResponse.ts'
@@ -18,6 +18,7 @@ export class WalletPagePresenterImpl extends WalletPagePresenter {
   private readonly walletItems: BehaviorSubject<WalletListItemModel[]> = new BehaviorSubject<WalletListItemModel[]>([])
   private readonly isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
   private readonly isLastPage: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
+  private readonly isLoadingFinished = new Subject<boolean>()
 
   private walletsLatestResult: Pageable<WalletStatisticResponse> | undefined
   private walletsFetchSubscription: Subscription | undefined
@@ -60,6 +61,10 @@ export class WalletPagePresenterImpl extends WalletPagePresenter {
 
   public getIsLastPage(): Observable<boolean> {
     return this.isLastPage.asObservable()
+  }
+
+  public getLoadingFinished(): Observable<boolean | undefined> {
+    return this.isLoadingFinished.asObservable()
   }
 
   private async fetchNativePrices(): Promise<void> {
@@ -129,7 +134,10 @@ export class WalletPagePresenterImpl extends WalletPagePresenter {
             result.data.length < WalletPagePresenterImpl.PAGE_LIMIT
           )
           this.fetchBalances(result.data)
+        },
+        complete: () => {
           this.isLoading.next(false)
+          this.isLoadingFinished.next(true)
         }
       })
   }

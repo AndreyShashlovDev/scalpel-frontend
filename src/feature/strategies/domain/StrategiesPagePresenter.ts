@@ -10,6 +10,8 @@ export abstract class StrategiesPagePresenter extends BasicPresenter {
 
   public abstract getIsLoading(): Observable<boolean>
 
+  public abstract getLoadingFinished(): Observable<boolean | undefined>
+
   public abstract getIsLastPage(): Observable<boolean>
 
   public abstract fetchNextPage(): void

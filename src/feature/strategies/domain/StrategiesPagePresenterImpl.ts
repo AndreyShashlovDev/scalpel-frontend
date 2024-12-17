@@ -1,5 +1,5 @@
 import * as console from 'node:console'
-import { BehaviorSubject, from, Observable, Subscription } from 'rxjs'
+import { BehaviorSubject, from, Observable, Subject, Subscription } from 'rxjs'
 import { Pageable } from '../../../common/repository/data/model/Pageable.ts'
 import { StrategyStatusType } from '../../../common/repository/data/model/StrategyResponse.ts'
 import { BasicDialogProvider } from '../../../utils/arch/DialogProvider.ts'
@@ -19,6 +19,7 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
   private readonly strategiesList = new BehaviorSubject<StrategyListItem<unknown>[]>([])
   private readonly isLastPage = new BehaviorSubject<boolean>(true)
   private readonly isLoading = new BehaviorSubject<boolean>(true)
+  private readonly isLoadingFinished = new Subject<boolean>()
   private strategiesLatestResult: Pageable<CompositeStrategyResponse> | undefined
 
   private listFetchSubscriber: Subscription | undefined
@@ -57,6 +58,10 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
     return this.isLastPage.asObservable()
   }
 
+  public getLoadingFinished(): Observable<boolean | undefined> {
+    return this.isLoadingFinished.asObservable()
+  }
+
   public fetchNextPage(): void {
     this.listFetchSubscriber?.unsubscribe()
     this.isLoading.next(true)
@@ -83,7 +88,10 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
             result.total <= list.length ||
             result.data.length < StrategiesPagePresenterImpl.PAGE_LIMIT
           )
+        },
+        complete: () => {
           this.isLoading.next(false)
+          this.isLoadingFinished.next(true)
         }
       })
   }

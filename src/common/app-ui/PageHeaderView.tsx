@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { useApp } from '../../../AppProvider.tsx'
+import { useApp } from '../../AppProvider.tsx'
 import { AppBurgerButtonView } from './AppBurgerButtonView.tsx'
 import { AppTitleProps, AppTitleView } from './AppTitleView.tsx'
 

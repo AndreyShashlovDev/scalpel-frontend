@@ -1,5 +1,6 @@
 import { StrategyResponse } from '../../../../common/repository/data/model/StrategyResponse.ts'
 import { AppSourceService } from '../../../../common/repository/data/source/AppSourceService.ts'
+import { UnknownException } from '../../../../common/repository/data/source/exception/UnknownException.ts'
 import { StrategyRepository } from './StrategyRepository.ts'
 
 export class StrategyRepositoryImpl extends StrategyRepository {
@@ -9,12 +10,17 @@ export class StrategyRepositoryImpl extends StrategyRepository {
   }
 
   public async getStrategy(hash: string): Promise<StrategyResponse> {
-    const result = await this.appSourceService.get<StrategyResponse>(`/strategy/${hash}`)
+    return this.appSourceService.get<StrategyResponse, StrategyResponse>(
+      {
+        path: `/strategy/${hash}`
+      },
+      async (response) => {
+        if (response.success && response.data) {
+          return StrategyResponse.valueOfJson(response.data)
+        }
 
-    if (result.success && result.data) {
-      return StrategyResponse.valueOfJson(result.data)
-    }
-
-    throw new Error()
+        throw UnknownException.create()
+      }
+    )
   }
 }

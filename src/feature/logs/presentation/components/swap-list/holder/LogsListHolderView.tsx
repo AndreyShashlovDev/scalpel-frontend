@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { ForwardedRef, forwardRef } from 'react'
 import styled from 'styled-components'
-import { AppSpaceView } from '../../../../../../common/app-ui/presentation/AppSpaceView.tsx'
+import { AppSpaceView } from '../../../../../../common/app-ui/AppSpaceView.tsx'
 import { LogListItemModel } from '../../../model/LogListItemModel.ts'
 
 const Container = styled(motion.div)`

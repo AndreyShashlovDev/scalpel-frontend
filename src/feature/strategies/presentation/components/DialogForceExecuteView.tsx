@@ -1,8 +1,8 @@
 import { ForwardedRef, forwardRef, useState } from 'react'
 import styled from 'styled-components'
-import { AppButton } from '../../../../common/app-ui/presentation/AppButton.tsx'
-import { BasicDialogView, DialogCallback } from '../../../../common/app-ui/presentation/dialog/BasicDialogView.tsx'
-import { PageHeaderView } from '../../../../common/app-ui/presentation/PageHeaderView.tsx'
+import { AppButton } from '../../../../common/app-ui/AppButton.tsx'
+import { BasicDialogView, DialogCallback } from '../../../../common/app-ui/dialog/BasicDialogView.tsx'
+import { PageHeaderView } from '../../../../common/app-ui/PageHeaderView.tsx'
 
 type CallBackDataType = { strategyHash: string }
 

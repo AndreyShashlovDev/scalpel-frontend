@@ -1,0 +1,60 @@
+import { AnimatePresence } from 'framer-motion'
+import { useLayoutEffect, useMemo } from 'react'
+import { createPortal } from 'react-dom'
+import styled from 'styled-components'
+import useObservable from '../../../../hooks/useObservable.ts'
+import { getDIValue } from '../../../../Injections.ts'
+import { SnackbarPresenter } from '../domain/SnackbarPresenter.ts'
+import { SnackbarItemView } from './components/SnackbarItemView.tsx'
+import '../domain/SnackbarPresenterModule.ts'
+
+const SnackbarViewContainer = styled.div`
+  position: fixed;
+  right: 24px;
+  top: 24px;
+
+  > div {
+    margin-bottom: 8px;
+  }
+
+  > div:first-child {
+    margin-top: 0px;
+  }
+
+  > div:last-child {
+    margin-bottom: 0;
+  }
+`
+
+export const SnackbarView = () => {
+
+  const presenter = useMemo(() => getDIValue(SnackbarPresenter), [])
+  const bars = useObservable(presenter.getBarItems(), [])
+
+  useLayoutEffect(() => {
+    presenter.init()
+
+    return () => presenter.destroy()
+  }, [presenter])
+
+  return createPortal(
+    <AnimatePresence>
+      <SnackbarViewContainer>
+        {
+          bars.map(item => <SnackbarItemView
+            id={item.id}
+            key={item.id}
+            text={item.text}
+            closeButton={item.closeButton}
+            timeoutClose={item.timeoutClose}
+            onAutoClose={() => presenter.onCloseItem(item.id, /* auto */ true)}
+            onCloseClick={() => presenter.onCloseItem(item.id, false)}
+          />)
+        }
+      </SnackbarViewContainer>
+     </AnimatePresence>
+    ,
+    // @ts-expect-error exist
+    document.getElementById('snackbar-root')
+  )
+}

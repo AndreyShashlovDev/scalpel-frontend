@@ -1,4 +1,5 @@
 import { AppSourceService } from '../../../../common/repository/data/source/AppSourceService.ts'
+import { UnknownException } from '../../../../common/repository/data/source/exception/UnknownException.ts'
 import { AuthRepository } from './AuthRepository.ts'
 
 export class AuthRepositoryImpl extends AuthRepository {
@@ -8,28 +9,37 @@ export class AuthRepositoryImpl extends AuthRepository {
   }
 
   public async getSignMessage(): Promise<string> {
-    const result = await this.sourceService.get<string>('/auth/sign-message')
+    return this.sourceService.get<string, string>(
+      {
+        path: '/auth/sign-message'
+      },
+      async (response) => {
+        if (response.success) {
+          return response.data!
+        }
 
-    if (result.success) {
-      return result.data!
-    }
-
-    throw new Error()
+        throw UnknownException.create()
+      }
+    )
   }
 
   public async login(address: string, message: string, sig: string): Promise<string> {
-    const result = await this.sourceService.post<string>('/auth', {
-      body: {
-        address,
-        message,
-        sign: sig
+    return this.sourceService.post<string, string>(
+      {
+        path: '/auth',
+        body: {
+          address,
+          message,
+          sign: sig
+        }
+      },
+      async (response) => {
+        if (response.success) {
+          return response.data!
+        }
+
+        throw UnknownException.create()
       }
-    })
-
-    if (result.success) {
-      return result.data!
-    }
-
-    throw new Error()
+    )
   }
 }

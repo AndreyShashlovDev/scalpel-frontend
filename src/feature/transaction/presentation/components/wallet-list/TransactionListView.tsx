@@ -1,6 +1,6 @@
 import styled from 'styled-components'
-import InfiniteScrollListView from '../../../../../common/app-ui/presentation/AppInfiniteScrollView.tsx'
-import { LoadingView } from '../../../../../common/app-ui/presentation/LoadingView.tsx'
+import InfiniteScrollListView from '../../../../../common/app-ui/AppInfiniteScrollView.tsx'
+import { LoadingView } from '../../../../../common/app-ui/LoadingView.tsx'
 import { TransactionListItemModel } from '../../model/TransactionListItemModel.ts'
 import { TransactionHolderView } from './holder/TransactionHolderView.tsx'
 

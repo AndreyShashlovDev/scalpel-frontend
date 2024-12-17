@@ -1,6 +1,6 @@
 import styled from 'styled-components'
-import { AppButton } from '../app-ui/presentation/AppButton.tsx'
-import { ComponentSize } from '../app-ui/presentation/ComponentSize.ts'
+import { AppButton } from '../app-ui/AppButton.tsx'
+import { ComponentSize } from '../app-ui/ComponentSize.ts'
 
 const Container = styled.div`
   display: flex;
