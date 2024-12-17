@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
+import FilterIcon from '../../../assets/icons/app/FilterIcon.svg'
 import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
 import { PageHeaderView } from '../../../common/app-ui/PageHeaderView.tsx'
 import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
@@ -74,7 +75,15 @@ export const StrategiesPageView = () => {
 
   return (
     <div>
-      <PageHeaderView text={'Orders'} />
+      <PageHeaderView
+        text={'Orders'}
+        buttons={[
+          {
+            icon: <FilterIcon />,
+            onClick: () => presenter.onFilterButtonClick()
+          }
+        ]}
+      />
       <PageLayoutWrapper
         fetched={!isLoading}
         refresh={() => {

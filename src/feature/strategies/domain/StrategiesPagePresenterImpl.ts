@@ -253,4 +253,8 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
   public onDeleteStrategyClick(hash: string): void {
     this.changeStrategyStatus(hash, StrategyStatusType.CANCELED)
   }
+
+  public onFilterButtonClick(): void {
+    console.log('onFilterButtonClick')
+  }
 }
