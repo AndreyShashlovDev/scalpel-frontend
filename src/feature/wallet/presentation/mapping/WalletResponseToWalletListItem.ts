@@ -52,7 +52,7 @@ export const WalletResponseToWalletListItem = (
     const [chain, items] = curr
     const sum = items.reduce((total, currency) => total + currency.usdAmount, 0)
 
-    return acc.set(chain, sum)
+    return acc.set(chain, NumberShortener(sum))
   }, new Map<ChainType, number>)
 
   return new WalletListItemModel(
