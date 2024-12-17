@@ -31,6 +31,10 @@ const LoginButtonContainer = styled.div`
   font-size: 24px;
 `
 
+const AddressWrapper = styled(AppAddressView)`
+  font-size: ${({theme}) => theme.size.fontSize.medium} !important;
+`
+
 export const LoginPageView = () => {
   const presenter = usePresenter(LoginPagePresenter)
   const walletAddress = useObservable(presenter.walletAddress(), undefined)
@@ -49,10 +53,12 @@ export const LoginPageView = () => {
               <LoginButtonContainer>
                 <span>Authorization</span>
 
+                <div>
+                 {walletAddress && <AddressWrapper address={walletAddress} />}
+                </div>
                 <AppButton
-                  disabled={isConnected}
-                  text={walletAddress ? <AppAddressView address={walletAddress} /> : 'Connect wallet'}
-                  onClick={() => presenter.connectWalletClick()}
+                  text={walletAddress && isConnected ? 'Disconnect' : 'Connect wallet'}
+                  onClick={() => isConnected ? presenter.disconnectWalletClick() : presenter.connectWalletClick()}
                 />
 
                 <AppButton

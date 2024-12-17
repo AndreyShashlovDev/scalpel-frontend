@@ -101,8 +101,13 @@ injectionKernel.set(
   CurrencyRepository,
   new Factory(() => new CurrencyRepositoryImpl(getDIValue(AppSourceService)), true)
 )
+
 injectionKernel.set(ApplicationRouter, new Factory(() => new ApplicationRouterImpl(), true))
-injectionKernel.set(WalletConnect, new Factory(() => new WalletConnectImpl('882d3398012401b6a598b7a245adff21'), true))
+
+injectionKernel.set(
+  WalletConnect,
+  new Singleton(() => new WalletConnectImpl('882d3398012401b6a598b7a245adff21', getDIValue(ExceptionNotifierService)))
+)
 
 injectionKernel.set(EthereumServiceStrategy, new Factory(() => new EthereumServiceStrategyImpl(
   new Map([

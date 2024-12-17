@@ -12,4 +12,6 @@ export abstract class LoginPagePresenter extends BasicPresenter {
   public abstract signMessageClick(): void
 
   public abstract getIsLoading(): Observable<boolean>
+
+  public abstract disconnectWalletClick(): void
 }

@@ -3,6 +3,8 @@ import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import type { AppKitNetwork } from '@reown/appkit-common'
 import { mainnet, polygon } from '@reown/appkit/networks'
 import { BehaviorSubject, Observable } from 'rxjs'
+import { UnknownException } from '../../repository/data/source/exception/UnknownException.ts'
+import { ExceptionNotifierService } from '../exception-handler/ExceptionNotifierService.ts'
 import { Wallet, WalletConnect } from './WalletConnect.ts'
 
 export interface WalletProvider extends Wallet {
@@ -26,7 +28,10 @@ export class WalletConnectImpl extends WalletConnect<WalletProvider> {
 
   private readonly appKit: AppKit
 
-  constructor(private readonly projectId: string) {
+  constructor(
+    private readonly projectId: string,
+    private readonly exceptionNotifierService: ExceptionNotifierService,
+  ) {
     super()
 
     this.appKit = createAppKit({
@@ -61,15 +66,28 @@ export class WalletConnectImpl extends WalletConnect<WalletProvider> {
   }
 
   public async connect(): Promise<void> {
-    console.error(this.appKit.isOpen(), this.appKit.getIsConnectedState())
-    console.log(this.appKit.getWalletProvider())
-    if (!this.appKit.isOpen() && !this.appKit.getIsConnectedState()) {
-      await this.appKit.open()
+    try {
+      console.log(this.appKit.isOpen(), this.appKit.getIsConnectedState())
+      if (!this.appKit.isOpen() && !this.appKit.getIsConnectedState()) {
+        await this.appKit.open()
+      }
+    } catch (e) {
+      // @ts-expect-error has message
+      this.exceptionNotifierService.notify(UnknownException.create(e.message))
+      throw e
     }
   }
 
   public async disconnect(): Promise<void> {
-    await this.ethersAdapter.disconnect({})
+    try {
+      await this.appKit.disconnect()
+
+      this.subject.next(undefined)
+    } catch (e) {
+      // @ts-expect-error has message
+      this.exceptionNotifierService.notify(UnknownException.create(e.message))
+      throw e
+    }
   }
 
   public getConnection(): WalletProvider | undefined {

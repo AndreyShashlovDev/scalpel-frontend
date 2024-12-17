@@ -63,4 +63,8 @@ export class LoginPagePresenterImpl extends LoginPagePresenter {
       .then(() => this.router.openStrategiesPage())
       .catch(e => console.error(e))
   }
+
+  public disconnectWalletClick(): void {
+    this.walletConnection.disconnect()
+  }
 }
