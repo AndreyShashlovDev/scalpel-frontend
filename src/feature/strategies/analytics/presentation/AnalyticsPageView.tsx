@@ -1,10 +1,9 @@
-import { useLayoutEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { ComponentSize } from '../../../../common/app-ui/ComponentSize.ts'
 import { LoadingView } from '../../../../common/app-ui/LoadingView.tsx'
 import { PageLayoutView } from '../../../../common/app-ui/PageLayoutView.tsx'
 import useObservable from '../../../../hooks/useObservable.ts'
-import { getDIValue } from '../../../../Injections.ts'
+import { usePresenter } from '../../../../hooks/usePresenter.ts'
 import { AnalyticsRange } from '../data/analytics-repository/AnalyticsRange.ts'
 import { AnalyticsPagePresenter } from '../domain/AnalyticsPagePresenter.ts'
 import '../domain/AnalyticsPagePresenterModule.ts'
@@ -52,20 +51,10 @@ export interface AnalyticsPageProps {
 
 export const AnalyticsPageView = ({strategyHash}: AnalyticsPageProps) => {
 
-  const presenter = useMemo(() => getDIValue(AnalyticsPagePresenter), [])
+  const presenter = usePresenter(AnalyticsPagePresenter, {strategyHash})
   const chartModel = useObservable(presenter.getChartModel(), undefined)
   const selectedChartRange = useObservable(presenter.getSelectedChartRange(), undefined)
   const isLoading = useObservable(presenter.getIsLoading(), true)
-
-  useLayoutEffect(() => {
-    if (strategyHash) {
-      presenter.setStrategyHash(strategyHash)
-    }
-
-    presenter.init()
-
-    return () => presenter.destroy()
-  }, [strategyHash, presenter])
 
   return (
     <Container

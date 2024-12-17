@@ -2,15 +2,19 @@ import { Observable } from 'rxjs'
 import { BasicPresenter } from '../../../utils/arch/BasicPresenter.ts'
 import { SwapListItemModel } from '../presentation/model/SwapListItemModel.ts'
 
-export abstract class SwapPagePresenter extends BasicPresenter {
+export interface SwapPageArgs {
+  strategyHash: string
+}
 
-  public abstract setupSwapData(strategyHash: string): void
+export abstract class SwapPagePresenter extends BasicPresenter<SwapPageArgs> {
 
   public abstract getSwapItems(): Observable<SwapListItemModel[]>
 
   public abstract getIsLastPage(): Observable<boolean>
 
   public abstract getIsLoading(): Observable<boolean>
+
+  public abstract getLoadingFinished(): Observable<boolean | undefined>
 
   public abstract onFetchNext(): void
 

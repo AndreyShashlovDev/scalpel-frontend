@@ -2,15 +2,19 @@ import { Observable } from 'rxjs'
 import { BasicPresenter } from '../../../utils/arch/BasicPresenter.ts'
 import { LogListItemModel } from '../presentation/model/LogListItemModel.ts'
 
-export abstract class LogsPagePresenter extends BasicPresenter {
+export interface LogsPageArgs {
+  strategyHash: string
+}
 
-  public abstract setStrategyHash(hash: string): void
+export abstract class LogsPagePresenter extends BasicPresenter<LogsPageArgs> {
 
   public abstract getLogItems(): Observable<LogListItemModel[]>
 
   public abstract getIsLastPage(): Observable<boolean>
 
   public abstract getIsLoading(): Observable<boolean>
+
+  public abstract getLoadingFinished(): Observable<boolean | undefined>
 
   public abstract onFetchNext(): void
 

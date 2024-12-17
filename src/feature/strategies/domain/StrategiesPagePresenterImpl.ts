@@ -64,7 +64,7 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
 
   public fetchNextPage(): void {
     this.listFetchSubscriber?.unsubscribe()
-    this.isLoading.next(true)
+    this.isLoading.next(this.strategiesList.value.length === 0)
 
     this.listFetchSubscriber = from(this.strategiesRepository.getCompositeStrategies(
       (this.strategiesLatestResult?.page ?? 0) + 1,

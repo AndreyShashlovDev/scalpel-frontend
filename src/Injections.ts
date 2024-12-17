@@ -69,8 +69,7 @@ const initValue = <T>(qualifier: Newable<unknown> | Abstract<unknown>): T => {
 }
 
 export const getDIValue = <T>(qualifier: Newable<T> | Abstract<T>): T => initValue(qualifier)
-
-export const useInject = <T>(qualifier: Newable<T> | Abstract<T>): T => initValue(qualifier)
+export const destroyDiInstance = <T>(qualifier: Newable<T> | Abstract<T>): boolean => mapSingleton.delete(qualifier)
 
 const SCALPEL_ENDPOINT = import.meta.env.VITE_SCALPEL_ENDPOINT ?? ''
 export const IS_PRODUCTION = import.meta.env.PROD

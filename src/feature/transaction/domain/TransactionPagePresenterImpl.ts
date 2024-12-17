@@ -1,4 +1,4 @@
-import { BehaviorSubject, from, Observable, Subscription } from 'rxjs'
+import { BehaviorSubject, from, Observable, Subject, Subscription } from 'rxjs'
 import { Pageable } from '../../../common/repository/data/model/Pageable.ts'
 import { TransactionResponse } from '../data/model/TransactionResponse.ts'
 import { TransactionRepository } from '../data/transaction-repository/TransactionRepository.ts'
@@ -16,6 +16,7 @@ export class TransactionPagePresenterImpl extends TransactionPagePresenter {
     [])
   private readonly isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
   private readonly isLastPage: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
+  private readonly isLoadingFinished = new Subject<boolean>()
 
   private transactionFetchSubscription: Subscription | undefined
   private transactionLatestResult: Pageable<TransactionResponse> | undefined
@@ -52,8 +53,12 @@ export class TransactionPagePresenterImpl extends TransactionPagePresenter {
     return this.isLastPage.asObservable()
   }
 
+  public getLoadingFinished(): Observable<boolean | undefined> {
+    return this.isLoadingFinished.asObservable()
+  }
+
   public fetchNext(): void {
-    this.isLoading.next(true)
+    this.isLoading.next(this.transactionItems.value.length === 0)
     this.transactionFetchSubscription?.unsubscribe()
 
     this.transactionFetchSubscription = from(this.transactionRepository.getTransactions(
@@ -73,8 +78,10 @@ export class TransactionPagePresenterImpl extends TransactionPagePresenter {
             result.total <= list.length ||
             result.data.length < TransactionPagePresenterImpl.PAGE_LIMIT
           )
-
+        },
+        complete: () => {
           this.isLoading.next(false)
+          this.isLoadingFinished.next(true)
         }
       })
   }

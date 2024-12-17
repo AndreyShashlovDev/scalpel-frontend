@@ -1,9 +1,8 @@
 import { AnimatePresence } from 'framer-motion'
-import { useLayoutEffect, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import styled from 'styled-components'
 import useObservable from '../../../../hooks/useObservable.ts'
-import { getDIValue } from '../../../../Injections.ts'
+import { usePresenter } from '../../../../hooks/usePresenter.ts'
 import { SnackbarPresenter } from '../domain/SnackbarPresenter.ts'
 import { SnackbarItemView } from './components/SnackbarItemView.tsx'
 import '../domain/SnackbarPresenterModule.ts'
@@ -28,14 +27,8 @@ const SnackbarViewContainer = styled.div`
 
 export const SnackbarView = () => {
 
-  const presenter = useMemo(() => getDIValue(SnackbarPresenter), [])
+  const presenter = usePresenter(SnackbarPresenter)
   const bars = useObservable(presenter.getBarItems(), [])
-
-  useLayoutEffect(() => {
-    presenter.init()
-
-    return () => presenter.destroy()
-  }, [presenter])
 
   return createPortal(
     <AnimatePresence>

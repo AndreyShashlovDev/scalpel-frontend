@@ -16,8 +16,8 @@ export class SnackBarItem {
   }
 }
 
-export abstract class SnackbarPresenter extends BasicPresenter {
-  
+export abstract class SnackbarPresenter extends BasicPresenter<void> {
+
   public abstract getBarItems(): Observable<SnackBarItem[]>
 
   public abstract onCloseItem(id: string | number, isAuto: boolean): void

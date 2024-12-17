@@ -26,6 +26,7 @@ export class AppPresenterImpl extends AppPresenter {
   }
 
   public destroy(): void {
+    // do not use
   }
 
   public ready(): void {

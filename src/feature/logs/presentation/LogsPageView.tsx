@@ -1,4 +1,4 @@
-import { useLayoutEffect } from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { ComponentSize } from '../../../common/app-ui/ComponentSize.ts'
 import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
@@ -25,24 +25,29 @@ export interface LogsPageProps {
 
 export const LogsPageView = ({strategyHash}: LogsPageProps) => {
 
-  const presenter = usePresenter(LogsPagePresenter)
+  const presenter = usePresenter(LogsPagePresenter, {strategyHash})
   const logItemsList = useObservable(presenter.getLogItems(), [])
   const isLastPage = useObservable(presenter.getIsLastPage(), true)
   const isLoading = useObservable(presenter.getIsLoading(), true)
+  const isLoadingFinished = useObservable(presenter.getLoadingFinished(), undefined)
+  const [pullToRefreshLoading, setPullToRefreshLoading] = useState(false)
 
-  useLayoutEffect(() => {
-    if (strategyHash) {
-      presenter.setStrategyHash(strategyHash)
+  useEffect(() => {
+    if (isLoadingFinished) {
+      setPullToRefreshLoading(false)
     }
-  }, [strategyHash, presenter])
-
+  }, [isLoadingFinished])
+  
   return (
     <Container
-      refresh={() => presenter.refresh()}
       fetched={!isLoading}
+      refresh={() => {
+        setPullToRefreshLoading(true)
+        presenter.refresh()
+      }}
     >
       {
-        (isLoading && isLastPage) ? <LoadingView size={ComponentSize.STANDARD} /> : undefined
+        (isLoading && !pullToRefreshLoading) ? <LoadingView size={ComponentSize.STANDARD} /> : undefined
       }
       {
         (!isLoading && logItemsList.length === 0)

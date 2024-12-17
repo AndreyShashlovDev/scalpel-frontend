@@ -2,7 +2,7 @@ import { Observable } from 'rxjs'
 import { BasicPresenter } from '../../../utils/arch/BasicPresenter.ts'
 import { StrategyListItem } from '../presentation/model/StrategyListItem.ts'
 
-export abstract class StrategiesPagePresenter extends BasicPresenter {
+export abstract class StrategiesPagePresenter extends BasicPresenter<void> {
 
   public abstract refresh(): void
 

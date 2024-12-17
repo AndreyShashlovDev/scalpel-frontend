@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs'
 import { BasicPresenter } from '../../../utils/arch/BasicPresenter.ts'
 
-export abstract class LoginPagePresenter extends BasicPresenter {
+export abstract class LoginPagePresenter extends BasicPresenter<void> {
 
   public abstract walletAddress(): Observable<string | undefined>
 

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { ComponentSize } from '../../../common/app-ui/ComponentSize.ts'
 import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
@@ -25,16 +26,27 @@ const TransactionPageView = () => {
   const itemModels = useObservable(presenter.getTransactionItems(), [])
   const isLoading = useObservable(presenter.getIsLoading(), true)
   const isLastPage = useObservable(presenter.getIsLastPage(), false)
+  const isLoadingFinished = useObservable(presenter.getLoadingFinished(), undefined)
+  const [pullToRefreshLoading, setPullToRefreshLoading] = useState(false)
+
+  useEffect(() => {
+    if (isLoadingFinished) {
+      setPullToRefreshLoading(false)
+    }
+  }, [isLoadingFinished])
 
   return (
     <div>
       <PageHeaderView text={'Transactions'} />
       <Container
-        refresh={() => presenter.refresh()}
+        refresh={() => {
+          setPullToRefreshLoading(true)
+          presenter.refresh()
+        }}
         fetched={!isLoading}
       >
         {
-          (isLoading) ? <LoadingView size={ComponentSize.STANDARD} /> : undefined
+          (isLoading && !pullToRefreshLoading) ? <LoadingView size={ComponentSize.STANDARD} /> : undefined
         }
         {
           (!isLoading && itemModels.length === 0)

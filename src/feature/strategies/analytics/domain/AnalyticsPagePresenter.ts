@@ -3,9 +3,11 @@ import { BasicPresenter } from '../../../../utils/arch/BasicPresenter.ts'
 import { AnalyticsRange } from '../data/analytics-repository/AnalyticsRange.ts'
 import { AnalyticsChartUiModel } from '../presentation/model/AnalyticsChartUiModel.ts'
 
-export abstract class AnalyticsPagePresenter extends BasicPresenter {
+export interface AnalyticsPageArgs {
+  strategyHash: string
+}
 
-  public abstract setStrategyHash(hash: string): void
+export abstract class AnalyticsPagePresenter extends BasicPresenter<AnalyticsPageArgs> {
 
   public abstract getIsLoading(): Observable<boolean>
 

@@ -1,4 +1,4 @@
-import { BehaviorSubject, forkJoin, Observable, Subscription } from 'rxjs'
+import { BehaviorSubject, forkJoin, Observable, Subject, Subscription } from 'rxjs'
 import { Pageable } from '../../../common/repository/data/model/Pageable.ts'
 import { SortOrder } from '../../../common/repository/data/model/SortOrder.ts'
 import { StrategyResponse } from '../../../common/repository/data/model/StrategyResponse.ts'
@@ -16,9 +16,9 @@ export class SwapPagePresenterImpl extends SwapPagePresenter {
   private readonly swapsItems: BehaviorSubject<SwapListItemModel[]> = new BehaviorSubject<SwapListItemModel[]>([])
   private readonly isLastPage: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
   private readonly isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
+  private readonly isLoadingFinished = new Subject<boolean>()
 
   private swapsFetchSubscription: Subscription | undefined
-  private strategyHash: string | undefined
   private prevSwapsResponse: Pageable<SwapResponse> | undefined
   private strategy: StrategyResponse | undefined
 
@@ -37,10 +37,6 @@ export class SwapPagePresenterImpl extends SwapPagePresenter {
     this.swapsFetchSubscription?.unsubscribe()
   }
 
-  public setupSwapData(strategyHash: string): void {
-    this.strategyHash = strategyHash
-  }
-
   public getSwapItems(): Observable<SwapListItemModel[]> {
     return this.swapsItems.asObservable()
   }
@@ -53,28 +49,32 @@ export class SwapPagePresenterImpl extends SwapPagePresenter {
     return this.isLoading.asObservable()
   }
 
+  public getLoadingFinished(): Observable<boolean | undefined> {
+    return this.isLoadingFinished.asObservable()
+  }
+
   private async fetchStrategy(): Promise<StrategyResponse> {
     if (this.strategy) {
       return this.strategy
     }
 
-    this.strategy = await this.strategyRepository.getStrategy(this.strategyHash ?? '')
+    this.strategy = await this.strategyRepository.getStrategy(this.args?.strategyHash ?? '')
 
     return this.strategy
   }
 
   public onFetchNext(): void {
-    if (!this.strategyHash) {
+    if (!this.args) {
       return
     }
 
-    this.isLoading.next(true)
+    this.isLoading.next(this.swapsItems.value.length === 0)
     this.swapsFetchSubscription?.unsubscribe()
 
     this.swapsFetchSubscription = forkJoin([
       this.fetchStrategy(),
       this.swapRepository.getSwaps(
-        this.strategyHash,
+        this.args?.strategyHash,
         (this.prevSwapsResponse?.page ?? 0) + 1,
         SwapPagePresenterImpl.PAGE_LIMIT,
         new SortOrder([{key: 'updatedAt', order: 'desc'}])
@@ -95,7 +95,10 @@ export class SwapPagePresenterImpl extends SwapPagePresenter {
             swapsList.total <= list.length ||
             swapsList.data.length < SwapPagePresenterImpl.PAGE_LIMIT
           )
+        },
+        complete: () => {
           this.isLoading.next(false)
+          this.isLoadingFinished.next(true)
         }
       })
   }

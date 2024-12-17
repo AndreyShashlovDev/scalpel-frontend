@@ -1,18 +1,13 @@
-import { IS_PRODUCTION } from '../../Injections.ts'
+export abstract class BasicPresenter<InitArgs> {
 
-export abstract class BasicPresenter {
+  protected args?: InitArgs
 
-  private initCount = 0
-
-  public init(): void {
-    this.initCount++
-
-    if (this.initCount === (IS_PRODUCTION ? 1 : 2)) {
-      this.ready()
-    }
+  public init(args?: InitArgs): void {
+    this.args = args
+    this.ready(args)
   }
 
-  public abstract ready(): void
+  public abstract ready(args?: InitArgs): void;
 
   public abstract destroy(): void
 }

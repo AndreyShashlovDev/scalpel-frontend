@@ -46,7 +46,7 @@ const WalletPageView = () => {
         fetched={!isLoading}
       >
         {
-          (isLoading && !pullToRefreshLoading)  ? <LoadingView size={ComponentSize.STANDARD} /> : undefined
+          (isLoading && !pullToRefreshLoading) ? <LoadingView size={ComponentSize.STANDARD} /> : undefined
         }
         {
           (!isLoading && walletItemsList.length === 0)

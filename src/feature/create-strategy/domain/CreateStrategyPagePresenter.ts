@@ -6,7 +6,7 @@ import { BasicPresenter } from '../../../utils/arch/BasicPresenter.ts'
 import { StrategyOptionsData } from '../presentation/components/strategy-options/StrategyOptionsProps.ts'
 import { State } from './CreateStrategyPagePresenterImpl.ts'
 
-export abstract class CreateStrategyPagePresenter extends BasicPresenter {
+export abstract class CreateStrategyPagePresenter extends BasicPresenter<void> {
 
   public abstract getCurrentState(): Observable<State>
 
