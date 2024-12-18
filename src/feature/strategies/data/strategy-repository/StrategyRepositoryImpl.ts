@@ -15,13 +15,18 @@ export class StrategyRepositoryImpl extends StrategyRepository {
     super()
   }
 
-  public async getCompositeStrategies(page: number, limit: number): Promise<Pageable<CompositeStrategyResponse>> {
+  public async getCompositeStrategies(
+    status: Set<StrategyStatusType>,
+    page: number,
+    limit: number
+  ): Promise<Pageable<CompositeStrategyResponse>> {
     return this.appSourceService.get<Pageable<CompositeStrategyResponse>, Pageable<CompositeStrategyResponse>>(
       {
         path: '/strategy/composite',
         query: new Map([
           ['page', page.toString()],
-          ['limit', limit.toString()]
+          ['limit', limit.toString()],
+          ['status', Array.from(status).join(',')]
         ])
       },
       async (response) => {
@@ -38,7 +43,7 @@ export class StrategyRepositoryImpl extends StrategyRepository {
           )
         }
 
-        throw UnknownException.create('Cannot get orders')
+        throw UnknownException.create()
       }
     )
   }

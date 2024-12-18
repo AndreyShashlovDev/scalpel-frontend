@@ -5,7 +5,11 @@ import { CompositeStrategyResponse } from '../model/CompositeStrategyResponse.ts
 
 export abstract class StrategyRepository {
 
-  public abstract getCompositeStrategies(page: number, limit: number): Promise<Pageable<CompositeStrategyResponse>>
+  public abstract getCompositeStrategies(
+    status: Set<StrategyStatusType>,
+    page: number,
+    limit: number,
+  ): Promise<Pageable<CompositeStrategyResponse>>
 
   public abstract getStrategies(page: number, limit: number): Promise<Pageable<StrategyResponse>>
 

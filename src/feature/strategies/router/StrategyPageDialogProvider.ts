@@ -1,4 +1,5 @@
 import { DialogProvider, DialogRouter } from '../../../utils/arch/DialogProvider.ts'
+import StrategiesFilter from '../domain/model/StrategiesFilter.ts'
 
 export interface StrategyDialogCallBacks extends DialogRouter {
 
@@ -11,7 +12,9 @@ export interface StrategyDialogCallBacks extends DialogRouter {
   openAnalyticsDialog(strategyHash: string): void
 
   openForceExecuteDialog(strategyHash: string): void
+
+  openStrategyFilterDialog(filter: StrategiesFilter): void
 }
 
-export class StrategyDialogProvider extends DialogProvider<StrategyDialogCallBacks> {
+export class StrategyPageDialogProvider extends DialogProvider<StrategyDialogCallBacks> {
 }

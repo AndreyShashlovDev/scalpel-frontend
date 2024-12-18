@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import { ForwardedRef, forwardRef, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import ArrowIcon from '../../../../../../assets/icons/app/ArrowIcon.svg'
-import DeleteIcon from '../../../../../../assets/icons/app/DeleteIcon.svg'
+import CollapseArrowIcon from '../../../../../../assets/icons/app/CollapseArrowIcon.svg'
 import EditIcon from '../../../../../../assets/icons/app/EditIcon.svg'
 import ExitIcon from '../../../../../../assets/icons/app/ExitIcon.svg'
 import FailIcon from '../../../../../../assets/icons/app/FailIcon.svg'
@@ -10,8 +10,8 @@ import PauseIcon from '../../../../../../assets/icons/app/PauseIcon.svg'
 import PlayIcon from '../../../../../../assets/icons/app/PlayIcon.svg'
 import SaveIcon from '../../../../../../assets/icons/app/SaveIcon.svg'
 import SuccessIcon from '../../../../../../assets/icons/app/SuccessIcon.svg'
+import TrashBinIcon from '../../../../../../assets/icons/app/TrashBinIcon.svg'
 import WarningIcon from '../../../../../../assets/icons/app/WarningIcon.svg'
-import WithdrawIcon from '../../../../../../assets/icons/app/WithdrawIcon.svg'
 import { AppAddressView } from '../../../../../../common/app-ui/AppAddressView.tsx'
 import { AppButton } from '../../../../../../common/app-ui/AppButton.tsx'
 import { AppIconButton } from '../../../../../../common/app-ui/AppIconButton.tsx'
@@ -26,6 +26,13 @@ import { SwapState } from '../../../../../../common/repository/data/model/SwapRe
 import { StrategyHolderButtonIds } from '../../../../domain/StrategyHolderButtonIds.ts'
 import { StrategyListItem } from '../../../model/StrategyListItem.ts'
 import { StrategyStatusView } from './StrategyStatusView.tsx'
+
+const CollapseArrowIconUp = styled(CollapseArrowIcon)`
+`
+
+const CollapseArrowIconDown = styled(CollapseArrowIcon)`
+  rotate: 180deg;
+`
 
 const ArrowIconContainer = styled.div`
   display: flex;
@@ -73,7 +80,7 @@ const PauseIconWrapper = styled(PauseIcon)`
   height: 24px;
 `
 
-const DeleteIconWrapper = styled(DeleteIcon)`
+const DeleteIconWrapper = styled(TrashBinIcon)`
   width: 24px;
   height: 24px;
 `
@@ -353,12 +360,6 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
               />
             )
           }
-          {
-            <AppIconButton
-              onClick={() => onItemClick(StrategyHolderButtonIds.WITHDRAW_BUTTON_ID)}
-              icon={<WithdrawIcon />}
-            />
-          }
       </ActionButtonsContainer>
       )
     },
@@ -376,7 +377,7 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
     () => {
       return (
         <>
-          <AppSpaceView />
+        <AppSpaceView />
         <ElementContainer>Strategy: {item.type}</ElementContainer>
         <ElementContainer>Wallet:&nbsp;<AppAddressView address={item.wallet} /></ElementContainer>
         <AppSpaceView />
@@ -622,8 +623,12 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
         </ElementContainer>
         </div>
         <div>
-          <HeaderButtonContainer onClick={() => setIsMoreInfo(!isMoreInfo)}>
-            <EditIconWrapper />
+          <HeaderButtonContainer>
+            <AppIconButton
+              icon={isMoreInfo ? <CollapseArrowIconUp /> : <CollapseArrowIconDown />}
+              onClick={() => setIsMoreInfo(!isMoreInfo)}
+              size={ComponentSize.SMALL}
+            />
           </HeaderButtonContainer>
         </div>
       </ContainerHeader>

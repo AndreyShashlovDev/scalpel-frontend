@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs'
 import { BasicPresenter } from '../../../utils/arch/BasicPresenter.ts'
 import { StrategyListItem } from '../presentation/model/StrategyListItem.ts'
+import StrategiesFilter from './model/StrategiesFilter.ts'
 
 export abstract class StrategiesPagePresenter extends BasicPresenter<void> {
 
@@ -27,4 +28,6 @@ export abstract class StrategiesPagePresenter extends BasicPresenter<void> {
   public abstract onForceExecuteClick(hash: string): void
 
   public abstract onFilterButtonClick(): void
+
+  public abstract onChangeFilter(filter: StrategiesFilter): void
 }

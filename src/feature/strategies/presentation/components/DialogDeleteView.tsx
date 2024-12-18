@@ -1,6 +1,7 @@
 import { ForwardedRef, forwardRef, useState } from 'react'
 import styled from 'styled-components'
 import { AppButton } from '../../../../common/app-ui/AppButton.tsx'
+import { ComponentSize } from '../../../../common/app-ui/ComponentSize.ts'
 import { BasicDialogView, DialogCallback } from '../../../../common/app-ui/dialog/BasicDialogView.tsx'
 import { PageHeaderView } from '../../../../common/app-ui/PageHeaderView.tsx'
 
@@ -22,8 +23,10 @@ const ButtonsContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 32px;
   gap: 32px;
+  margin-top: 8px;
+  padding: 16px 8px 8px;
+  border-top: 1px solid white;
 `
 
 export const DialogDeleteView = forwardRef((
@@ -48,6 +51,7 @@ export const DialogDeleteView = forwardRef((
           <DescContainer>Are you sure you want to archive the order?</DescContainer>
           <ButtonsContainer>
             <AppButton
+              size={ComponentSize.SMALL}
               onClick={() => {
                 onClickDelete(data?.strategyHash ?? '')
                 // @ts-expect-error sadsd
@@ -56,6 +60,7 @@ export const DialogDeleteView = forwardRef((
               text={'OK'}
             />
             <AppButton
+              size={ComponentSize.SMALL}
               onClick={() => {
                 // @ts-expect-error sadsd
                 ref?.current?.closeDialog()

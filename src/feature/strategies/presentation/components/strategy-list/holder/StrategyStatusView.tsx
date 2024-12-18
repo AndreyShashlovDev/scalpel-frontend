@@ -11,7 +11,7 @@ const StrategyStatusText = new Map<StrategyStatusType, string>([
   [StrategyStatusType.IN_PROGRESS, 'In progress'],
   [StrategyStatusType.USER_ACTION_REQUIRED, 'User action required'],
   [StrategyStatusType.PAUSED, 'Paused'],
-  [StrategyStatusType.CANCELED, 'Canceled'],
+  [StrategyStatusType.CANCELED, 'Archived'],
 ])
 
 const StatusContainer = styled.span<{ $status?: StrategyStatusType }>`

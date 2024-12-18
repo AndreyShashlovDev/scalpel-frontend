@@ -11,7 +11,14 @@ const buildNumber = packageJson.version
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    nodePolyfills(),
+    nodePolyfills({
+      globals: {
+        Buffer: true,
+        global: true,
+        process: true,
+      },
+      exclude: ['vm'],
+    }),
     react(),
     // basicSsl(),
     svgr({include: '**/*.svg'}),

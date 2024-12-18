@@ -1,18 +1,19 @@
 import { AppSourceService } from '../../../common/repository/data/source/AppSourceService.ts'
 import { Factory, getDIValue, injectionKernel } from '../../../Injections.ts'
 import { StrategyRepositoryImpl } from '../data/strategy-repository/StrategyRepositoryImpl.ts'
+import { StrategyPageDialogProvider } from '../router/StrategyPageDialogProvider.ts'
+import { StrategyPageRouterImpl } from '../router/StrategyPageRouterImpl.ts'
 import { StrategiesPagePresenter } from './StrategiesPagePresenter.ts'
 import { StrategiesPagePresenterImpl } from './StrategiesPagePresenterImpl.ts'
-import { StrategyDialogProvider } from './StrategyDialogProvider.ts'
 
-injectionKernel.set(StrategyDialogProvider, new Factory(() => new StrategyDialogProvider(), true))
+injectionKernel.set(StrategyPageDialogProvider, new Factory(() => new StrategyPageDialogProvider(), true))
 
 injectionKernel.set(
   StrategiesPagePresenter,
   new Factory(
     () => new StrategiesPagePresenterImpl(
       new StrategyRepositoryImpl(getDIValue(AppSourceService)),
-      getDIValue(StrategyDialogProvider),
+      new StrategyPageRouterImpl(getDIValue(StrategyPageDialogProvider))
     ),
     false
   )

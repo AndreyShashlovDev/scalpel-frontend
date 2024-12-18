@@ -2,14 +2,14 @@ import * as console from 'node:console'
 import { BehaviorSubject, from, Observable, Subject, Subscription } from 'rxjs'
 import { Pageable } from '../../../common/repository/data/model/Pageable.ts'
 import { StrategyStatusType } from '../../../common/repository/data/model/StrategyResponse.ts'
-import { BasicDialogProvider } from '../../../utils/arch/DialogProvider.ts'
 import { ChangeOptionsRequest } from '../data/model/ChangeOptionsRequest.ts'
 import { CompositeStrategyResponse } from '../data/model/CompositeStrategyResponse.ts'
 import { StrategyRepository } from '../data/strategy-repository/StrategyRepository.ts'
 import { StrategyResponseToStrategyListItem } from '../presentation/mapping/StrategyResponseToStrategyListItem.ts'
 import { StrategyListItem } from '../presentation/model/StrategyListItem.ts'
+import { StrategyPageRouter } from '../router/StrategyPageRouter.ts'
+import StrategiesFilter, { StrategyTypeFilterItem } from './model/StrategiesFilter.ts'
 import { StrategiesPagePresenter } from './StrategiesPagePresenter.ts'
-import { StrategyDialogCallBacks } from './StrategyDialogProvider.ts'
 import { StrategyHolderButtonIds } from './StrategyHolderButtonIds.ts'
 
 export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
@@ -20,13 +20,33 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
   private readonly isLastPage = new BehaviorSubject<boolean>(true)
   private readonly isLoading = new BehaviorSubject<boolean>(true)
   private readonly isLoadingFinished = new Subject<boolean>()
+  private readonly filter = new BehaviorSubject<StrategiesFilter>(new StrategiesFilter(
+    [
+      new StrategyTypeFilterItem(StrategyStatusType.IN_PROGRESS, 'In progress'),
+      new StrategyTypeFilterItem(StrategyStatusType.PAUSED, 'Paused'),
+      new StrategyTypeFilterItem(StrategyStatusType.CREATED, 'Created'),
+      new StrategyTypeFilterItem(StrategyStatusType.APPROVE_IN_PROGRESS, 'Approve proccess'),
+      new StrategyTypeFilterItem(StrategyStatusType.USER_ACTION_REQUIRED, 'Action required'),
+      new StrategyTypeFilterItem(StrategyStatusType.CANCELED, 'Archived'),
+    ],
+    new Set<StrategyStatusType>(
+      [
+        StrategyStatusType.CREATED,
+        StrategyStatusType.APPROVE_IN_PROGRESS,
+        StrategyStatusType.IN_PROGRESS,
+        StrategyStatusType.USER_ACTION_REQUIRED,
+        StrategyStatusType.PAUSED,
+      ]
+    )
+  ))
+
   private strategiesLatestResult: Pageable<CompositeStrategyResponse> | undefined
 
   private listFetchSubscriber: Subscription | undefined
 
   constructor(
     private readonly strategiesRepository: StrategyRepository,
-    private readonly dialogProvider: BasicDialogProvider<StrategyDialogCallBacks>,
+    private readonly router: StrategyPageRouter
   ) {
     super()
   }
@@ -67,6 +87,7 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
     this.isLoading.next(this.strategiesList.value.length === 0)
 
     this.listFetchSubscriber = from(this.strategiesRepository.getCompositeStrategies(
+      this.filter.value.selectedStatus,
       (this.strategiesLatestResult?.page ?? 0) + 1,
       StrategiesPagePresenterImpl.PAGE_LIMIT
     ))
@@ -122,13 +143,13 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
       this.changeStrategyStatus(item.hash, StrategyStatusType.PAUSED)
 
     } else if (viewId === StrategyHolderButtonIds.CANCEL_ORDER_BUTTON_ID) {
-      this.dialogProvider.getDialogs()?.openDeleteDialog(item.hash)
+      this.router.openDeleteDialog(item.hash)
 
     } else if (viewId === StrategyHolderButtonIds.OPEN_ANALYTICS_BUTTON_ID) {
-      this.dialogProvider.getDialogs()?.openAnalyticsDialog(item.hash)
+      this.router.openAnalyticsDialog(item.hash)
 
     } else if (viewId === StrategyHolderButtonIds.FORCE_EXECUTE_ORDER_BUTTON_ID) {
-      this.dialogProvider.getDialogs()?.openForceExecuteDialog(item.hash)
+      this.router.openForceExecuteDialog(item.hash)
     }
   }
 
@@ -224,11 +245,11 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
   }
 
   private onShowSwapsClick(strategyHash: string): void {
-    this.dialogProvider.getDialogs()?.openSwapsDialog(strategyHash)
+    this.router.openSwapsDialog(strategyHash)
   }
 
   private onShowLogsClick(strategyHash: string): void {
-    this.dialogProvider.getDialogs()?.openLogsDialog(strategyHash)
+    this.router.openLogsDialog(strategyHash)
   }
 
   private async changeStrategyOptions(hash: string, options: Partial<ChangeOptionsRequest>): Promise<void> {
@@ -255,6 +276,13 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
   }
 
   public onFilterButtonClick(): void {
-    console.log('onFilterButtonClick')
+    this.router.openStrategyFilterDialog(this.filter.value)
+  }
+
+  public onChangeFilter(filter: StrategiesFilter): void {
+    const newFiler = this.filter.value.copy({selectedStatus: filter.selectedStatus})
+    this.filter.next(newFiler)
+
+    this.refresh()
   }
 }

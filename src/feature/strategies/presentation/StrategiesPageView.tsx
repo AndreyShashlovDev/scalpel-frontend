@@ -7,12 +7,14 @@ import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
 import useObservable from '../../../hooks/useObservable.ts'
 import { usePresenter } from '../../../hooks/usePresenter.ts'
 import { getDIValue } from '../../../Injections.ts'
+import StrategiesFilter from '../domain/model/StrategiesFilter.ts'
 import { StrategiesPagePresenter } from '../domain/StrategiesPagePresenter.ts'
-import { StrategyDialogProvider } from '../domain/StrategyDialogProvider.ts'
+import { StrategyPageDialogProvider } from '../router/StrategyPageDialogProvider.ts'
 import { DialogAnalyticsCallBack, DialogAnalyticsView } from './components/DialogAnalyticsView.tsx'
 import { DialogDeleteCallBack, DialogDeleteView } from './components/DialogDeleteView.tsx'
 import { DialogForceExecuteCallBack, DialogForceExecuteView } from './components/DialogForceExecuteView.tsx'
 import { DialogLogsCallBack, DialogLogsView } from './components/DialogLogsView.tsx'
+import { DialogStrategyFilterCallBack, DialogStrategyFilterView } from './components/DialogStrategyFilterView.tsx'
 import { DialogSwapsCallBack, DialogSwapsView } from './components/DialogSwapsView.tsx'
 import { StrategyListView } from './components/strategy-list/StrategyListView.tsx'
 import '../domain/StrategiesPageModule.ts'
@@ -29,7 +31,7 @@ const ListContainer = styled.div`
 export const StrategiesPageView = () => {
 
   const presenter = usePresenter(StrategiesPagePresenter)
-  const dialogProvider = useMemo(() => getDIValue(StrategyDialogProvider), [])
+  const dialogProvider = useMemo(() => getDIValue(StrategyPageDialogProvider), [])
   const strategies = useObservable(presenter.getStrategiesList(), undefined)
   const isLastPage = useObservable(presenter.getIsLastPage(), true)
   const isLoading = useObservable(presenter.getIsLoading(), true)
@@ -41,6 +43,7 @@ export const StrategiesPageView = () => {
   const dialogAnalyticsRef = useRef<DialogAnalyticsCallBack | null>(null)
   const dialogForceExecuteRef = useRef<DialogForceExecuteCallBack | null>(null)
   const listScrollContainerRef = useRef<HTMLDivElement | null>(null)
+  const dialogStrategiesFilterRef = useRef<DialogStrategyFilterCallBack | null>(null)
   const [pullToRefreshLoading, setPullToRefreshLoading] = useState(false)
 
   useLayoutEffect(() => {
@@ -59,6 +62,9 @@ export const StrategiesPageView = () => {
       },
       openForceExecuteDialog(strategyHash: string): void {
         dialogForceExecuteRef.current?.openDialog({strategyHash})
+      },
+      openStrategyFilterDialog(filter: StrategiesFilter): void {
+        dialogStrategiesFilterRef.current?.openDialog({filter})
       }
     })
 
@@ -120,6 +126,10 @@ export const StrategiesPageView = () => {
         <DialogForceExecuteView
           ref={dialogForceExecuteRef}
           onExecuteClick={(hash: string) => presenter.onForceExecuteClick(hash)}
+        />
+        <DialogStrategyFilterView
+          ref={dialogStrategiesFilterRef}
+          onChangeFilter={(filter) => presenter.onChangeFilter(filter)}
         />
       </PageLayoutWrapper>
     </div>

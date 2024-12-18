@@ -53,6 +53,7 @@ const DialogWindowContent = styled.div`
 
 const ContentContainer = styled.div`
   padding: 8px;
+  width: 100%;
 `
 
 export interface DialogCallback<T> {
