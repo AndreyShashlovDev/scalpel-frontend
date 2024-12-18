@@ -92,9 +92,10 @@ export class AppSourceService implements HttpService<AppResponse<JsonObject<unkn
       }
 
     } catch (e: unknown) {
-      // @ts-expect-error dsffsdf
-      if ((e?.statusCode ?? -1) === 401) {
-        // await this.authService.clearAuthData()
+
+      if (e instanceof AppException) {
+        this.exceptionNotifierService.notify(e)
+        throw e
       }
 
       isSuccess = false

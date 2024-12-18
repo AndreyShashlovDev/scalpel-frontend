@@ -1,5 +1,5 @@
 import * as console from 'node:console'
-import { BehaviorSubject, from, Observable, Subject, Subscription } from 'rxjs'
+import { BehaviorSubject, catchError, EMPTY, from, Observable, Subject, Subscription } from 'rxjs'
 import { Pageable } from '../../../common/repository/data/model/Pageable.ts'
 import { StrategyStatusType } from '../../../common/repository/data/model/StrategyResponse.ts'
 import { ChangeOptionsRequest } from '../data/model/ChangeOptionsRequest.ts'
@@ -94,6 +94,7 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
       (this.strategiesLatestResult?.page ?? 0) + 1,
       StrategiesPagePresenterImpl.PAGE_LIMIT
     ))
+      .pipe(catchError(() => {return EMPTY}))
       .subscribe({
         next: (result) => {
           this.strategiesLatestResult = result
@@ -114,6 +115,11 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
           )
         },
         complete: () => {
+          this.isLoading.next(false)
+          this.isLoadingFinished.next(true)
+        },
+        error: (e) => {
+          console.error(e)
           this.isLoading.next(false)
           this.isLoadingFinished.next(true)
         }

@@ -15,7 +15,7 @@ export class SnackbarPresenterImpl extends SnackbarPresenter {
     })
 
     window.onerror = (errorMsg) => {
-      this.addMessage('Something went wrong:' + errorMsg)
+      this.addMessage('Global on error:' + JSON.stringify(errorMsg))
       return false
     }
   }
@@ -37,7 +37,7 @@ export class SnackbarPresenterImpl extends SnackbarPresenter {
 
   private addMessage(msg: string): void {
     const id = Math.random()
-    const timeout = 5000
+    const timeout = 15000
 
     const list = this.items.value.concat([
       new SnackBarItem(

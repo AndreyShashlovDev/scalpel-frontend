@@ -1,4 +1,4 @@
-import { BehaviorSubject, from, Observable, Subject, Subscription } from 'rxjs'
+import { BehaviorSubject, catchError, EMPTY, from, Observable, Subject, Subscription } from 'rxjs'
 import { CurrencyRepository } from '../../../common/repository/data/currencies/CurrencyRepository.ts'
 import { ChainType } from '../../../common/repository/data/model/ChainType.ts'
 import { CurrencyResponse } from '../../../common/repository/data/model/CurrencyResponse.ts'
@@ -120,22 +120,32 @@ export class WalletPagePresenterImpl extends WalletPagePresenter {
       (this.walletsLatestResult?.page ?? 0) + 1,
       WalletPagePresenterImpl.PAGE_LIMIT
     ))
+      .pipe(catchError(() => {return EMPTY}))
       .subscribe({
         next: (result) => {
-          this.walletsLatestResult = result
+          try {
+            this.walletsLatestResult = result
 
-          const list = this.walletItems
-            .value
-            .concat(result.data.map(item => WalletResponseToWalletListItem(item, new Map(), this.currencies)))
+            const list = this.walletItems
+              .value
+              .concat(result.data.map(item => WalletResponseToWalletListItem(item, new Map(), this.currencies)))
 
-          this.walletItems.next(list)
-          this.isLastPage.next(
-            result.total <= list.length ||
-            result.data.length < WalletPagePresenterImpl.PAGE_LIMIT
-          )
-          this.fetchBalances(result.data)
+            this.walletItems.next(list)
+            this.isLastPage.next(
+              result.total <= list.length ||
+              result.data.length < WalletPagePresenterImpl.PAGE_LIMIT
+            )
+            this.fetchBalances(result.data)
+          } catch (e) {
+            console.error(e)
+          }
         },
         complete: () => {
+          this.isLoading.next(false)
+          this.isLoadingFinished.next(true)
+        },
+        error: (e) => {
+          console.log(e)
           this.isLoading.next(false)
           this.isLoadingFinished.next(true)
         }

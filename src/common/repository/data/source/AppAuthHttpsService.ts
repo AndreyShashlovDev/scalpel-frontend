@@ -1,5 +1,4 @@
 import { AppAuthService } from '../../../service/auth/AppAuthService.ts'
-import { ExceptionNotifierService } from '../../../service/exception-handler/ExceptionNotifierService.ts'
 import { AppException } from './exception/AppException.ts'
 import { UnauthorizedException } from './exception/UnauthorizedException.ts'
 import { UnknownException } from './exception/UnknownException.ts'
@@ -13,7 +12,6 @@ export class AppAuthHttpsService implements HttpService<Response> {
     private readonly base: string,
     private readonly prefix: string,
     private readonly authService: AppAuthService,
-    private readonly exceptionNotifierService: ExceptionNotifierService,
   ) {
     this.authService
       .observe()
@@ -46,11 +44,6 @@ export class AppAuthHttpsService implements HttpService<Response> {
         }
         return response
       })
-      .catch(e => {
-          this.catchException(e)
-          throw e
-        }
-      )
     )
   }
 
@@ -99,11 +92,6 @@ export class AppAuthHttpsService implements HttpService<Response> {
         }
         return response
       })
-        .catch(e => {
-            this.catchException(e)
-            throw e
-          }
-        )
     )
   }
 
@@ -143,8 +131,6 @@ export class AppAuthHttpsService implements HttpService<Response> {
     if (!appError) {
       appError = UnknownException.create(JSON.stringify(e))
     }
-
-    this.exceptionNotifierService.notify(appError)
 
     throw appError
   }

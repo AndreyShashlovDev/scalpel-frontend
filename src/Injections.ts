@@ -89,7 +89,6 @@ injectionKernel.set(
         SCALPEL_ENDPOINT,
         'api',
         getDIValue(AppAuthService),
-        getDIValue(ExceptionNotifierService)
       ),
       getDIValue(ExceptionNotifierService)
     )
