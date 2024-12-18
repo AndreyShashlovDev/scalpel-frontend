@@ -23,9 +23,7 @@ export abstract class StrategiesPagePresenter extends BasicPresenter<void> {
     data?: number | null
   ): void
 
-  public abstract onDeleteStrategyClick(hash: string): void
-
-  public abstract onForceExecuteClick(hash: string): void
+  public abstract onActionResultCallback(data: unknown, resultId: number | string): void
 
   public abstract onFilterButtonClick(): void
 

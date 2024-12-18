@@ -2,7 +2,6 @@ import { ForwardedRef, forwardRef, useState } from 'react'
 import styled from 'styled-components'
 import { AppButton } from '../../../../common/app-ui/AppButton.tsx'
 import AppSwitchView from '../../../../common/app-ui/AppSwitchView.tsx'
-import { ComponentSize } from '../../../../common/app-ui/ComponentSize.ts'
 import { BasicDialogView, DialogCallback } from '../../../../common/app-ui/dialog/BasicDialogView.tsx'
 import { PageHeaderView } from '../../../../common/app-ui/PageHeaderView.tsx'
 import StrategiesFilter from '../../domain/model/StrategiesFilter.ts'
@@ -91,7 +90,6 @@ export const DialogStrategyFilterView = forwardRef((
               onChangeFilter(data!.filter!)
             }}
             text={'Apply'}
-            size={ComponentSize.SMALL}
           />
           </FooterContainer>
         </ContentContainer>

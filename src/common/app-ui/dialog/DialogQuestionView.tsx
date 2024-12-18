@@ -1,16 +1,20 @@
 import { ForwardedRef, forwardRef, useState } from 'react'
 import styled from 'styled-components'
-import { AppButton } from '../../../../common/app-ui/AppButton.tsx'
-import { ComponentSize } from '../../../../common/app-ui/ComponentSize.ts'
-import { BasicDialogView, DialogCallback } from '../../../../common/app-ui/dialog/BasicDialogView.tsx'
-import { PageHeaderView } from '../../../../common/app-ui/PageHeaderView.tsx'
+import { AppButton } from '../AppButton.tsx'
+import { PageHeaderView } from '../PageHeaderView.tsx'
+import { BasicDialogView, DialogCallback } from './BasicDialogView.tsx'
 
-type CallBackDataType = { strategyHash: string }
+type CallBackDataType = {
+  title: string
+  message: string
+  data: unknown
+  dialogId: number | string
+}
 
-export interface DialogDeleteCallBack extends DialogCallback<CallBackDataType> {}
+export interface DialogQuestionCallBack extends DialogCallback<CallBackDataType> {}
 
-export interface DialogDeleteProps {
-  onClickDelete: (strategyHash: string) => void
+export interface DialogQuestionProps {
+  onOkClick: (data: unknown, dialogId: number | string) => void
 }
 
 const DescContainer = styled.div`
@@ -29,15 +33,15 @@ const ButtonsContainer = styled.div`
   border-top: 1px solid white;
 `
 
-export const DialogDeleteView = forwardRef((
-  {onClickDelete}: DialogDeleteProps,
-  ref: ForwardedRef<DialogDeleteCallBack>
+export const DialogQuestionView = forwardRef((
+  {onOkClick}: DialogQuestionProps,
+  ref: ForwardedRef<DialogQuestionCallBack>
 ) => {
   const [data, setData] = useState<CallBackDataType>()
 
   return (
     <BasicDialogView
-      title={<PageHeaderView text={`Archive order?`} hasMainMenu={false} />}
+      title={<PageHeaderView text={data?.title ?? ''} hasMainMenu={false} />}
       // @ts-expect-error is ok
       ref={ref}
       // @ts-expect-error is ok
@@ -48,19 +52,17 @@ export const DialogDeleteView = forwardRef((
       }}
       content={
         <div>
-          <DescContainer>Are you sure you want to archive the order?</DescContainer>
+          <DescContainer>{data?.message}</DescContainer>
           <ButtonsContainer>
             <AppButton
-              size={ComponentSize.SMALL}
               onClick={() => {
-                onClickDelete(data?.strategyHash ?? '')
+                onOkClick(data?.data, data?.dialogId ?? -1)
                 // @ts-expect-error sadsd
                 ref?.current?.closeDialog()
               }}
               text={'OK'}
             />
             <AppButton
-              size={ComponentSize.SMALL}
               onClick={() => {
                 // @ts-expect-error sadsd
                 ref?.current?.closeDialog()

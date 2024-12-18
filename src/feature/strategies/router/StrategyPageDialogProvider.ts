@@ -7,11 +7,9 @@ export interface StrategyDialogCallBacks extends DialogRouter {
 
   openLogsDialog(strategyHash: string): void
 
-  openDeleteDialog(strategyHash: string): void
+  openQuestionDialog(title: string, message: string, data: unknown, resultId: number): void
 
   openAnalyticsDialog(strategyHash: string): void
-
-  openForceExecuteDialog(strategyHash: string): void
 
   openStrategyFilterDialog(filter: StrategiesFilter): void
 }

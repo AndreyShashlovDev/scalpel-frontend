@@ -11,27 +11,46 @@ export class StrategyPageRouterImpl extends StrategyPageRouter {
     super()
   }
 
-  public openSwapsDialog(strategyHash: string): void {
+  public openSwaps(strategyHash: string): void {
     this.dialogProvider.getDialogs()?.openSwapsDialog(strategyHash)
   }
 
-  public openLogsDialog(strategyHash: string): void {
+  public openLogs(strategyHash: string): void {
     this.dialogProvider.getDialogs()?.openLogsDialog(strategyHash)
   }
 
-  public openDeleteDialog(strategyHash: string): void {
-    this.dialogProvider.getDialogs()?.openDeleteDialog(strategyHash)
+  public openArchiveOrder(strategyHash: string, resultId: number): void {
+    this.dialogProvider.getDialogs()?.openQuestionDialog(
+      'Archive?',
+      'Are you sure you want to archive the order?',
+      strategyHash,
+      resultId
+    )
   }
 
-  public openAnalyticsDialog(strategyHash: string): void {
+  public openAnalytics(strategyHash: string): void {
     this.dialogProvider.getDialogs()?.openAnalyticsDialog(strategyHash)
   }
 
-  public openForceExecuteDialog(strategyHash: string): void {
-    this.dialogProvider.getDialogs()?.openForceExecuteDialog(strategyHash)
+  public openForceExecute(strategyHash: string, resultId: number): void {
+    this.dialogProvider.getDialogs()?.openQuestionDialog(
+      'Execute?',
+      'Are you sure you want to force execute the order now?',
+      strategyHash,
+      resultId
+    )
   }
 
-  public openStrategyFilterDialog(filter: StrategiesFilter): void {
+  public openStrategyFilter(filter: StrategiesFilter): void {
     this.dialogProvider.getDialogs()?.openStrategyFilterDialog(filter)
+  }
+
+  public openDeleteOrder(strategyHash: string, resultId: number): void {
+    this.dialogProvider.getDialogs()?.openQuestionDialog(
+      'Delete?',
+      'Are you sure you want to delete the order now?',
+      strategyHash,
+      resultId
+    )
   }
 }

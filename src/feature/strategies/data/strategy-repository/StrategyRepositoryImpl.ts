@@ -132,4 +132,19 @@ export class StrategyRepositoryImpl extends StrategyRepository {
       }
     )
   }
+
+  public async deleteOrder(orderHash: string): Promise<void> {
+    return this.appSourceService.delete<void, void>(
+      {
+        path: `/strategy/${orderHash}`
+      },
+      async (result) => {
+        if (result.success) {
+          return
+        }
+
+        throw UnknownException.create()
+      }
+    )
+  }
 }

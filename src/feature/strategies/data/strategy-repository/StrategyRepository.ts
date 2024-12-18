@@ -20,4 +20,6 @@ export abstract class StrategyRepository {
   public abstract changeStatus(orderHash: string, status: StrategyStatusType): Promise<void>
 
   public abstract forceExecute(orderHash: string): Promise<void>
+
+  public abstract deleteOrder(orderHash: string): Promise<void>
 }

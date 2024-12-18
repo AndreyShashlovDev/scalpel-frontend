@@ -2,15 +2,17 @@ import StrategiesFilter from '../domain/model/StrategiesFilter.ts'
 
 export abstract class StrategyPageRouter {
 
-  public abstract openSwapsDialog(strategyHash: string): void
+  public abstract openSwaps(strategyHash: string): void
 
-  public abstract openLogsDialog(strategyHash: string): void
+  public abstract openLogs(strategyHash: string): void
 
-  public abstract openDeleteDialog(strategyHash: string): void
+  public abstract openArchiveOrder(strategyHash: string, resultId: number): void
 
-  public abstract openAnalyticsDialog(strategyHash: string): void
+  public abstract openAnalytics(strategyHash: string): void
 
-  public abstract openForceExecuteDialog(strategyHash: string): void
+  public abstract openForceExecute(strategyHash: string, resultId: number): void
 
-  public abstract openStrategyFilterDialog(filter: StrategiesFilter): void
+  public abstract openStrategyFilter(filter: StrategiesFilter): void
+
+  public abstract openDeleteOrder(strategyHash: string, resultId: number): void
 }

@@ -15,6 +15,9 @@ import { StrategyHolderButtonIds } from './StrategyHolderButtonIds.ts'
 export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
 
   private static PAGE_LIMIT: number = 5
+  private static readonly ARCHIVE_ORDER_RESULT_ID = 1
+  private static readonly FORCE_EXEUE_ORDER_RESULT_ID = 2
+  private static readonly DELETE_ORDER_RESULT_ID = 3
 
   private readonly strategiesList = new BehaviorSubject<StrategyListItem<unknown>[]>([])
   private readonly isLastPage = new BehaviorSubject<boolean>(true)
@@ -117,6 +120,39 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
       })
   }
 
+  public onActionResultCallback(data: unknown, resultId: number | string): void {
+    if (typeof data !== 'string') {
+      return
+    }
+
+    if (resultId === StrategiesPagePresenterImpl.ARCHIVE_ORDER_RESULT_ID) {
+      this.changeStrategyStatus(data, StrategyStatusType.CANCELED)
+        .then(() => {})
+        .catch(e => console.error(e))
+
+    } else if (resultId === StrategiesPagePresenterImpl.FORCE_EXEUE_ORDER_RESULT_ID) {
+      this.forceExecuteStrategy(data)
+        .then(() => {})
+        .catch(e => console.error(e))
+
+    } else if (resultId === StrategiesPagePresenterImpl.DELETE_ORDER_RESULT_ID) {
+      this.deleteOrder(data)
+        .then(() => {})
+        .catch(e => console.error(e))
+    }
+  }
+
+  private async deleteOrder(hash: string): Promise<void> {
+    try {
+      await this.strategiesRepository.deleteOrder(hash)
+      const list = this.strategiesList.value.filter(item => item.hash !== hash)
+      this.strategiesList.next(list)
+
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   public onListItemClick(viewId: number, item: StrategyListItem<unknown>, data?: number | null): void {
     if (viewId === StrategyHolderButtonIds.OPEN_SWAP_BUTTON_ID) {
       this.onShowSwapsClick(item.hash)
@@ -143,20 +179,17 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
       this.changeStrategyStatus(item.hash, StrategyStatusType.PAUSED)
 
     } else if (viewId === StrategyHolderButtonIds.CANCEL_ORDER_BUTTON_ID) {
-      this.router.openDeleteDialog(item.hash)
+      this.router.openArchiveOrder(item.hash, StrategiesPagePresenterImpl.ARCHIVE_ORDER_RESULT_ID)
 
     } else if (viewId === StrategyHolderButtonIds.OPEN_ANALYTICS_BUTTON_ID) {
-      this.router.openAnalyticsDialog(item.hash)
+      this.router.openAnalytics(item.hash)
 
     } else if (viewId === StrategyHolderButtonIds.FORCE_EXECUTE_ORDER_BUTTON_ID) {
-      this.router.openForceExecuteDialog(item.hash)
-    }
-  }
+      this.router.openForceExecute(item.hash, StrategiesPagePresenterImpl.FORCE_EXEUE_ORDER_RESULT_ID)
 
-  public onForceExecuteClick(hash: string): void {
-    this.forceExecuteStrategy(hash)
-      .then(() => {})
-      .catch(e => console.error(e))
+    } else if (viewId === StrategyHolderButtonIds.DELETE_ORDER_BUTTON_ID) {
+      this.router.openDeleteOrder(item.hash, StrategiesPagePresenterImpl.DELETE_ORDER_RESULT_ID)
+    }
   }
 
   private async forceExecuteStrategy(orderHash: string): Promise<void> {
@@ -245,11 +278,11 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
   }
 
   private onShowSwapsClick(strategyHash: string): void {
-    this.router.openSwapsDialog(strategyHash)
+    this.router.openSwaps(strategyHash)
   }
 
   private onShowLogsClick(strategyHash: string): void {
-    this.router.openLogsDialog(strategyHash)
+    this.router.openLogs(strategyHash)
   }
 
   private async changeStrategyOptions(hash: string, options: Partial<ChangeOptionsRequest>): Promise<void> {
@@ -271,12 +304,8 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
     }
   }
 
-  public onDeleteStrategyClick(hash: string): void {
-    this.changeStrategyStatus(hash, StrategyStatusType.CANCELED)
-  }
-
   public onFilterButtonClick(): void {
-    this.router.openStrategyFilterDialog(this.filter.value)
+    this.router.openStrategyFilter(this.filter.value)
   }
 
   public onChangeFilter(filter: StrategiesFilter): void {

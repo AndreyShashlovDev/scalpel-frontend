@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import FilterIcon from '../../../assets/icons/app/FilterIcon.svg'
+import { DialogQuestionCallBack, DialogQuestionView } from '../../../common/app-ui/dialog/DialogQuestionView.tsx'
 import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
 import { PageHeaderView } from '../../../common/app-ui/PageHeaderView.tsx'
 import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
@@ -11,8 +12,6 @@ import StrategiesFilter from '../domain/model/StrategiesFilter.ts'
 import { StrategiesPagePresenter } from '../domain/StrategiesPagePresenter.ts'
 import { StrategyPageDialogProvider } from '../router/StrategyPageDialogProvider.ts'
 import { DialogAnalyticsCallBack, DialogAnalyticsView } from './components/DialogAnalyticsView.tsx'
-import { DialogDeleteCallBack, DialogDeleteView } from './components/DialogDeleteView.tsx'
-import { DialogForceExecuteCallBack, DialogForceExecuteView } from './components/DialogForceExecuteView.tsx'
 import { DialogLogsCallBack, DialogLogsView } from './components/DialogLogsView.tsx'
 import { DialogStrategyFilterCallBack, DialogStrategyFilterView } from './components/DialogStrategyFilterView.tsx'
 import { DialogSwapsCallBack, DialogSwapsView } from './components/DialogSwapsView.tsx'
@@ -39,9 +38,8 @@ export const StrategiesPageView = () => {
 
   const dialogSwapsRef = useRef<DialogSwapsCallBack | null>(null)
   const dialogLogsRef = useRef<DialogLogsCallBack | null>(null)
-  const dialogDeleteRef = useRef<DialogDeleteCallBack | null>(null)
+  const dialogQuestionRef = useRef<DialogQuestionCallBack | null>(null)
   const dialogAnalyticsRef = useRef<DialogAnalyticsCallBack | null>(null)
-  const dialogForceExecuteRef = useRef<DialogForceExecuteCallBack | null>(null)
   const listScrollContainerRef = useRef<HTMLDivElement | null>(null)
   const dialogStrategiesFilterRef = useRef<DialogStrategyFilterCallBack | null>(null)
   const [pullToRefreshLoading, setPullToRefreshLoading] = useState(false)
@@ -53,15 +51,16 @@ export const StrategiesPageView = () => {
       },
       openLogsDialog(strategyHash: string): void {
         dialogLogsRef.current?.openDialog({strategyHash})
-      },
-      openDeleteDialog(strategyHash: string): void {
-        dialogDeleteRef.current?.openDialog({strategyHash})
+      }, openQuestionDialog(title: string, message: string, data: unknown, resultId: number): void {
+        dialogQuestionRef.current?.openDialog({
+          title,
+          message,
+          data,
+          dialogId: resultId
+        })
       },
       openAnalyticsDialog(strategyHash: string): void {
         dialogAnalyticsRef.current?.openDialog({strategyHash})
-      },
-      openForceExecuteDialog(strategyHash: string): void {
-        dialogForceExecuteRef.current?.openDialog({strategyHash})
       },
       openStrategyFilterDialog(filter: StrategiesFilter): void {
         dialogStrategiesFilterRef.current?.openDialog({filter})
@@ -119,13 +118,9 @@ export const StrategiesPageView = () => {
         <DialogSwapsView ref={dialogSwapsRef} />
         <DialogLogsView ref={dialogLogsRef} />
         <DialogAnalyticsView ref={dialogAnalyticsRef} />
-        <DialogDeleteView
-          onClickDelete={(hash: string) => presenter.onDeleteStrategyClick(hash)}
-          ref={dialogDeleteRef}
-        />
-        <DialogForceExecuteView
-          ref={dialogForceExecuteRef}
-          onExecuteClick={(hash: string) => presenter.onForceExecuteClick(hash)}
+        <DialogQuestionView
+          onOkClick={(data: unknown, dialogId) => presenter.onActionResultCallback(data, dialogId)}
+          ref={dialogQuestionRef}
         />
         <DialogStrategyFilterView
           ref={dialogStrategiesFilterRef}

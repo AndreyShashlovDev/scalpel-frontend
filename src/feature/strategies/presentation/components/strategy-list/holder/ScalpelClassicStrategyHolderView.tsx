@@ -3,6 +3,7 @@ import { ForwardedRef, forwardRef, ReactNode, useCallback, useEffect, useMemo, u
 import styled from 'styled-components'
 import ArrowIcon from '../../../../../../assets/icons/app/ArrowIcon.svg'
 import CollapseArrowIcon from '../../../../../../assets/icons/app/CollapseArrowIcon.svg'
+import DeleteIcon from '../../../../../../assets/icons/app/DeleteIcon.svg'
 import EditIcon from '../../../../../../assets/icons/app/EditIcon.svg'
 import ExitIcon from '../../../../../../assets/icons/app/ExitIcon.svg'
 import FailIcon from '../../../../../../assets/icons/app/FailIcon.svg'
@@ -59,6 +60,7 @@ const ButtonContainer = styled(IconContainer)`
   cursor: pointer;
   padding: 4px;
 `
+
 const SaveIconWrapper = styled(SaveIcon)`
   cursor: pointer;
   width: 16px;
@@ -68,6 +70,11 @@ const SaveIconWrapper = styled(SaveIcon)`
 const EditIconWrapper = styled(EditIcon)`
   width: 16px;
   height: auto;
+`
+
+const DeleteIconWrapper = styled(DeleteIcon)`
+  width: 24px;
+  height: 24px;
 `
 
 const PlayIconWrapper = styled(PlayIcon)`
@@ -80,7 +87,7 @@ const PauseIconWrapper = styled(PauseIcon)`
   height: 24px;
 `
 
-const DeleteIconWrapper = styled(TrashBinIcon)`
+const ArchiveIconWrapper = styled(TrashBinIcon)`
   width: 24px;
   height: 24px;
 `
@@ -210,6 +217,7 @@ const HeaderButtonContainer = styled.div`
 const ActionButtonsContainer = styled.div`
   display: flex;
   justify-content: start;
+  align-items: center;
   gap: 24px;
   margin-bottom: 24px;
   margin-top: 24px;
@@ -319,14 +327,29 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
     () => {
       return (
         <ActionButtonsContainer>
-        <AppIconButton
-          disabled={item.waitChangeStatusCancel}
-          onClick={() => {
-            onItemClick(StrategyHolderButtonIds.CANCEL_ORDER_BUTTON_ID)
-          }}
-          icon={item.waitChangeStatusCancel ? <LoadingView size={ComponentSize.SMALL} /> : <DeleteIconWrapper />}
-          size={ComponentSize.STANDARD}
-        />
+          {
+            item.status === StrategyStatusType.CANCELED && (
+              <AppIconButton
+                onClick={() => {
+                  onItemClick(StrategyHolderButtonIds.DELETE_ORDER_BUTTON_ID)
+                }}
+                icon={<DeleteIconWrapper />}
+                size={ComponentSize.STANDARD}
+              />
+            )
+          }
+          {
+            item.status !== StrategyStatusType.CANCELED && (
+              <AppIconButton
+                disabled={item.waitChangeStatusCancel}
+                onClick={() => {
+                  onItemClick(StrategyHolderButtonIds.CANCEL_ORDER_BUTTON_ID)
+                }}
+                icon={item.waitChangeStatusCancel ? <LoadingView size={ComponentSize.SMALL} /> : <ArchiveIconWrapper />}
+                size={ComponentSize.STANDARD}
+              />
+            )
+          }
 
           {
             item.status !== StrategyStatusType.CANCELED &&
