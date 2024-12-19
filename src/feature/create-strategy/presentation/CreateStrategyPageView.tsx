@@ -19,7 +19,9 @@ import '../domain/CreateStrategyPagePresenterModule.ts'
 
 const PlayIconWrapper = styled(PlayIcon)`
   width: 16px;
-  height: auto;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
 `
 
 const Wrapper = styled.div`
@@ -34,7 +36,7 @@ const Container = styled(PageLayoutView)`
 const ScrollPageContainer = styled.div`
   overflow-y: auto;
   display: grid;
-  grid-template-rows: 0.9fr 100px;
+  grid-template-rows: 1fr 100px;
   height: 100%;
   padding-bottom: 32px;
 `
@@ -81,6 +83,8 @@ const BodyContainer = styled.div`
 `
 
 const DescContainer = styled.div`
+  display: flex;
+  justify-items: center;
   width: 80%;
   max-width: 80%;
 `
@@ -139,7 +143,7 @@ const CreateStrategyPageView = () => {
     return (
       <InfoBlockContainer>
         <AppSpaceView />
-        <div>Order: </div>
+        <TitleContainer>Order: </TitleContainer>
         {items()}
         <AppSpaceView />
         <AppSpaceView />
@@ -255,7 +259,8 @@ const CreateStrategyPageView = () => {
         <TitleContainer>Configuration of current strategy:</TitleContainer>
         {optionsView()}
         <DescContainer>
-          Initially the order will be in the 'Pause' status. After all balances are completed, start it by clicking&nbsp;<PlayIconWrapper />
+          Initially the order will be in the 'Created' status. After all balances are completed, start it by clicking&nbsp;
+          <PlayIconWrapper />
         </DescContainer>
       </BodyContainer>
     )

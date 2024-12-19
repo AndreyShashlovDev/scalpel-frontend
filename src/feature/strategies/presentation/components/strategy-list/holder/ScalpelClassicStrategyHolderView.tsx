@@ -25,6 +25,7 @@ import { ProfitValueContainer } from '../../../../../../common/app-ui/ProfitValu
 import { TokenIconView } from '../../../../../../common/app-ui/TokenIconView.tsx'
 import { StrategyStatusType } from '../../../../../../common/repository/data/model/StrategyResponse.ts'
 import { SwapState } from '../../../../../../common/repository/data/model/SwapResponse.ts'
+import { NumberShortener } from '../../../../../../utils/Shortener.ts'
 import { StrategyHolderButtonIds } from '../../../../domain/StrategyHolderButtonIds.ts'
 import { StrategyListItem } from '../../../model/StrategyListItem.ts'
 import { StrategyStatusView } from './StrategyStatusView.tsx'
@@ -707,6 +708,14 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
         {item.currencyB.symbol} Price: ${item.currencyBUsdPrice ?? '-'}
       </ElementContainer>
 
+      {
+        item.adaptiveUsdPrice && (
+          <ElementContainer>
+            Exchange adaptive price: ${item.adaptiveUsdPrice}
+          </ElementContainer>
+        )
+      }
+
       <ElementContainer>
         Usd amount:&nbsp;
           <ProfitValueContainer
@@ -718,19 +727,18 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
       </ElementContainer>
 
       <ElementContainer>
-        Total profit:&nbsp;
+        Current profit:&nbsp;
+        <ProfitValueContainer $value={(item.totalUsdAmountB > 0 ? item.totalUsdAmountB : item.totalAmountA) - item.initialAmountA}>
+         ${NumberShortener((item.totalUsdAmountB > 0 ? item.totalUsdAmountB : item.totalAmountA) - item.initialAmountA)}
+        </ProfitValueContainer>
+      </ElementContainer>
+
+      <ElementContainer>
+        Earned profit:&nbsp;
         <ProfitValueContainer $value={item.totalUsdProfit}>
           ${item.totalUsdProfit}
         </ProfitValueContainer>
       </ElementContainer>
-
-      {
-        item.adaptiveUsdPrice && (
-          <ElementContainer>
-            Exchange adaptive price: ${item.adaptiveUsdPrice}
-          </ElementContainer>
-        )
-      }
 
       <AnalyticsButtonWrapper
         onClick={() => onItemClick(StrategyHolderButtonIds.OPEN_ANALYTICS_BUTTON_ID)}

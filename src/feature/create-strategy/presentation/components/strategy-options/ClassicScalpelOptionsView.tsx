@@ -18,7 +18,7 @@ const InputsContainer = styled.div`
 
 const InputElementContainer = styled.div`
   display: grid;
-  height: 50px;
+  height: 46px;
   grid-template-columns: 1fr fit-content(90px);
   align-items: center;
   text-wrap: balance;
@@ -86,7 +86,7 @@ export const ClassicScalpelOptionsView = ({
     <Container>
       <InputsContainer>
         <InputElementContainer>
-          amount of stable coin:
+          Amount of stable coin:
           <InputWrapper
             allowNegative={false}
             decimals={3}

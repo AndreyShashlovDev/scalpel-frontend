@@ -8,15 +8,20 @@ export class WalletCurrencyUiModel {
 
   public readonly currency: CurrencyResponse
   public readonly amount: number
-  public readonly actualBalance?: number
   public readonly usdAmount: number
+  public readonly actualBalance?: number
+  public readonly actualUsdAmount?: number
 
   constructor(currency: CurrencyResponse, amount: number, actualBalance: number | undefined) {
     this.currency = currency
     this.amount = amount
     this.actualBalance = actualBalance
-    console.log(this.amount, currency.price?.usdtPrice)
     this.usdAmount = amount * new BigNumber(currency.price?.usdtPrice ?? 0).div(new BigNumber(10).pow(6)).toNumber()
+
+    if (actualBalance) {
+      this.actualUsdAmount = actualBalance *
+        new BigNumber(currency.price?.usdtPrice ?? 0).div(new BigNumber(10).pow(6)).toNumber()
+    }
   }
 }
 
@@ -31,7 +36,7 @@ export class WalletListItemModel implements ListItem {
   public readonly totalFee: Map<ChainType, { eth: number, usd: number | undefined }>
   public readonly currencies: Map<ChainType, WalletCurrencyUiModel[]>
   public readonly totalValueWalletUsdt: Map<ChainType, number>
-  public readonly totalInitialValueWalletUsdt: number
+  public readonly totalActualValueWalletUsdt: Map<ChainType, number>
 
   constructor(
     address: Address,
@@ -42,7 +47,7 @@ export class WalletListItemModel implements ListItem {
     totalFee: Map<ChainType, { eth: number, usd: number | undefined }>,
     currencies: Map<ChainType, WalletCurrencyUiModel[]>,
     totalValueWalletUsdt: Map<ChainType, number>,
-    totalInitialValueWalletUsdt: number,
+    totalActualValueWalletUsdt: Map<ChainType, number>,
   ) {
     this.hash = address
     this.address = address
@@ -53,7 +58,7 @@ export class WalletListItemModel implements ListItem {
     this.totalFee = totalFee
     this.currencies = currencies
     this.totalValueWalletUsdt = totalValueWalletUsdt
-    this.totalInitialValueWalletUsdt = totalInitialValueWalletUsdt
+    this.totalActualValueWalletUsdt = totalActualValueWalletUsdt
   }
 
   public copy(entity: Partial<WalletListItemModel>): WalletListItemModel {

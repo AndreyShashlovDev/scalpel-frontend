@@ -11,6 +11,7 @@ import { ChainIconView } from '../../../../../../common/app-ui/ChainIconView.tsx
 import { ComponentSize } from '../../../../../../common/app-ui/ComponentSize.ts'
 import { ComponentVariant } from '../../../../../../common/app-ui/ComponentVariant.ts'
 import { LoadingView } from '../../../../../../common/app-ui/LoadingView.tsx'
+import { ProfitValueContainer } from '../../../../../../common/app-ui/ProfitValueContainer.tsx'
 import { TokenIconView } from '../../../../../../common/app-ui/TokenIconView.tsx'
 import { NumberShortener } from '../../../../../../utils/Shortener.ts'
 import { WalletListItemModel } from '../../../model/WalletListItemModel.ts'
@@ -76,7 +77,8 @@ const CurrencyItemContainer = styled.div`
 
 const CurrencyFooterContainer = styled.div`
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  gap: 4px;
   padding: 8px 4px;
   border-top: 1px solid ${({theme}) => theme.color.button.normal.border.primary!};
 `
@@ -133,7 +135,11 @@ export const WalletHolderView = forwardRef((
       </LineContainer>
       <LineContainer>Total orders: {item.totalOrders}</LineContainer>
       <LineContainer>Active orders: {item.activeOrders}</LineContainer>
-      <LineContainer>Total profit: <GreenColor>${NumberShortener(item.totalUsdProfit)}</GreenColor></LineContainer>
+      <LineContainer>Earned profit:&npbs;
+        <ProfitValueContainer $value={item.totalUsdProfit}>
+          ${NumberShortener(item.totalUsdProfit)}
+        </ProfitValueContainer>
+      </LineContainer>
       <ActionsContainer>
         <AppButton
           variant={ComponentVariant.DANGER}
@@ -203,7 +209,8 @@ export const WalletHolderView = forwardRef((
                 ))
             }
             <CurrencyFooterContainer>
-              USD cost orders: <GreenColor>${item.totalValueWalletUsdt.get(chain)}</GreenColor>
+              <span>Orders funds USD cost: <GreenColor>${item.totalValueWalletUsdt.get(chain)}</GreenColor></span>
+              <span>Wallet funds USD cost: <GreenColor>${item.totalActualValueWalletUsdt.get(chain)}</GreenColor></span>
             </CurrencyFooterContainer>
           </CurrencyContainer>
         ))
