@@ -21,6 +21,7 @@ import { AppSpaceView } from '../../../../../../common/app-ui/AppSpaceView.tsx'
 import { ChainIconView } from '../../../../../../common/app-ui/ChainIconView.tsx'
 import { ComponentSize } from '../../../../../../common/app-ui/ComponentSize.ts'
 import { LoadingView } from '../../../../../../common/app-ui/LoadingView.tsx'
+import { ProfitValueContainer } from '../../../../../../common/app-ui/ProfitValueContainer.tsx'
 import { TokenIconView } from '../../../../../../common/app-ui/TokenIconView.tsx'
 import { StrategyStatusType } from '../../../../../../common/repository/data/model/StrategyResponse.ts'
 import { SwapState } from '../../../../../../common/repository/data/model/SwapResponse.ts'
@@ -232,12 +233,6 @@ const AnalyticsButtonWrapper = styled(AppButton)`
   max-width: 145px;
   margin-top: 8px;
   font-size: ${({theme}) => theme.size.fontSize.small};
-`
-
-const ProfitValueContainer = styled.div<{ color?: 'green' | undefined }>`
-  display: flex;
-  gap: 4px;
-  color: ${({color, theme}) => color ? theme.color.common.green : 'unset'};
 `
 
 const getArrowTrend = (trend: string) => {
@@ -713,15 +708,19 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
       </ElementContainer>
 
       <ElementContainer>
+        Usd amount:&nbsp;
+          <ProfitValueContainer
+            $value={(item.totalUsdAmountB > 0 ? item.totalUsdAmountB : item.totalAmountA) - item.initialAmountA}
+          >
+          ${item.totalUsdAmountB > 0 ? item.totalUsdAmountB : item.totalAmountA}
+          </ProfitValueContainer>
+        &nbsp;/ ${item.initialAmountA}
+      </ElementContainer>
+
+      <ElementContainer>
         Total profit:&nbsp;
-        <ProfitValueContainer color={item.totalUsdProfit > 0 ? 'green' : undefined}>
-          <TokenIconView
-            chain={item.chain}
-            address={item.currencyA.address}
-            symbol={item.currencyA.symbol}
-            size={ComponentSize.SMALLEST}
-          />
-          {item.totalUsdProfit}
+        <ProfitValueContainer $value={item.totalUsdProfit}>
+          ${item.totalUsdProfit}
         </ProfitValueContainer>
       </ElementContainer>
 

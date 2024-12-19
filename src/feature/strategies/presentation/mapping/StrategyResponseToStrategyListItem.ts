@@ -119,6 +119,7 @@ export const StrategyResponseToStrategyListItem = (
     NumberShortener(currencyBPrice ?? 0),
     NumberShortener(strategy.currencyA.valueTo(strategy.totalAmountA)),
     NumberShortener(strategy.currencyB.valueTo(strategy.totalAmountB)),
+    NumberShortener(strategy.currencyB.valueTo(strategy.totalAmountB) * (currencyBPrice ?? 0)),
     strategy.adaptiveUsdPrice ? strategy.currencyA.valueTo(strategy.adaptiveUsdPrice) : undefined,
     convertOptionsByStrategy(strategy.type, strategy.options, strategy.currencyA),
     NumberShortener(initialAmountA),
