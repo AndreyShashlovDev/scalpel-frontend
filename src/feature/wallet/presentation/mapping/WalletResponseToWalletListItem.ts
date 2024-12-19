@@ -55,13 +55,18 @@ export const WalletResponseToWalletListItem = (
     return acc.set(chain, NumberShortener(sum))
   }, new Map<ChainType, number>)
 
-
   const totalActualUsdAmounts = Array.from(currencies.entries()).reduce((acc, curr) => {
     const [chain, items] = curr
+    const hasUnknown = items.find(item => item.actualUsdAmount === undefined)
+
+    if (hasUnknown) {
+      return acc.set(chain, undefined)
+    }
+
     const sum = items.reduce((total, currency) => total + (currency.actualUsdAmount ?? 0), 0)
 
     return acc.set(chain, NumberShortener(sum))
-  }, new Map<ChainType, number>)
+  }, new Map<ChainType, number | undefined>)
 
   return new WalletListItemModel(
     response.address,

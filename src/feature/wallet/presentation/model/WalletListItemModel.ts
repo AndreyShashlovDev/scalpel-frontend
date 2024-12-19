@@ -18,7 +18,7 @@ export class WalletCurrencyUiModel {
     this.actualBalance = actualBalance
     this.usdAmount = amount * new BigNumber(currency.price?.usdtPrice ?? 0).div(new BigNumber(10).pow(6)).toNumber()
 
-    if (actualBalance) {
+    if (actualBalance !== undefined) {
       this.actualUsdAmount = actualBalance *
         new BigNumber(currency.price?.usdtPrice ?? 0).div(new BigNumber(10).pow(6)).toNumber()
     }
@@ -36,7 +36,7 @@ export class WalletListItemModel implements ListItem {
   public readonly totalFee: Map<ChainType, { eth: number, usd: number | undefined }>
   public readonly currencies: Map<ChainType, WalletCurrencyUiModel[]>
   public readonly totalValueWalletUsdt: Map<ChainType, number>
-  public readonly totalActualValueWalletUsdt: Map<ChainType, number>
+  public readonly totalActualValueWalletUsdt: Map<ChainType, number | undefined>
 
   constructor(
     address: Address,
@@ -47,7 +47,7 @@ export class WalletListItemModel implements ListItem {
     totalFee: Map<ChainType, { eth: number, usd: number | undefined }>,
     currencies: Map<ChainType, WalletCurrencyUiModel[]>,
     totalValueWalletUsdt: Map<ChainType, number>,
-    totalActualValueWalletUsdt: Map<ChainType, number>,
+    totalActualValueWalletUsdt: Map<ChainType, number | undefined>,
   ) {
     this.hash = address
     this.address = address

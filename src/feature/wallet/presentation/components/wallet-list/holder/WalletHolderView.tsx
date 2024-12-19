@@ -90,6 +90,7 @@ const CurrencyItemAmountContainer = styled.div`
 `
 
 const GreenColor = styled.span`
+  display: flex;
   color: ${({theme}) => theme.color.common.green}
 `
 
@@ -102,6 +103,10 @@ const ActionsContainer = styled.div`
   flex-flow: wrap;
   gap: 8px;
   padding: 12px 0;
+`
+
+const FooterItemContainer = styled.div`
+  display: flex;
 `
 
 export interface WalletListHolderProps extends ListItemHolder<WalletListItemModel> {
@@ -209,8 +214,12 @@ export const WalletHolderView = forwardRef((
                 ))
             }
             <CurrencyFooterContainer>
-              <span>Orders funds USD cost: <GreenColor>${item.totalValueWalletUsdt.get(chain)}</GreenColor></span>
-              <span>Wallet funds USD cost: <GreenColor>${item.totalActualValueWalletUsdt.get(chain)}</GreenColor></span>
+              <FooterItemContainer>
+                Orders funds USD cost:&nbsp;<GreenColor>${item.totalValueWalletUsdt.get(chain)}</GreenColor>
+              </FooterItemContainer>
+              <FooterItemContainer>
+                Wallet funds USD cost:&nbsp;<GreenColor>${item.totalActualValueWalletUsdt.get(chain) ?? <LoadingView size={ComponentSize.SMALLEST} />}</GreenColor>
+              </FooterItemContainer>
             </CurrencyFooterContainer>
           </CurrencyContainer>
         ))
