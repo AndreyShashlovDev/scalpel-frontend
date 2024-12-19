@@ -17,10 +17,15 @@ const SnackbarItemContainer = styled(motion.div)`
   align-items: center;
   width: 250px;
   max-width: 250px;
+  overflow: hidden;
 `
 
 const SnackbarItemMessageContainer = styled.div`
   color: white;
+  text-wrap: wrap;
+  overflow-wrap: break-word;
+  word-break: break-all;
+  overflow: hidden;
 `
 
 const SnackbarItemCloseContainer = styled.div`

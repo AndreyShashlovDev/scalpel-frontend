@@ -1,6 +1,8 @@
 import { CurrencyRepository } from './common/repository/data/currencies/CurrencyRepository.ts'
 import { CurrencyRepositoryImpl } from './common/repository/data/currencies/CurrencyRepositoryImpl.ts'
 import { ChainType } from './common/repository/data/model/ChainType.ts'
+import { PreferencesRepository } from './common/repository/data/preferences/PreferencesRepository.ts'
+import { PreferencesRepositoryImpl } from './common/repository/data/preferences/PreferencesRepositoryImpl.ts'
 import { AppAuthHttpsService } from './common/repository/data/source/AppAuthHttpsService.ts'
 import { AppSourceService } from './common/repository/data/source/AppSourceService.ts'
 import { ApplicationRouter } from './common/router/domain/ApplicationRouter.ts'
@@ -74,12 +76,17 @@ export const destroyDiInstance = <T>(qualifier: Newable<T> | Abstract<T>): boole
 const SCALPEL_ENDPOINT = import.meta.env.VITE_SCALPEL_ENDPOINT ?? ''
 export const IS_PRODUCTION = import.meta.env.PROD
 
+injectionKernel.set(
+  PreferencesRepository,
+  new Singleton(() => new PreferencesRepositoryImpl())
+)
+
 const exceptionService = new AppExceptionHandlerService()
 
 injectionKernel.set(ExceptionHandlerService, new Factory(() => exceptionService, true))
 injectionKernel.set(ExceptionNotifierService, new Factory(() => exceptionService, true))
 
-injectionKernel.set(AppAuthService, new Factory(() => new AppAuthServiceImpl(), true))
+injectionKernel.set(AppAuthService, new Singleton(() => new AppAuthServiceImpl()))
 
 injectionKernel.set(
   AppSourceService,

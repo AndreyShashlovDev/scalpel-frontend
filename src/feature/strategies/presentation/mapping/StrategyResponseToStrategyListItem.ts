@@ -15,6 +15,8 @@ import { StrategyListItem } from '../model/StrategyListItem.ts'
 import { SwapHistoryUiModel } from '../model/SwapHistoryUiModel.ts'
 import { SwapUiModel } from '../model/SwapUiModel.ts'
 
+const toPercents = (value: number) => Math.round((value * 100) * 100000) / 100000
+
 const convertOptionsByStrategy = (
   type: StrategyType,
   options: JsonObject<unknown>,
@@ -26,10 +28,11 @@ const convertOptionsByStrategy = (
   ) {
     const obj = options as ScalpelClassicStrategyOptions
     const res: ScalpelClassicStrategyOptions = {
-      growDiffPercents: obj.growDiffPercents ? obj.growDiffPercents * 100 : undefined,
-      growDiffPercentsDown: obj.growDiffPercentsDown ? obj.growDiffPercentsDown * 100 : undefined,
-      growDiffPercentsUp: obj.growDiffPercentsUp ? obj.growDiffPercentsUp * 100 : undefined,
-      buyMaxPrice: obj.buyMaxPrice ? tokenA.valueTo(obj.buyMaxPrice.toString()) : undefined
+      growDiffPercents: obj.growDiffPercents ? toPercents(obj.growDiffPercents) : undefined,
+      growDiffPercentsDown: obj.growDiffPercentsDown ? toPercents(obj.growDiffPercentsDown) : undefined,
+      growDiffPercentsUp: obj.growDiffPercentsUp ? toPercents(obj.growDiffPercentsUp) : undefined,
+      buyMaxPrice: obj.buyMaxPrice ? tokenA.valueTo(obj.buyMaxPrice.toString()) : undefined,
+      stopLossPercents: obj.stopLossPercents ? toPercents(obj.stopLossPercents) : undefined,
     }
 
     return res

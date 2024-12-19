@@ -37,6 +37,7 @@ export interface ClassicScalpelOptionsData extends StrategyOptionsData {
   buyMaxPrice: number | undefined
   growDiffPercentsUp: number
   growDiffPercentsDown: number
+  stopLossPercents: number | undefined
 }
 
 const CHAIN_NATIVE = new Map([
@@ -53,6 +54,7 @@ export const ClassicScalpelOptionsView = ({
 
   const [amountStableCoin, setAmountStableCoin] = useState<number>(1)
   const [maxBuyPriceCoin, setMaxBuyPriceCoin] = useState<number | undefined>()
+  const [stopLoss, setStopLoss] = useState<number | undefined>()
   const [maxGasPrice, setMaxGasPrice] = useState<number>(chain === ChainType.POLYGON ? 300 : 50)
   const [growPercent, setGrowPercent] = useState<number>(0)
   const [fallPercent, setFallPercent] = useState<number>(0)
@@ -63,6 +65,7 @@ export const ClassicScalpelOptionsView = ({
       tokenAmountB: 0,
       maxGasPriceGwei: maxGasPrice,
       buyMaxPrice: maxBuyPriceCoin ?? undefined,
+      stopLossPercents: stopLoss ?? undefined,
       growDiffPercentsDown: fallPercent,
       growDiffPercentsUp: growPercent
     }
@@ -74,7 +77,7 @@ export const ClassicScalpelOptionsView = ({
 
     onChange(result, isValid)
 
-  }, [onChange, amountStableCoin, maxBuyPriceCoin, maxGasPrice, growPercent, fallPercent])
+  }, [onChange, amountStableCoin, maxBuyPriceCoin, maxGasPrice, growPercent, fallPercent, stopLoss])
 
   return (
     <Container>
@@ -102,6 +105,20 @@ export const ClassicScalpelOptionsView = ({
             defaultValue={maxBuyPriceCoin}
             allowEmptyValue={true}
             onChange={(v) => setMaxBuyPriceCoin(v)}
+          />
+        </InputElementContainer>
+
+        <InputElementContainer>
+          Stop-loss (percents % ):
+          <InputWrapper
+            allowNegative={false}
+            decimals={2}
+            max={100}
+            min={0}
+            suffix={'%'}
+            defaultValue={stopLoss}
+            allowEmptyValue={true}
+            onChange={(v) => setStopLoss(v)}
           />
         </InputElementContainer>
 

@@ -277,7 +277,8 @@ export interface ScalpelClassicStrategyOptions {
   growDiffPercents?: number,
   growDiffPercentsUp?: number,
   growDiffPercentsDown?: number,
-  buyMaxPrice?: number
+  buyMaxPrice?: number,
+  stopLossPercents?: number,
 }
 
 export interface ScalpelClassicStrategyHolderProps {
@@ -295,6 +296,7 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
   const [editGrowPercent, setEditGrowPercent] = useState(false)
   const [editFallPercent, setEditFallPercent] = useState(false)
   const [editMaxTokenPrice, setEditMaxTokenPrice] = useState(false)
+  const [editStopLossPercent, setEditStopLossPercent] = useState(false)
 
   const [maxGasPrice, setMaxGasPrice] = useState<number>(item.gasLimit)
   const [growPercent, setGrowPercent] = useState<number>(
@@ -304,12 +306,14 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
     (item.options.growDiffPercentsDown ?? item.options.growDiffPercents ?? 0)
   )
   const [maxBuyPriceCoin, setMaxBuyPriceCoin] = useState<number | undefined>(item.options.buyMaxPrice)
+  const [stopLossPercents, setStopLossPercents] = useState<number | undefined>(item.options.stopLossPercents)
 
   useEffect(() => {
     setMaxGasPrice(item.gasLimit)
     setGrowPercent((item.options.growDiffPercentsUp ?? item.options.growDiffPercents ?? 0))
     setFallPercent((item.options.growDiffPercentsDown ?? item.options.growDiffPercents ?? 0))
     setMaxBuyPriceCoin(item.options.buyMaxPrice)
+    setStopLossPercents(item.options.stopLossPercents)
 
   }, [item.options, item.gasLimit])
 
@@ -536,6 +540,48 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
           }
 
         </ElementContainer>
+          <ElementContainer>
+            Stop-loss percents:&nbsp;
+            {
+              editStopLossPercent
+                ? (
+                  <>
+                  <InputWrapper
+                    allowNegative={false}
+                    decimals={2}
+                    max={100}
+                    min={0}
+                    allowEmptyValue={true}
+                    defaultValue={stopLossPercents}
+                    suffix={'%'}
+                    onChange={(v) => setStopLossPercents(v ?? 0)}
+                  />
+
+                  <ButtonContainer
+                    onClick={() => {
+                      onItemClick(StrategyHolderButtonIds.CHANGE_STOP_LOSS_PERCENT_BUTTON_ID, stopLossPercents ?? null)
+                      setEditStopLossPercent(false)
+                    }}
+                    whileTap={{scale: 0.95}}
+                  >
+                    <SaveIconWrapper />
+                  </ButtonContainer>
+                </>
+                )
+                : (
+                  <>
+                    {stopLossPercents ?? '-'}%&nbsp;
+                    <ButtonContainer
+                      onClick={() => setEditStopLossPercent(true)}
+                      whileTap={{scale: 0.95}}
+                    >
+                    <EditIconWrapper />
+                  </ButtonContainer>
+                </>
+                )
+            }
+
+        </ElementContainer>
         <ElementContainer>
           Max token entry price:&nbsp;
           {
@@ -590,6 +636,8 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
       editGrowPercent,
       editGasPrice,
       editMaxTokenPrice,
+      stopLossPercents,
+      editStopLossPercent,
     ]
   )
 

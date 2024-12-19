@@ -1,3 +1,4 @@
+import { PreferencesRepository } from '../../../common/repository/data/preferences/PreferencesRepository.ts'
 import { AppSourceService } from '../../../common/repository/data/source/AppSourceService.ts'
 import { Factory, getDIValue, injectionKernel } from '../../../Injections.ts'
 import { StrategyRepositoryImpl } from '../data/strategy-repository/StrategyRepositoryImpl.ts'
@@ -13,7 +14,8 @@ injectionKernel.set(
   new Factory(
     () => new StrategiesPagePresenterImpl(
       new StrategyRepositoryImpl(getDIValue(AppSourceService)),
-      new StrategyPageRouterImpl(getDIValue(StrategyPageDialogProvider))
+      new StrategyPageRouterImpl(getDIValue(StrategyPageDialogProvider)),
+      getDIValue(PreferencesRepository),
     ),
     false
   )

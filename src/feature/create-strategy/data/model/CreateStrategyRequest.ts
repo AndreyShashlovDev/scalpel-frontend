@@ -13,6 +13,7 @@ export class CreateScalpelStrategyRequest {
   public readonly diffPercentDown: number
   public readonly maxBuyPrice?: number
   public readonly maxGasPrice: number
+  public readonly stopLossPercents?: number
 
   constructor(
     type: StrategyType,
@@ -25,6 +26,7 @@ export class CreateScalpelStrategyRequest {
     diffPercentDown: number,
     maxBuyPrice: number | undefined,
     maxGasPrice: number,
+    stopLossPercents: number | undefined,
   ) {
     this.type = type
     this.chain = chain
@@ -36,6 +38,7 @@ export class CreateScalpelStrategyRequest {
     this.diffPercentDown = diffPercentDown
     this.maxBuyPrice = maxBuyPrice
     this.maxGasPrice = maxGasPrice
+    this.stopLossPercents = stopLossPercents
   }
 }
 

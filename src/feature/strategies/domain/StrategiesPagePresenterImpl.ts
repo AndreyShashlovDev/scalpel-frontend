@@ -2,6 +2,7 @@ import * as console from 'node:console'
 import { BehaviorSubject, catchError, EMPTY, from, Observable, Subject, Subscription } from 'rxjs'
 import { Pageable } from '../../../common/repository/data/model/Pageable.ts'
 import { StrategyStatusType } from '../../../common/repository/data/model/StrategyResponse.ts'
+import { PreferencesRepository } from '../../../common/repository/data/preferences/PreferencesRepository.ts'
 import { ChangeOptionsRequest } from '../data/model/ChangeOptionsRequest.ts'
 import { CompositeStrategyResponse } from '../data/model/CompositeStrategyResponse.ts'
 import { StrategyRepository } from '../data/strategy-repository/StrategyRepository.ts'
@@ -49,13 +50,26 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
 
   constructor(
     private readonly strategiesRepository: StrategyRepository,
-    private readonly router: StrategyPageRouter
+    private readonly router: StrategyPageRouter,
+    private readonly preferencesRepository: PreferencesRepository,
   ) {
     super()
   }
 
   public ready() {
-    this.fetchNextPage()
+    this.isLoading.next(true)
+
+    this.preferencesRepository
+      .getUserPreference()
+      .then(prefs => {
+        const filters = prefs?.strategyFilters ?? []
+
+        if (filters.length > 0) {
+          const updated = this.filter.value.copy({selectedStatus: new Set(filters)})
+          this.filter.next(updated)
+        }
+      }).catch(e => console.error(e))
+      .finally(() => this.fetchNextPage())
   }
 
   public destroy(): void {
@@ -177,6 +191,9 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
 
     } else if (viewId === StrategyHolderButtonIds.CHANGE_TOKEN_B_PRICE_BUTTON_ID) {
       this.changeStrategyOptions(item.hash, {maxBuyPrice: data})
+
+    } else if (viewId === StrategyHolderButtonIds.CHANGE_STOP_LOSS_PERCENT_BUTTON_ID) {
+      this.changeStrategyOptions(item.hash, {stopLossPercents: data})
 
     } else if (viewId === StrategyHolderButtonIds.PLAY_ORDER_BUTTON_ID) {
       this.changeStrategyStatus(item.hash, StrategyStatusType.IN_PROGRESS)
@@ -316,7 +333,12 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
 
   public onChangeFilter(filter: StrategiesFilter): void {
     const newFiler = this.filter.value.copy({selectedStatus: filter.selectedStatus})
+
     this.filter.next(newFiler)
+
+    this.preferencesRepository.updateUserPreference({
+      strategyFilters: Array.from(filter.selectedStatus)
+    }).catch(e => console.error(e))
 
     this.refresh()
   }

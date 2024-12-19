@@ -265,6 +265,7 @@ export class CreateStrategyPagePresenterImpl extends CreateStrategyPagePresenter
           data.growDiffPercentsDown,
           data.buyMaxPrice,
           data.maxGasPriceGwei,
+          data.stopLossPercents,
         ))
       }
 

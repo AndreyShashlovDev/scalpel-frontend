@@ -5,7 +5,7 @@ import styled from 'styled-components'
 const SwitchContainer = styled.div<{ isOn: boolean }>`
   width: 40px;
   height: 16px;
-  background-color: ${(props) => (props.isOn ? '#4caf50' : '#ccc')};
+  background-color: ${(props) => (props.isOn ? props.theme.color.common.green : '#ccc')};
   border-radius: 50px;
   display: flex;
   align-items: center;

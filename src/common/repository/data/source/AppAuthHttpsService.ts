@@ -13,6 +13,8 @@ export class AppAuthHttpsService implements HttpService<Response> {
     private readonly prefix: string,
     private readonly authService: AppAuthService,
   ) {
+    this.authService.loadData()
+
     this.authService
       .observe()
       .subscribe({
