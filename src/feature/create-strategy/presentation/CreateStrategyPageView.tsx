@@ -36,6 +36,7 @@ const ScrollPageContainer = styled.div`
   display: grid;
   grid-template-rows: 0.9fr 100px;
   height: 100%;
+  padding-bottom: 32px;
 `
 
 const ContentContainer = styled.div`
@@ -49,7 +50,9 @@ const ButtonNextContainer = styled.div`
   width: 100%;
   justify-content: center;
   overflow: hidden;
+  margin-top: 16px;
 `
+
 const TitleContainer = styled.div`
   font-size: ${({theme}) => theme.size.fontSize.medium};
   padding-bottom: 8px;
@@ -74,6 +77,11 @@ const BodyContainer = styled.div`
   justify-content: center;
   align-items: center;
   gap: 8px;
+  max-width: 100%;
+`
+
+const DescContainer = styled.div`
+  width: 80%;
   max-width: 80%;
 `
 
@@ -246,7 +254,9 @@ const CreateStrategyPageView = () => {
         {descBodyView()}
         <TitleContainer>Configuration of current strategy:</TitleContainer>
         {optionsView()}
-        <div>Initially the order will be in the 'Pause' status. After all balances are completed, start it by clicking <PlayIconWrapper /></div>
+        <DescContainer>
+          Initially the order will be in the 'Pause' status. After all balances are completed, start it by clicking&nbsp;<PlayIconWrapper />
+        </DescContainer>
       </BodyContainer>
     )
   }, [presenter, selectedChain, descBodyView, selectedTokenA, selectedTokenB, selectedWallet, selectedStrategy])

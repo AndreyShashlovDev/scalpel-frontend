@@ -13,15 +13,17 @@ const Container = styled.div`
 `
 
 const InputsContainer = styled.div`
-  max-width: 300px;
+  max-width: 80%;
 `
 
 const InputElementContainer = styled.div`
   display: grid;
-  height: 42px;
-  grid-template-columns: 1fr 0.5fr;
+  height: 50px;
+  grid-template-columns: 1fr fit-content(90px);
   align-items: center;
   text-wrap: balance;
+  text-align: end;
+  gap: 8px;
 `
 
 const DescContainer = styled.div`
@@ -31,6 +33,7 @@ const DescContainer = styled.div`
 `
 
 const InputWrapper = styled(AppInputView)`
+  max-width: 90px;
 `
 
 export interface ClassicScalpelOptionsData extends StrategyOptionsData {
