@@ -553,7 +553,7 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
                     allowEmptyValue={true}
                     defaultValue={stopLossPercents}
                     suffix={'%'}
-                    onChange={(v) => setStopLossPercents(v ?? 0)}
+                    onChange={(v) => setStopLossPercents(v)}
                   />
 
                   <ButtonContainer
