@@ -45,8 +45,8 @@ const ArrowIconContainer = styled.div`
 `
 
 const ArrowIconWrapper = styled(ArrowIcon)<{ angle: number }>`
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   rotate: ${({angle}) => angle}deg;
 `
 
@@ -182,7 +182,7 @@ const LogItemContainer = styled.div`
 const SwapContainer = styled.div`
   cursor: pointer;
   display: grid;
-  padding: 0 8px;
+  padding: 4px 8px;
   grid-template-columns: 20px 1fr fit-content(100px);
   justify-content: center;
   gap: 8px;
@@ -234,6 +234,10 @@ const AnalyticsButtonWrapper = styled(AppButton)`
   max-width: 145px;
   margin-top: 8px;
   font-size: ${({theme}) => theme.size.fontSize.small};
+`
+
+const YesNoColor = styled.span<{ $isYes: boolean }>`
+  color: ${({theme, $isYes}) => $isYes ? theme.color.common.green : theme.color.common.orange}
 `
 
 const getArrowTrend = (trend: string) => {
@@ -403,15 +407,14 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
         <AppSpaceView />
         <ElementContainer>Strategy: {item.type}</ElementContainer>
         <ElementContainer>Wallet:&nbsp;<AppAddressView address={item.wallet} /></ElementContainer>
-        <AppSpaceView />
-        <ElementContainer>Stable coin: {item.currencyA.symbol}</ElementContainer>
-        <ElementContainer>Initial amount: {item.initialAmountA}</ElementContainer>
-        <ElementContainer>Current amount: {item.totalAmountA}</ElementContainer>
-        <ElementContainer>Approved: {item.approvedA ? 'Yes' : 'No'}</ElementContainer>
-        <AppSpaceView />
-        <ElementContainer>Token: {item.currencyB.symbol}</ElementContainer>
-        <ElementContainer>Current amount: {item.totalAmountB}</ElementContainer>
-        <ElementContainer>Approved: {item.approvedB ? 'Yes' : 'No'}</ElementContainer>
+        <ElementContainer>
+          Transfer approved:&nbsp;
+          {item.currencyA.symbol}
+          (<YesNoColor $isYes={item.approvedA}>{item.approvedA ? 'Yes' : 'No'}</YesNoColor>)
+          /&nbsp;
+          {item.currencyB.symbol}
+          (<YesNoColor $isYes={item.approvedB}>{item.approvedB ? 'Yes' : 'No'}</YesNoColor>)
+        </ElementContainer>
         <AppSpaceView />
         <ElementContainer>
           Max gas price (GWEI):&nbsp;
@@ -718,9 +721,9 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
 
       <ElementContainer>
         Usd amount:&nbsp;
-          <ProfitValueContainer
-            $value={(item.totalUsdAmountB > 0 ? item.totalUsdAmountB : item.totalAmountA) - item.initialAmountA}
-          >
+        <ProfitValueContainer
+          $value={(item.totalUsdAmountB > 0 ? item.totalUsdAmountB : item.totalAmountA) - item.initialAmountA}
+        >
           ${item.totalUsdAmountB > 0 ? item.totalUsdAmountB : item.totalAmountA}
           </ProfitValueContainer>
         &nbsp;/ ${item.initialAmountA}
@@ -728,7 +731,10 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
 
       <ElementContainer>
         Current profit:&nbsp;
-        <ProfitValueContainer $value={(item.totalUsdAmountB > 0 ? item.totalUsdAmountB : item.totalAmountA) - item.initialAmountA}>
+        <ProfitValueContainer
+          $value={(item.totalUsdAmountB > 0 ? item.totalUsdAmountB : item.totalAmountA) -
+            item.initialAmountA}
+        >
          ${NumberShortener((item.totalUsdAmountB > 0 ? item.totalUsdAmountB : item.totalAmountA) - item.initialAmountA)}
         </ProfitValueContainer>
       </ElementContainer>
@@ -747,52 +753,69 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
       />
 
       {isMoreInfo ? getFullView() : undefined}
-      <SwapsLogsBlock onClick={() => onItemClick(StrategyHolderButtonIds.OPEN_LOGS_BUTTON_ID)}>
-          <div>
-            Latest Logs <TextUnderline>(see more...)</TextUnderline>:
-          </div>
-        {item.logs.map((log, index) => (
-          <LogsContainer key={index}>
-            <LogItemContainer>
-              <ArrowIconContainer>{getArrowTrend(log.trend)}</ArrowIconContainer>{log.diff}
-            </LogItemContainer>
-            <div>{log.createdAt}</div>
-          </LogsContainer>
-        ))}
-      </SwapsLogsBlock>
+      {item.status ===
+      StrategyStatusType.CANCELED ||
+      item.status ===
+      StrategyStatusType.PAUSED ||
+      item.logs.length ===
+      0
+        ? undefined
+        : (
+          <SwapsLogsBlock onClick={() => onItemClick(StrategyHolderButtonIds.OPEN_LOGS_BUTTON_ID)}>
+            <div>
+              Latest Logs <TextUnderline>(see more...)</TextUnderline>:
+            </div>
+            {item.logs.map((log, index) => (
+              <LogsContainer key={index}>
+                <LogItemContainer>
+                  <ArrowIconContainer>{getArrowTrend(log.trend)}</ArrowIconContainer>{log.diff}
+                </LogItemContainer>
+                <div>{log.createdAt}</div>
+              </LogsContainer>
+            ))}
+          </SwapsLogsBlock>
+        )
+      }
 
-      <SwapsLogsBlock onClick={() => onItemClick(StrategyHolderButtonIds.OPEN_SWAP_BUTTON_ID)}>
-          <div>
-            Latest swaps <TextUnderline>(see more...)</TextUnderline>:
-          </div>
-        {item.swaps.map((swap, index) => (
-          <SwapContainer key={index}>
-            <IconContainer>{getSwapStatusIcon(swap.state)}</IconContainer>
-            <SwapSubItem>
-              <TokenIconView
-                chain={item.chain}
-                address={swap.addressFrom}
-                symbol={swap.symbolFrom}
-                size={ComponentSize.SMALLEST}
-              />
-              <span>
-                {swap.amountFrom} {swap.addressFrom === item.currencyB.address ? ` ($${swap.exchangeUsdPrice})` : ''}
-              </span>
-              <span>&#10230;</span>
-              <TokenIconView
-                chain={item.chain}
-                address={swap.addressTo}
-                symbol={swap.symbolTo}
-                size={ComponentSize.SMALLEST}
-              />
-              <span>
-                {swap.amountTo}{swap.addressTo === item.currencyB.address ? ` ($${swap.exchangeUsdPrice})` : ''}
-              </span>
-            </SwapSubItem>
-            <SwapItemDateContainer>{swap.date}</SwapItemDateContainer>
-          </SwapContainer>
-        ))}
-      </SwapsLogsBlock>
+      {item.swaps.length === 0
+        ? undefined
+        : (
+          <SwapsLogsBlock onClick={() => onItemClick(StrategyHolderButtonIds.OPEN_SWAP_BUTTON_ID)}>
+            <div>
+              Latest swaps <TextUnderline>(see more...)</TextUnderline>:
+            </div>
+            {item.swaps.map((swap, index) => (
+              <SwapContainer key={index}>
+                <IconContainer>{getSwapStatusIcon(swap.state)}</IconContainer>
+                <SwapSubItem>
+                  <TokenIconView
+                    chain={item.chain}
+                    address={swap.addressFrom}
+                    symbol={swap.symbolFrom}
+                    size={ComponentSize.SMALLEST}
+                  />
+                  <span>
+                    {swap.amountFrom} {swap.addressFrom === item.currencyB.address ? ` ($${swap.exchangeUsdPrice})`
+                    : ''}
+                  </span>
+                  <span>&#10230;</span>
+                  <TokenIconView
+                    chain={item.chain}
+                    address={swap.addressTo}
+                    symbol={swap.symbolTo}
+                    size={ComponentSize.SMALLEST}
+                  />
+                  <span>
+                    {swap.amountTo}{swap.addressTo === item.currencyB.address ? ` ($${swap.exchangeUsdPrice})` : ''}
+                  </span>
+                </SwapSubItem>
+                <SwapItemDateContainer>{swap.date}</SwapItemDateContainer>
+              </SwapContainer>
+            ))}
+          </SwapsLogsBlock>
+        )
+      }
+
     </Container>
   )
 })

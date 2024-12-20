@@ -36,7 +36,7 @@ const Container = styled(PageLayoutView)`
 const ScrollPageContainer = styled.div`
   overflow-y: auto;
   display: grid;
-  grid-template-rows: 1fr 100px;
+  grid-template-rows: 0.9fr 100px;
   height: 100%;
   padding-bottom: 32px;
 `
@@ -83,12 +83,13 @@ const BodyContainer = styled.div`
 `
 
 const DescContainer = styled.div`
-  display: flex;
-  justify-items: center;
   width: 80%;
   max-width: 80%;
 `
 
+const OrangeColor = styled.span`
+  color: ${({theme}) => theme.color.common.orange};
+`
 const CreateStrategyPageView = () => {
 
   const presenter = usePresenter(CreateStrategyPagePresenter)
@@ -259,8 +260,7 @@ const CreateStrategyPageView = () => {
         <TitleContainer>Configuration of current strategy:</TitleContainer>
         {optionsView()}
         <DescContainer>
-          Initially the order will be in the 'Created' status. After all balances are completed, start it by clicking&nbsp;
-          <PlayIconWrapper />
+          Initially the order will be in the <OrangeColor>'Created'</OrangeColor> status. After all balances are completed, start it by clicking&nbsp;<PlayIconWrapper />
         </DescContainer>
       </BodyContainer>
     )

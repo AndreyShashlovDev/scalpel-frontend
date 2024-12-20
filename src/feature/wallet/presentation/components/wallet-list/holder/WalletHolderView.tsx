@@ -215,10 +215,10 @@ export const WalletHolderView = forwardRef((
             }
             <CurrencyFooterContainer>
               <FooterItemContainer>
-                Orders funds USD cost:&nbsp;<GreenColor>${item.totalValueWalletUsdt.get(chain)}</GreenColor>
+                Orders funds cost:&nbsp;<GreenColor>${item.totalValueWalletUsdt.get(chain)}</GreenColor>
               </FooterItemContainer>
               <FooterItemContainer>
-                Wallet funds USD cost:&nbsp;<GreenColor>${item.totalActualValueWalletUsdt.get(chain) ?? <LoadingView size={ComponentSize.SMALLEST} />}</GreenColor>
+                Wallet funds cost:&nbsp;<GreenColor>${item.totalActualValueWalletUsdt.get(chain) ?? <LoadingView size={ComponentSize.SMALLEST} />}</GreenColor>
               </FooterItemContainer>
             </CurrencyFooterContainer>
           </CurrencyContainer>
