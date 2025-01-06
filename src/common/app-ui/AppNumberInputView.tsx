@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { NumericFormat } from 'react-number-format'
 
-export interface AppInputProps {
+export interface AppNumberInputProps {
   defValue?: number,
   prefix?: string
   suffix?: string,
@@ -15,7 +15,7 @@ export interface AppInputProps {
   defaultValue?: number | undefined
 }
 
-export const AppInputView = ({
+export const AppNumberInputView = ({
   prefix,
   suffix,
   onChange,
@@ -26,7 +26,7 @@ export const AppInputView = ({
   min,
   max,
   ...props
-}: AppInputProps) => {
+}: AppNumberInputProps) => {
   const val = useRef<number | undefined>(defaultValue)
 
   return (

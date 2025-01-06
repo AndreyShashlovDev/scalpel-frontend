@@ -16,7 +16,7 @@ export class WalletCurrencyUiModel {
     this.currency = currency
     this.amount = amount
     this.actualBalance = actualBalance
-    this.usdAmount = amount * new BigNumber(currency.price?.usdtPrice ?? 0).div(new BigNumber(10).pow(6)).toNumber()
+    this.usdAmount = amount * (currency.price?.toUsdValue() ?? 0)
 
     if (actualBalance !== undefined) {
       this.actualUsdAmount = actualBalance *

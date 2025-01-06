@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { AppAddressView } from '../../../../../common/app-ui/AppAddressView.tsx'
-import { AppInputView } from '../../../../../common/app-ui/AppInputView.tsx'
+import { AppNumberInputView } from '../../../../../common/app-ui/AppNumberInputView.tsx'
 import { AppSpaceView } from '../../../../../common/app-ui/AppSpaceView.tsx'
 import { ChainType } from '../../../../../common/repository/data/model/ChainType.ts'
 import { StrategyOptionsData, StrategyOptionsProps } from './StrategyOptionsProps.ts'
@@ -32,7 +32,7 @@ const DescContainer = styled.div`
   flex-direction: column;
 `
 
-const InputWrapper = styled(AppInputView)`
+const InputWrapper = styled(AppNumberInputView)`
   max-width: 90px;
 `
 

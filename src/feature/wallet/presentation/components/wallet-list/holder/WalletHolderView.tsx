@@ -7,6 +7,7 @@ import { AppAddressView } from '../../../../../../common/app-ui/AppAddressView.t
 import { AppButton } from '../../../../../../common/app-ui/AppButton.tsx'
 import { AppIconButton } from '../../../../../../common/app-ui/AppIconButton.tsx'
 import { ListItemHolder } from '../../../../../../common/app-ui/AppInfiniteScrollView.tsx'
+import { AppTextInputView } from '../../../../../../common/app-ui/AppTextInputView.tsx'
 import { ChainIconView } from '../../../../../../common/app-ui/ChainIconView.tsx'
 import { ComponentSize } from '../../../../../../common/app-ui/ComponentSize.ts'
 import { ComponentVariant } from '../../../../../../common/app-ui/ComponentVariant.ts'
@@ -14,6 +15,7 @@ import { LoadingView } from '../../../../../../common/app-ui/LoadingView.tsx'
 import { ProfitValueContainer } from '../../../../../../common/app-ui/ProfitValueContainer.tsx'
 import { TokenIconView } from '../../../../../../common/app-ui/TokenIconView.tsx'
 import { NumberShortener } from '../../../../../../utils/Shortener.ts'
+import { WalletListItemIds } from '../../../../domain/model/WalletListItemIds.ts'
 import { WalletListItemModel } from '../../../model/WalletListItemModel.ts'
 
 const Container = styled(motion.div)`
@@ -109,6 +111,10 @@ const FooterItemContainer = styled.div`
   display: flex;
 `
 
+const TextInputWrapper = styled(AppTextInputView)`
+  width: 200px;
+`
+
 export interface WalletListHolderProps extends ListItemHolder<WalletListItemModel> {
 }
 
@@ -118,6 +124,7 @@ export const WalletHolderView = forwardRef((
 ) => {
 
   const [isEditName, setIsEditName] = useState(false)
+  const [walletName, setWalletName] = useState<string | undefined>(item.name ?? '')
 
   return (
     <Container
@@ -131,16 +138,25 @@ export const WalletHolderView = forwardRef((
       ref={ref}
     >
       <LineContainer>Address:&nbsp;<AppAddressView address={item.address} /></LineContainer>
-      <LineContainer>Name: {item.name}&nbsp;
+      <LineContainer>Name: {isEditName
+        ? <TextInputWrapper value={walletName} max={15} onChange={v => setWalletName(v)} />
+        : walletName
+      }&nbsp;
         <AppIconButton
           icon={isEditName ? <SaveIcon /> : <EditIcon />}
           size={ComponentSize.SMALL}
-          onClick={() => {setIsEditName(!isEditName)}}
+          onClick={() => {
+            if (isEditName) {
+              onItemClick(item.hash, WalletListItemIds.BUTTON_CHANGE_NAME, walletName)
+            }
+
+            setIsEditName(!isEditName)
+          }}
         />
       </LineContainer>
       <LineContainer>Total orders: {item.totalOrders}</LineContainer>
       <LineContainer>Active orders: {item.activeOrders}</LineContainer>
-      <LineContainer>Earned profit:&npbs;
+      <LineContainer>Earned profit:
         <ProfitValueContainer $value={item.totalUsdProfit}>
           ${NumberShortener(item.totalUsdProfit)}
         </ProfitValueContainer>
@@ -166,7 +182,11 @@ export const WalletHolderView = forwardRef((
                 {NumberShortener(fee.eth, 5)}
                 &nbsp;
                 {fee.usd !== undefined
-                  ? `( $${NumberShortener(fee.usd)} )`
+                  ? (
+                    <>
+                      (<GreenColor>${NumberShortener(fee.usd)}</GreenColor>)
+                    </>
+                  )
                   : <LoadingView size={ComponentSize.SMALLEST} />
                 }
               </FeeItemContainer>
@@ -194,10 +214,11 @@ export const WalletHolderView = forwardRef((
                       &nbsp;
                       {currency.symbol}
                       &nbsp;
-                      {amount} / {actualBalance !== undefined
-                      ? actualBalance
-                      : <LoadingView size={ComponentSize.SMALLEST} />
-                    }
+                      {amount} /
+                      &nbsp;
+                      {actualBalance !== undefined ? actualBalance : <LoadingView size={ComponentSize.SMALLEST} />}
+                      &nbsp;
+                      (<GreenColor>${NumberShortener(currency.price?.toUsdValue() ?? 0)}</GreenColor>)
                     </CurrencyItemAmountContainer>
                     {
                       actualBalance && actualBalance > amount
@@ -218,7 +239,8 @@ export const WalletHolderView = forwardRef((
                 Orders funds cost:&nbsp;<GreenColor>${item.totalValueWalletUsdt.get(chain)}</GreenColor>
               </FooterItemContainer>
               <FooterItemContainer>
-                Wallet funds cost:&nbsp;<GreenColor>${item.totalActualValueWalletUsdt.get(chain) ?? <LoadingView size={ComponentSize.SMALLEST} />}</GreenColor>
+                Wallet funds cost:&nbsp;<GreenColor>${item.totalActualValueWalletUsdt.get(chain) ??
+                <LoadingView size={ComponentSize.SMALLEST} />}</GreenColor>
               </FooterItemContainer>
             </CurrencyFooterContainer>
           </CurrencyContainer>

@@ -76,21 +76,14 @@ export const SwapListHolderView = forwardRef(({item}: SwapListHolderProps, ref: 
         {item.valueTo ?? '?'}
       </LineContainer>
       <LineContainer>
-        {item.currencyB === item.currencyTo ? item.currencyToSymbol : item.currencyFromSymbol} price:
-        ${item.exchangeUsdPrice}
+        Price: <GreenColor>${item.exchangeUsdPrice}</GreenColor>
       </LineContainer>
       {
         item.profit
           ? (
             <LineContainer>
               Profit:
-              <TokenIconView
-                chain={item.chain}
-                address={item.currencyB === item.currencyTo ? item.currencyFrom : item.currencyTo}
-                symbol={item.currencyB === item.currencyTo ? item.currencyFromSymbol : item.currencyToSymbol}
-                size={ComponentSize.SMALLEST}
-              />
-              <GreenColor>{Number(item.profit) > 0 ? '+' : ''}{item.profit} ({item.profitPercent}%)</GreenColor>
+              <GreenColor>{Number(item.profit) > 0 ? '+' : ''}${item.profit} ({item.profitPercent}%)</GreenColor>
             </LineContainer>
           )
           : undefined

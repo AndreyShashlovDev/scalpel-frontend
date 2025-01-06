@@ -1,3 +1,4 @@
+import { Address } from '../../../../utils/types.ts'
 import { Pageable } from '../model/Pageable.ts'
 import { WalletResponse } from '../model/WalletResponse.ts'
 import { WalletStatisticResponse } from '../model/WalletStatisticResponse.ts'
@@ -60,6 +61,24 @@ export class WalletRepositoryImpl extends WalletRepository {
         }
 
         throw UnknownException.create()
+      }
+    )
+  }
+
+  public changeWalletName(address: Address, name: string | null): Promise<void> {
+    return this.appSourceService.post<void, void>(
+      {
+        path: `/wallet/${address}/change`,
+        body: {
+          name: name
+        }
+      },
+      async (response) => {
+        if (response.success) {
+          return
+        }
+
+        throw UnknownException.create(JSON.stringify(response.errors))
       }
     )
   }

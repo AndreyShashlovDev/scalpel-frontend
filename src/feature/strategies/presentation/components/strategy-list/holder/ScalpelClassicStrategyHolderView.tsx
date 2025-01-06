@@ -16,7 +16,7 @@ import WarningIcon from '../../../../../../assets/icons/app/WarningIcon.svg'
 import { AppAddressView } from '../../../../../../common/app-ui/AppAddressView.tsx'
 import { AppButton } from '../../../../../../common/app-ui/AppButton.tsx'
 import { AppIconButton } from '../../../../../../common/app-ui/AppIconButton.tsx'
-import { AppInputView } from '../../../../../../common/app-ui/AppInputView.tsx'
+import { AppNumberInputView } from '../../../../../../common/app-ui/AppNumberInputView.tsx'
 import { AppSpaceView } from '../../../../../../common/app-ui/AppSpaceView.tsx'
 import { ChainIconView } from '../../../../../../common/app-ui/ChainIconView.tsx'
 import { ComponentSize } from '../../../../../../common/app-ui/ComponentSize.ts'
@@ -225,7 +225,7 @@ const ActionButtonsContainer = styled.div`
   margin-top: 24px;
 `
 
-const InputWrapper = styled(AppInputView)`
+const InputWrapper = styled(AppNumberInputView)`
   width: 100px;
 `
 
@@ -409,10 +409,10 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
         <ElementContainer>Wallet:&nbsp;<AppAddressView address={item.wallet} /></ElementContainer>
         <ElementContainer>
           Transfer approved:&nbsp;
-          {item.currencyA.symbol}
+          {item.currencyA.symbol}&nbsp;
           (<YesNoColor $isYes={item.approvedA}>{item.approvedA ? 'Yes' : 'No'}</YesNoColor>)
           /&nbsp;
-          {item.currencyB.symbol}
+          {item.currencyB.symbol}&nbsp;
           (<YesNoColor $isYes={item.approvedB}>{item.approvedB ? 'Yes' : 'No'}</YesNoColor>)
         </ElementContainer>
         <AppSpaceView />

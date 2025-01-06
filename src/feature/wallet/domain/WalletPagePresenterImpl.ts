@@ -9,6 +9,7 @@ import { Address } from '../../../utils/types.ts'
 import { WalletResponseToWalletListItem } from '../presentation/mapping/WalletResponseToWalletListItem.ts'
 import { WalletListItemModel } from '../presentation/model/WalletListItemModel.ts'
 import { GetErc20BalanceInteractor } from './interactor/GetErc20BalanceInteractor.ts'
+import { WalletListItemIds } from './model/WalletListItemIds.ts'
 import { WalletPagePresenter } from './WalletPagePresenter.ts'
 
 export class WalletPagePresenterImpl extends WalletPagePresenter {
@@ -153,6 +154,13 @@ export class WalletPagePresenterImpl extends WalletPagePresenter {
   }
 
   public onListItemClick(hash: string, viewId: number, data: unknown): void {
-    console.log(hash, viewId, data)
+    const wallet = this.walletItems.value.find(item => item.hash === hash)
+
+    if (WalletListItemIds.BUTTON_CHANGE_NAME === viewId && wallet) {
+      const validName = (((data as string | undefined)?.length ?? 0) === 0 ? null : data as string)
+
+      this.walletRepository.changeWalletName(wallet.address, validName)
+        .catch(e => console.error(e))
+    }
   }
 }
