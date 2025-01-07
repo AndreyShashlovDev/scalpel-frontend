@@ -29,6 +29,8 @@ export class WalletStatisticResponse {
       json.totalOrders,
       json.activeOrders,
       json.totalUsdProfit,
+      json.realizedUsdProfit,
+      json.totalInitialUsdValue,
       json.txFee,
       json.currencies.map(WalletCurrencyResponse.valueOfJson)
     )
@@ -39,6 +41,8 @@ export class WalletStatisticResponse {
   public readonly totalOrders: number
   public readonly activeOrders: number
   public readonly totalUsdProfit: number
+  public readonly realizedUsdProfit: number
+  public readonly totalInitialUsdValue: Record<ChainType, number>
   public readonly txFee: Record<ChainType, string>
   public readonly currencies: WalletCurrencyResponse[]
 
@@ -48,6 +52,8 @@ export class WalletStatisticResponse {
     totalOrders: number,
     activeOrders: number,
     totalUsdProfit: number,
+    realizedUsdProfit: number,
+    totalInitialUsdValue: Record<ChainType, number>,
     txFee: Record<ChainType, string>,
     currencies: WalletCurrencyResponse[]
   ) {
@@ -56,6 +62,8 @@ export class WalletStatisticResponse {
     this.totalOrders = totalOrders
     this.activeOrders = activeOrders
     this.totalUsdProfit = totalUsdProfit
+    this.realizedUsdProfit = realizedUsdProfit
+    this.totalInitialUsdValue = totalInitialUsdValue
     this.txFee = txFee
     this.currencies = currencies
   }

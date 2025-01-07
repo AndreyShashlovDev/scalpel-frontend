@@ -161,6 +161,11 @@ export const WalletHolderView = forwardRef((
           ${NumberShortener(item.totalUsdProfit)}
         </ProfitValueContainer>
       </LineContainer>
+      <LineContainer>Realized profit:
+        <ProfitValueContainer $value={item.realizedUsdProfit}>
+          ${NumberShortener(item.realizedUsdProfit)}
+        </ProfitValueContainer>
+      </LineContainer>
       <ActionsContainer>
         <AppButton
           variant={ComponentVariant.DANGER}
@@ -236,10 +241,13 @@ export const WalletHolderView = forwardRef((
             }
             <CurrencyFooterContainer>
               <FooterItemContainer>
-                Orders funds cost:&nbsp;<GreenColor>${item.totalValueWalletUsdt.get(chain)}</GreenColor>
+                Orders cost/initial:&nbsp;
+                <GreenColor>${item.totalValueWalletUsdt.get(chain)}</GreenColor>
+                &nbsp;/&nbsp;
+                <GreenColor>${NumberShortener(item.totalInitialUsdValue.get(chain) ?? 0)}</GreenColor>
               </FooterItemContainer>
               <FooterItemContainer>
-                Wallet funds cost:&nbsp;<GreenColor>${item.totalActualValueWalletUsdt.get(chain) ??
+                Wallet cost:&nbsp;<GreenColor>${item.totalActualValueWalletUsdt.get(chain) ??
                 <LoadingView size={ComponentSize.SMALLEST} />}</GreenColor>
               </FooterItemContainer>
             </CurrencyFooterContainer>

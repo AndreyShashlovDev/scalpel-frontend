@@ -74,6 +74,8 @@ export const WalletResponseToWalletListItem = (
     response.totalOrders,
     response.activeOrders,
     response.totalUsdProfit,
+    response.realizedUsdProfit,
+    new Map<ChainType, number>(Object.entries<number>(response.totalInitialUsdValue) as [ChainType, number][]),
     fees,
     currencies,
     totalUsdAmounts,

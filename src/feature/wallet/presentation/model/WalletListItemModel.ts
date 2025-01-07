@@ -33,6 +33,8 @@ export class WalletListItemModel implements ListItem {
   public readonly totalOrders: number
   public readonly activeOrders: number
   public readonly totalUsdProfit: number
+  public readonly realizedUsdProfit: number
+  public readonly totalInitialUsdValue: Map<ChainType, number>
   public readonly totalFee: Map<ChainType, { eth: number, usd: number | undefined }>
   public readonly currencies: Map<ChainType, WalletCurrencyUiModel[]>
   public readonly totalValueWalletUsdt: Map<ChainType, number>
@@ -44,6 +46,8 @@ export class WalletListItemModel implements ListItem {
     totalOrders: number,
     activeOrders: number,
     totalUsdProfit: number,
+    realizedUsdProfit: number,
+    totalInitialUsdValue: Map<ChainType, number>,
     totalFee: Map<ChainType, { eth: number, usd: number | undefined }>,
     currencies: Map<ChainType, WalletCurrencyUiModel[]>,
     totalValueWalletUsdt: Map<ChainType, number>,
@@ -55,6 +59,8 @@ export class WalletListItemModel implements ListItem {
     this.totalOrders = totalOrders
     this.activeOrders = activeOrders
     this.totalUsdProfit = totalUsdProfit
+    this.realizedUsdProfit = realizedUsdProfit
+    this.totalInitialUsdValue = totalInitialUsdValue
     this.totalFee = totalFee
     this.currencies = currencies
     this.totalValueWalletUsdt = totalValueWalletUsdt
