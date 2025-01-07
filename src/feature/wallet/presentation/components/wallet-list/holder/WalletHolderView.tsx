@@ -217,8 +217,8 @@ export const WalletHolderView = forwardRef((
                       &nbsp;
                       {currency.symbol}
                       &nbsp;
-                      {amount} /
-                      &nbsp;
+                      {amount}
+                      &nbsp;/&nbsp;
                       {actualBalance !== undefined ? actualBalance : <LoadingView size={ComponentSize.SMALLEST} />}
                       &nbsp;
                       (<GreenColor>${NumberShortener(currency.price?.toUsdValue() ?? 0)}</GreenColor>)
@@ -239,7 +239,7 @@ export const WalletHolderView = forwardRef((
             }
             <CurrencyFooterContainer>
               <FooterItemContainer>
-                Orders cost/initial:&nbsp;
+                Orders cost / initial:&nbsp;
                 <GreenColor>${item.totalValueWalletUsdt.get(chain)}</GreenColor>
                 &nbsp;/&nbsp;
                 <GreenColor>${NumberShortener(item.totalInitialUsdValue.get(chain) ?? 0)}</GreenColor>
