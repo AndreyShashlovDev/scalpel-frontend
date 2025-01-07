@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 const InputWrapper = styled.input`
   width: 100%;
-  font-size: ${({theme}) => theme.size.fontSize.medium};
+  font-size: ${({theme}) => theme.size.fontSize.small};
 `
 
 export interface AppTextInputProps {

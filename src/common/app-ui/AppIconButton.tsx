@@ -12,9 +12,10 @@ const ButtonWrapper = styled(AppButton)<{ $size: string }>`
     max-height: ${props.$size} !important;
     min-height: ${props.$size} !important;
     border: none !important;
+    border-radius: 0 !important;
   `
   };
-  padding: 0px !important;
+  padding: 0 !important;
 `
 
 export interface AppIconButtonProps {

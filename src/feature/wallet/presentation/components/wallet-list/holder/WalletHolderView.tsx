@@ -58,7 +58,6 @@ const FeeItemContainer = styled.div`
   display: flex;
   justify-content: start;
   align-items: center;
-  gap: 4px;
   padding: 4px 8px;
 `
 
@@ -88,7 +87,6 @@ const CurrencyItemAmountContainer = styled.div`
   display: flex;
   justify-content: start;
   align-items: center;
-  gap: 4px;
 `
 
 const GreenColor = styled.span`
@@ -144,7 +142,7 @@ export const WalletHolderView = forwardRef((
       }&nbsp;
         <AppIconButton
           icon={isEditName ? <SaveIcon /> : <EditIcon />}
-          size={ComponentSize.SMALL}
+          size={ComponentSize.SMALLEST}
           onClick={() => {
             if (isEditName) {
               onItemClick(item.hash, WalletListItemIds.BUTTON_CHANGE_NAME, walletName)
