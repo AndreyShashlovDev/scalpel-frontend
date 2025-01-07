@@ -83,7 +83,7 @@ export const SwapListHolderView = forwardRef(({item}: SwapListHolderProps, ref: 
           ? (
             <LineContainer>
               Profit:
-              <GreenColor>{Number(item.profit) > 0 ? '+' : ''}${item.profit} ({item.profitPercent}%)</GreenColor>
+              <GreenColor>${item.profit} ({item.profitPercent}%)</GreenColor>
             </LineContainer>
           )
           : undefined
