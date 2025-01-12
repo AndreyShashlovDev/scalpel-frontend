@@ -457,7 +457,7 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
 
         </ElementContainer>
         <ElementContainer>
-          Exit point to stable:&nbsp;
+          Take profit:&nbsp;
           {
             editGrowPercent
               ? (

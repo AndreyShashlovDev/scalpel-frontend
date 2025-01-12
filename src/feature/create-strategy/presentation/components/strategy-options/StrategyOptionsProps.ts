@@ -13,5 +13,6 @@ export interface StrategyOptionsProps<T extends StrategyOptionsData> {
   chain: ChainType
   tokenA: CurrencyResponse
   tokenB: CurrencyResponse
-  wallet: string
+  wallet: string | undefined
+  isSimulation: boolean
 }

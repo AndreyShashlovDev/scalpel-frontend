@@ -7,7 +7,7 @@ import useObservable from '../../../hooks/useObservable.ts'
 import { usePresenter } from '../../../hooks/usePresenter.ts'
 import { LogsPagePresenter } from '../domain/LogsPagePresenter.ts'
 import '../domain/LogsPagePresenterModule.ts'
-import { LogsListView } from './components/swap-list/LogsListView.tsx'
+import { LogsListView } from './components/list/LogsListView.tsx'
 
 const Container = styled(PageLayoutView)`
   overflow: hidden;
@@ -37,7 +37,7 @@ export const LogsPageView = ({strategyHash}: LogsPageProps) => {
       setPullToRefreshLoading(false)
     }
   }, [isLoadingFinished])
-  
+
   return (
     <Container
       fetched={!isLoading}

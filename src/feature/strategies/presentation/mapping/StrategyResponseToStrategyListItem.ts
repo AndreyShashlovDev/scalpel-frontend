@@ -15,7 +15,7 @@ import { StrategyListItem } from '../model/StrategyListItem.ts'
 import { SwapHistoryUiModel } from '../model/SwapHistoryUiModel.ts'
 import { SwapUiModel } from '../model/SwapUiModel.ts'
 
-const toPercents = (value: number) => Math.round((value * 100) * 100000) / 100000
+export const toPercents = (value: number) => Math.round((value * 100) * 100000) / 100000
 
 const convertOptionsByStrategy = (
   type: StrategyType,

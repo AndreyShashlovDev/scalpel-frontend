@@ -49,6 +49,10 @@ export interface Abstract<T> {
   prototype: T
 }
 
+export interface InjectionModule {
+  invokeInject: () => void
+}
+
 export const injectionKernel = new Map<Newable<unknown> | Abstract<unknown>, Factory<unknown>>()
 const mapSingleton = new Map<Newable<unknown> | Abstract<unknown>, unknown>()
 

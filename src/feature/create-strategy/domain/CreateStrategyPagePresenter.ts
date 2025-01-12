@@ -10,6 +10,8 @@ export abstract class CreateStrategyPagePresenter extends BasicPresenter<void> {
 
   public abstract getCurrentState(): Observable<State>
 
+  public abstract getIsSimulation(): Observable<boolean>
+
   public abstract getAvailableChains(): Observable<string[]>
 
   public abstract getAvailableCoins(): Observable<string[]>

@@ -7,6 +7,7 @@ import { StrategyType } from '../../../common/repository/data/model/StrategyType
 import { WalletResponse } from '../../../common/repository/data/model/WalletResponse.ts'
 import { WalletRepository } from '../../../common/repository/data/wallet/WalletRepository.ts'
 import { AddressShortener } from '../../../utils/Shortener.ts'
+import { Address } from '../../../utils/types.ts'
 import { CreateScalpelStrategyRequest } from '../data/model/CreateStrategyRequest.ts'
 import { StrategyRepository } from '../data/strategy-repository/StrategyRepository.ts'
 import { ClassicScalpelOptionsData } from '../presentation/components/strategy-options/ClassicScalpelOptionsView.tsx'
@@ -33,6 +34,7 @@ export class CreateStrategyPagePresenterImpl extends CreateStrategyPagePresenter
   private readonly walletsByAlias = new Map<string, WalletResponse>()
 
   private readonly state: BehaviorSubject<State> = new BehaviorSubject<State>(State.CHAIN)
+  private readonly isSimulation: BehaviorSubject<boolean> = new BehaviorSubject(false)
   private readonly canNext: BehaviorSubject<boolean> = new BehaviorSubject(false)
   private readonly availableChains: BehaviorSubject<string[]> = new BehaviorSubject(Array.from(this.chainByAlias.keys()))
   private readonly availableCoins: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([])
@@ -44,7 +46,7 @@ export class CreateStrategyPagePresenterImpl extends CreateStrategyPagePresenter
   private readonly selectedChain = new BehaviorSubject<ChainType | undefined>(undefined)
   private readonly selectedCoinA = new BehaviorSubject<CurrencyResponse | undefined>(undefined)
   private readonly selectedCoinB = new BehaviorSubject<CurrencyResponse | undefined>(undefined)
-  private readonly selectedWallet = new BehaviorSubject<string | undefined>(undefined)
+  private readonly selectedWallet = new BehaviorSubject<Address | undefined>(undefined)
 
   private strategyOptionsData: ClassicScalpelOptionsData | undefined
 
@@ -53,8 +55,10 @@ export class CreateStrategyPagePresenterImpl extends CreateStrategyPagePresenter
     private readonly walletRepository: WalletRepository,
     private readonly strategyRepository: StrategyRepository,
     private readonly createStrategyRouter: CreateStrategyRouter,
+    readonly simulation: boolean
   ) {
     super()
+    this.isSimulation.next(simulation)
   }
 
   public destroy(): void {
@@ -91,6 +95,10 @@ export class CreateStrategyPagePresenterImpl extends CreateStrategyPagePresenter
     return this.state.asObservable()
   }
 
+  public getIsSimulation(): Observable<boolean> {
+    return this.isSimulation.asObservable()
+  }
+
   public isCanShowLoading(): Observable<boolean> {
     return this.showLoading.asObservable()
   }
@@ -106,7 +114,11 @@ export class CreateStrategyPagePresenterImpl extends CreateStrategyPagePresenter
       this.state.next(State.COIN)
 
     } else if (state === State.COIN) {
-      this.state.next(State.WALLET)
+      if (this.isSimulation.value) {
+        this.state.next(State.OPTIONS)
+      } else {
+        this.state.next(State.WALLET)
+      }
 
     } else if (state === State.WALLET) {
       this.state.next(State.OPTIONS)
@@ -245,19 +257,20 @@ export class CreateStrategyPagePresenterImpl extends CreateStrategyPagePresenter
       this.canNext.next(false)
 
       if (this.selectedChain.value &&
-        this.selectedWallet.value &&
+        (this.isSimulation.value || (!this.isSimulation.value && this.selectedWallet.value)) &&
         this.selectedCoinA.value &&
         this.selectedCoinB.value &&
         data.tokenAmountA &&
         data.growDiffPercentsUp &&
         data.growDiffPercentsDown &&
-        data.maxGasPriceGwei &&
+        (this.isSimulation.value || (!this.isSimulation && data.maxGasPriceGwei)) &&
         this.strategyOptionsData
       ) {
+
         await this.strategyRepository.createStrategy(new CreateScalpelStrategyRequest(
           StrategyType.CLASSIC_SCALPEL,
           this.selectedChain.value,
-          this.selectedWallet.value,
+          this.selectedWallet.value ?? '0x0',
           this.selectedCoinA.value?.address,
           this.selectedCoinB.value?.address,
           data.tokenAmountA,

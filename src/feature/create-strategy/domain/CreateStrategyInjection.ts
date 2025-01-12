@@ -7,12 +7,15 @@ import { StrategyRepositoryImpl } from '../data/strategy-repository/StrategyRepo
 import { CreateStrategyPagePresenter } from './CreateStrategyPagePresenter.ts'
 import { CreateStrategyPagePresenterImpl } from './CreateStrategyPagePresenterImpl.ts'
 
-injectionKernel.set(
-  CreateStrategyPagePresenter,
-  new Factory(() => new CreateStrategyPagePresenterImpl(
-    getDIValue(CurrencyRepository),
-    new WalletRepositoryImpl(getDIValue(AppSourceService)),
-    new StrategyRepositoryImpl(getDIValue(AppSourceService)),
-    getDIValue(ApplicationRouter),
-  ), false)
-)
+export const CreateStrategyInjection = () => {
+  injectionKernel.set(
+    CreateStrategyPagePresenter,
+    new Factory(() => new CreateStrategyPagePresenterImpl(
+      getDIValue(CurrencyRepository),
+      new WalletRepositoryImpl(getDIValue(AppSourceService)),
+      new StrategyRepositoryImpl(getDIValue(AppSourceService)),
+      getDIValue(ApplicationRouter),
+      false /* is simulation */
+    ), false)
+  )
+}

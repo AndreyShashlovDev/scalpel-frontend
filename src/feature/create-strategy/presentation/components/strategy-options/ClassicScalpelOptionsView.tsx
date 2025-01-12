@@ -53,6 +53,7 @@ export const ClassicScalpelOptionsView = ({
   chain,
   tokenA,
   wallet,
+  isSimulation,
 }: StrategyOptionsProps<ClassicScalpelOptionsData>) => {
 
   const [amountStableCoin, setAmountStableCoin] = useState<number>(1)
@@ -125,21 +126,25 @@ export const ClassicScalpelOptionsView = ({
           />
         </InputElementContainer>
 
-        <InputElementContainer>
-          Max gas price (GWEI):
-          <InputWrapper
-            allowNegative={false}
-            decimals={0}
-            min={1}
-            max={1000}
-            defaultValue={maxGasPrice}
-            allowEmptyValue={false}
-            onChange={(v) => setMaxGasPrice(v!)}
-          />
-        </InputElementContainer>
+        {
+          !isSimulation && (
+            <InputElementContainer>
+              Max gas price (GWEI):
+              <InputWrapper
+                allowNegative={false}
+                decimals={0}
+                min={1}
+                max={1000}
+                defaultValue={maxGasPrice}
+                allowEmptyValue={false}
+                onChange={(v) => setMaxGasPrice(v!)}
+              />
+            </InputElementContainer>
+          )
+        }
 
         <InputElementContainer>
-          Exit point to stable (percents % ):
+          Take profit (percents % ):
           <InputWrapper
             allowNegative={false}
             decimals={2}
@@ -166,18 +171,24 @@ export const ClassicScalpelOptionsView = ({
           />
         </InputElementContainer>
 
-        <AppSpaceView />
+        {
+          !isSimulation && (
+            <>
+              <AppSpaceView />
+              <DescContainer>
+                <div>
+                  1. Be sure to top up your selected wallet <AppAddressView address={wallet ?? '0x0'} /> wallet with the amount {amountStableCoin} of {tokenA.symbol +
+                  '  '}
+                  <AppAddressView address={tokenA.address} />
+                </div>
+                <div>
+                  2. Make sure you have enough {CHAIN_NATIVE.get(chain) ?? chain} funds in the selected wallet, top it up if necessary.
+                </div>
+              </DescContainer>
+            </>
+          )
+        }
 
-        <DescContainer>
-          <div>
-            1. Be sure to top up your selected wallet <AppAddressView address={wallet} /> wallet with the amount {amountStableCoin} of {tokenA.symbol +
-            '  '}
-            <AppAddressView address={tokenA.address} />
-          </div>
-          <div>
-            2. Make sure you have enough {CHAIN_NATIVE.get(chain) ?? chain} funds in the selected wallet, top it up if necessary.
-          </div>
-        </DescContainer>
       </InputsContainer>
     </Container>
   )

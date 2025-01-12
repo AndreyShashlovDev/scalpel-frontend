@@ -25,4 +25,8 @@ export class ApplicationRouterImpl extends ApplicationRouter {
   public openTransactionsPage(): void {
     this.navigateTo('/transactions', {replace: true})
   }
+
+  public openSimulationPage(): void {
+    this.navigateTo('/simulation', {replace: true})
+  }
 }

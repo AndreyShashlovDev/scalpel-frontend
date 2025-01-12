@@ -16,7 +16,7 @@ export class LogsPagePresenterImpl extends LogsPagePresenter {
   private readonly isLoadingFinished = new Subject<boolean>()
 
   private logsFetchSubscription: Subscription | undefined
-  private prevSwapsResponse: Pageable<LogResponse> | undefined
+  private prevResponse: Pageable<LogResponse> | undefined
 
   constructor(private readonly logsRepository: LogsRepository) {
     super()
@@ -33,7 +33,7 @@ export class LogsPagePresenterImpl extends LogsPagePresenter {
   public refresh(): void {
     this.logItems.next([])
     this.isLastPage.next(true)
-    this.prevSwapsResponse = undefined
+    this.prevResponse = undefined
     this.onFetchNext()
   }
 
@@ -63,13 +63,13 @@ export class LogsPagePresenterImpl extends LogsPagePresenter {
 
     this.logsFetchSubscription = from(this.logsRepository.getLogs(
       this.args.strategyHash,
-      (this.prevSwapsResponse?.page ?? 0) + 1,
+      (this.prevResponse?.page ?? 0) + 1,
       LogsPagePresenterImpl.PAGE_LIMIT,
     )).subscribe({
       next: (result) => {
         const transform = result.data.map(LogResponseToLogListItem)
         const list = this.logItems.value.concat(transform)
-        this.prevSwapsResponse = result
+        this.prevResponse = result
 
         this.isLastPage.next(
           result.total <= list.length ||

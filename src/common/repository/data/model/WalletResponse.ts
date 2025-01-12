@@ -1,4 +1,4 @@
-import { JsonObject } from '../../../../utils/types.ts'
+import { Address, JsonObject } from '../../../../utils/types.ts'
 
 export class WalletResponse {
 
@@ -9,10 +9,10 @@ export class WalletResponse {
     )
   }
 
-  public readonly address: string
+  public readonly address: Address
   public readonly name?: string
 
-  constructor(address: string, name: string | undefined) {
+  constructor(address: Address, name: string | undefined) {
     this.address = address
     this.name = name
   }

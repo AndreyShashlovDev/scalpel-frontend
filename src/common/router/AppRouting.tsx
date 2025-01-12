@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { createMemoryRouter } from 'react-router-dom'
+import { CreateStrategyInjection } from '../../feature/create-strategy/domain/CreateStrategyInjection.ts'
 import { EntrypointView } from './EntrypointView.tsx'
 import ErrorBoundary from './ErrorBoundary.tsx'
 import { PageNotLoadedView } from './PageNotLoadedView.tsx'
@@ -9,6 +10,7 @@ const StrategiesPageView = lazy(() => import('../../feature/strategies/presentat
 const CreateStrategyPageView = lazy(() => import('../../feature/create-strategy/presentation/CreateStrategyPageView.tsx'))
 const WalletsPageView = lazy(() => import('../../feature/wallet/presentation/WalletPageView.tsx'))
 const TransactionsPageView = lazy(() => import('../../feature/transaction/presentation/TransactionPageView.tsx'))
+const SimulationPageView = lazy(() => import('../../feature/simulator/presentation/SimulationPageView.tsx'))
 
 export const AppRouting = createMemoryRouter(
   [
@@ -41,7 +43,11 @@ export const AppRouting = createMemoryRouter(
       element:
         <ErrorBoundary fallback={<PageNotLoadedView />}>
         <Suspense fallback={<EntrypointView />}>
-          <CreateStrategyPageView key={'create-strategy-page'} />
+          <CreateStrategyPageView
+            key={'create-strategy-page'}
+            invokeInject={CreateStrategyInjection}
+            hasHeader={true}
+          />
         </Suspense>
       </ErrorBoundary>
       ,
@@ -62,6 +68,16 @@ export const AppRouting = createMemoryRouter(
         <ErrorBoundary fallback={<PageNotLoadedView />}>
         <Suspense fallback={<EntrypointView />}>
           <TransactionsPageView key={'transactions-page'} />
+        </Suspense>
+      </ErrorBoundary>
+      ,
+    },
+    {
+      path: '/simulation',
+      element:
+        <ErrorBoundary fallback={<PageNotLoadedView />}>
+        <Suspense fallback={<EntrypointView />}>
+          <SimulationPageView key={'simulation-page'} />
         </Suspense>
       </ErrorBoundary>
       ,

@@ -16,6 +16,7 @@ export class AppPresenterImpl extends AppPresenter {
     {text: 'Wallets', id: AppMainMenuIds.WALLET_MENU_ID},
     {text: 'Transactions', id: AppMainMenuIds.TRANSACTIONS_MENU_ID},
     {text: 'Create order', id: AppMainMenuIds.CREATE_ORDER_MENU_ID},
+    {text: 'Simulation', id: AppMainMenuIds.SIMULATION_MENU_ID},
   ])
 
   constructor(
@@ -61,6 +62,9 @@ export class AppPresenterImpl extends AppPresenter {
 
     } else if (id === AppMainMenuIds.TRANSACTIONS_MENU_ID) {
       this.router.openTransactionsPage()
+
+    } else if (id === AppMainMenuIds.SIMULATION_MENU_ID) {
+      this.router.openSimulationPage()
     }
 
     this.selectedMenuItem.next(Number(id))

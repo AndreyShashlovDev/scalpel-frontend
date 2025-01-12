@@ -9,4 +9,6 @@ export abstract class AppRouter {
   public abstract openWalletsPage(): void
 
   public abstract openTransactionsPage(): void
+
+  public abstract openSimulationPage(): void
 }

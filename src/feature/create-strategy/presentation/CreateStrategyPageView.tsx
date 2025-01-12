@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import PlayIcon from '../../../assets/icons/app/PlayIcon.svg'
 import { AppAddressView } from '../../../common/app-ui/AppAddressView.tsx'
@@ -12,10 +12,10 @@ import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
 import { StrategyType } from '../../../common/repository/data/model/StrategyType.ts'
 import useObservable from '../../../hooks/useObservable.ts'
 import { usePresenter } from '../../../hooks/usePresenter.ts'
+import { InjectionModule } from '../../../Injections.ts'
 import { CreateStrategyPagePresenter } from '../domain/CreateStrategyPagePresenter.ts'
 import { State } from '../domain/CreateStrategyPagePresenterImpl.ts'
 import { ClassicScalpelOptionsView } from './components/strategy-options/ClassicScalpelOptionsView.tsx'
-import '../domain/CreateStrategyPagePresenterModule.ts'
 
 const PlayIconWrapper = styled(PlayIcon)`
   width: 16px;
@@ -90,10 +90,18 @@ const DescContainer = styled.div`
 const OrangeColor = styled.span`
   color: ${({theme}) => theme.color.common.orange};
 `
-const CreateStrategyPageView = () => {
+
+export interface CreateStrategyPageProps extends InjectionModule {
+  hasHeader: boolean
+}
+
+const CreateStrategyPageView = ({invokeInject, hasHeader}: CreateStrategyPageProps) => {
+
+  useMemo(() => invokeInject(), [])
 
   const presenter = usePresenter(CreateStrategyPagePresenter)
   const state = useObservable(presenter.getCurrentState(), State.CHAIN)
+  const isSimulation = useObservable(presenter.getIsSimulation(), false)
   const isCanNext = useObservable(presenter.isCanNext(), false)
   const canShowLoading = useObservable(presenter.isCanShowLoading(), true)
   const availableChains = useObservable(presenter.getAvailableChains(), [])
@@ -136,7 +144,7 @@ const CreateStrategyPageView = () => {
             <div>Chain: {selectedChain}</div>
             <div>Token A: {selectedTokenA?.symbol}</div>
             <div>Token B: {selectedTokenB?.symbol}</div>
-            <div>Wallet: <AppAddressView address={selectedWallet!} /></div>
+            <div>{selectedWallet ? <>Wallet: <AppAddressView address={selectedWallet} /></> : undefined}</div>
           </>
         )
       }
@@ -235,36 +243,54 @@ const CreateStrategyPageView = () => {
     )
   }, [presenter, descBodyView, selectedWallet, availableWallets, canShowLoading])
 
-  const getChooseOptions = useCallback(() => {
-    const optionsView = () => {
-      if (selectedStrategy ===
-        StrategyType.CLASSIC_SCALPEL &&
-        selectedTokenA &&
-        selectedTokenB &&
-        selectedWallet &&
-        selectedChain
-      ) {
-        return <ClassicScalpelOptionsView
-          tokenA={selectedTokenA}
-          tokenB={selectedTokenB}
-          wallet={selectedWallet}
-          chain={selectedChain}
-          onChange={(data, isFullFilled) => presenter.onChangeOptions(data, isFullFilled)}
-        />
+  const getChooseOptions = useCallback(
+    () => {
+      const optionsView = () => {
+        if (selectedStrategy ===
+          StrategyType.CLASSIC_SCALPEL &&
+          selectedTokenA &&
+          selectedTokenB &&
+          (isSimulation || (!isSimulation && selectedWallet)) &&
+          selectedChain
+        ) {
+          return <ClassicScalpelOptionsView
+            tokenA={selectedTokenA}
+            tokenB={selectedTokenB}
+            wallet={selectedWallet}
+            chain={selectedChain}
+            onChange={(data, isFullFilled) => presenter.onChangeOptions(data, isFullFilled)}
+            isSimulation={isSimulation}
+          />
+        }
       }
-    }
 
-    return (
-      <BodyContainer>
+      return (
+        <BodyContainer>
         {descBodyView()}
-        <TitleContainer>Configuration of current strategy:</TitleContainer>
-        {optionsView()}
-        <DescContainer>
-          Initially the order will be in the <OrangeColor>'Created'</OrangeColor> status. After all balances are completed, start it by clicking&nbsp;<PlayIconWrapper />
-        </DescContainer>
+          <TitleContainer>Configuration of current strategy:</TitleContainer>
+          {optionsView()}
+          {
+            !isSimulation && (
+              <DescContainer>
+              Initially the order will be in the <OrangeColor>'Created'</OrangeColor> status. After all balances are completed, start it by clicking&nbsp;
+                <PlayIconWrapper />
+            </DescContainer>
+            )
+          }
       </BodyContainer>
-    )
-  }, [presenter, selectedChain, descBodyView, selectedTokenA, selectedTokenB, selectedWallet, selectedStrategy])
+      )
+    },
+    [
+      presenter,
+      selectedChain,
+      descBodyView,
+      selectedTokenA,
+      selectedTokenB,
+      selectedWallet,
+      selectedStrategy,
+      isSimulation
+    ]
+  )
 
   const getViewByState = () => {
     if (state === State.CHAIN) {
@@ -285,7 +311,7 @@ const CreateStrategyPageView = () => {
 
   return (
     <Wrapper>
-      <PageHeaderView text={'Create strategy'} />
+      {hasHeader && <PageHeaderView text={'Create strategy'} />}
       <Container>
         <ScrollPageContainer>
             <ContentContainer>

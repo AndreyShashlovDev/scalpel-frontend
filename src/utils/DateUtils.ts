@@ -27,11 +27,6 @@ export class DateUtils {
     month: 'short',
   }
 
-  public static readonly FORMAT_YYYY_HH: DateTimeFormatOptions = {
-    hour: '2-digit',
-    year: 'numeric',
-  }
-
   public static readonly DATE_FORMAT_SHORT_NUMERIC: DateTimeFormatOptions = {
     day: '2-digit',
     hour: '2-digit',

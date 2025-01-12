@@ -11,4 +11,6 @@ export abstract class ApplicationRouter extends BasicRouter {
   public abstract openWalletsPage(): void
 
   public abstract openTransactionsPage(): void
+
+  public abstract openSimulationPage(): void
 }
