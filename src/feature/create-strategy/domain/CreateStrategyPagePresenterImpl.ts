@@ -263,7 +263,7 @@ export class CreateStrategyPagePresenterImpl extends CreateStrategyPagePresenter
         data.tokenAmountA &&
         data.growDiffPercentsUp &&
         data.growDiffPercentsDown &&
-        (this.isSimulation.value || (!this.isSimulation && data.maxGasPriceGwei)) &&
+        (this.isSimulation.value || (!this.isSimulation.value && data.maxGasPriceGwei)) &&
         this.strategyOptionsData
       ) {
 
