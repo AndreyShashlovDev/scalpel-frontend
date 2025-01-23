@@ -181,7 +181,7 @@ export const SimulationListHolderView = forwardRef((
       </ElementContainer>
 
       <ElementContainer>
-        Date range:&nbsp; {item.fromDate} / {item.toDate}
+        Date range:&nbsp; {item.fromDate} - {item.toDate}
       </ElementContainer>
 
       <ElementContainer>

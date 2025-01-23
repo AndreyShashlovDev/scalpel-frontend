@@ -569,7 +569,7 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
                 )
                 : (
                   <>
-                    {stopLossPercents ?? '-'}%&nbsp;
+                    {stopLossPercents !== undefined ? `${stopLossPercents}%` : '-'}&nbsp;
                     <ButtonContainer
                       onClick={() => setEditStopLossPercent(true)}
                       whileTap={{scale: 0.95}}
@@ -608,7 +608,7 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
               )
               : (
                 <>
-                  ${maxBuyPriceCoin ?? '-'} &nbsp;
+                  {maxBuyPriceCoin !== undefined ? `${maxBuyPriceCoin}` : '-'} &nbsp;
                   <ButtonContainer
                     onClick={() => setEditMaxTokenPrice(true)}
                     whileTap={{scale: 0.95}}
