@@ -9,21 +9,21 @@ const Container = styled.div`
   height: 100vh;
 `
 
+export interface DialogCreateStrategyProps {
+  onCloseDialog: () => void
+}
+
 export const DialogCreateStrategyView = forwardRef((
-  _,
+  {onCloseDialog}: DialogCreateStrategyProps,
   ref: ForwardedRef<DialogCallback<void>>
 ) => {
-
   return (
     <BasicDialogView
       isFullScreen={true}
       title={<PageHeaderView text={`Create simulation`} hasMainMenu={false} />}
       // @ts-expect-error is ok
       ref={ref}
-      // @ts-expect-error is ok
-      onOpen={(_: CallBackDataType) => {
-
-      }}
+      onClose={() => onCloseDialog()}
       content={
         <Container>
           <CreateStrategyPageView invokeInject={CreateSimulationInjection} hasHeader={false} />

@@ -114,7 +114,11 @@ export const SimulationPageView = () => {
           scrollView={listContainerRef}
         />
 
-        <DialogCreateStrategyView key={'dialog-create-strategy'} ref={dialogCreateStrategyRef} />
+        <DialogCreateStrategyView
+          key={'dialog-create-strategy'}
+          ref={dialogCreateStrategyRef}
+          onCloseDialog={() => presenter.refresh()}
+        />
         <DialogQuestionView
           onOkClick={(data: unknown, dialogId) => presenter.onActionResultCallback(data, dialogId)}
           ref={dialogQuestionRef}
