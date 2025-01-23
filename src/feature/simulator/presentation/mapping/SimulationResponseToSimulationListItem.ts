@@ -45,7 +45,7 @@ export const SimulationResponseToSimulationListItem = (response: SimulationRespo
       growDiffPercentsUp: toPercents(opt.growDiffPercentsUp),
       growDiffPercentsDown: toPercents(opt.growDiffPercentsDown),
       buyMaxPrice: opt.buyMaxPrice ? response.currencyA.valueTo(opt.buyMaxPrice.toString()) : undefined,
-      stopLoss: opt.stopLoss ? toPercents(opt.stopLoss) : undefined
+      stopLossPercents: opt.stopLossPercents ? toPercents(opt.stopLossPercents) : undefined
     },
     NumberShortener(response.currencyA.valueTo(response.initialAmountA)),
     response.status,

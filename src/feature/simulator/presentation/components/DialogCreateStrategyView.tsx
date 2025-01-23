@@ -21,7 +21,7 @@ export const DialogCreateStrategyView = forwardRef((
       // @ts-expect-error is ok
       ref={ref}
       // @ts-expect-error is ok
-      onOpen={(data: CallBackDataType) => {
+      onOpen={(_: CallBackDataType) => {
 
       }}
       content={

@@ -9,7 +9,7 @@ import { SimulationResultListItemModel } from './SimulationResultListItemModel.t
 export interface ScalpelStrategyOptions {
   growDiffPercentsUp: number,
   growDiffPercentsDown: number,
-  stopLoss: number | undefined,
+  stopLossPercents: number | undefined,
   buyMaxPrice: string | number | undefined
 }
 

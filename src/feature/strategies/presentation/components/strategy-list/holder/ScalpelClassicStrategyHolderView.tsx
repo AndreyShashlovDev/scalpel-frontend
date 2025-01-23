@@ -498,7 +498,7 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
           }
         </ElementContainer>
         <ElementContainer>
-          Token entry point:&nbsp;
+          Falling:&nbsp;
           {
             editFallPercent
               ? (
@@ -540,7 +540,7 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
 
         </ElementContainer>
           <ElementContainer>
-            Stop-loss percents:&nbsp;
+            Stop-loss:&nbsp;
             {
               editStopLossPercent
                 ? (

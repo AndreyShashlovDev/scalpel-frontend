@@ -92,9 +92,9 @@ const SwapSubItem = styled.div`
 
 const StatusContainer = styled.div<{ $status: SimulationStatus }>`
   color: ${({theme, $status}) => {
-    if ($status === SimulationStatus.FINISHED || $status === SimulationStatus.IN_PROGRESS) {
+    if ($status === SimulationStatus.FINISHED) {
       return theme.color.common.green
-    } else if ($status === SimulationStatus.WAIT) {
+    } else if ($status === SimulationStatus.WAIT || $status === SimulationStatus.IN_PROGRESS) {
       return theme.color.common.orange
     } else if ($status === SimulationStatus.FAILED) {
       return theme.color.common.red
@@ -103,8 +103,8 @@ const StatusContainer = styled.div<{ $status: SimulationStatus }>`
 `
 const HumanReadableStatus = new Map<SimulationStatus, string>([
   [SimulationStatus.FAILED, 'Failed'],
-  [SimulationStatus.WAIT, 'Wait in queue'],
-  [SimulationStatus.IN_PROGRESS, 'In progress'],
+  [SimulationStatus.WAIT, 'Wait in queue (wait for start)'],
+  [SimulationStatus.IN_PROGRESS, 'In progress (wait for completion)'],
   [SimulationStatus.FINISHED, 'Finished']
 ])
 
@@ -192,10 +192,10 @@ export const SimulationListHolderView = forwardRef((
         Take profit:&nbsp; {item.options.growDiffPercentsUp}%
       </ElementContainer>
       <ElementContainer>
-        Falling % for swap:&nbsp; {item.options.growDiffPercentsDown}%
+        Falling:&nbsp; {item.options.growDiffPercentsDown}%
       </ElementContainer>
       <ElementContainer>
-        Stop loss:&nbsp; {item.options.stopLoss ? item.options.stopLoss + '%' : '-'}
+        Stop loss:&nbsp; {item.options.stopLossPercents ? item.options.stopLossPercents + '%' : '-'}
       </ElementContainer>
       <ElementContainer>
         Max price:&nbsp; {

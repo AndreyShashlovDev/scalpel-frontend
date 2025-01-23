@@ -113,7 +113,7 @@ export const ClassicScalpelOptionsView = ({
         </InputElementContainer>
 
         <InputElementContainer>
-          Stop-loss (percents % ):
+          Stop-loss:
           <InputWrapper
             allowNegative={false}
             decimals={2}
@@ -144,7 +144,7 @@ export const ClassicScalpelOptionsView = ({
         }
 
         <InputElementContainer>
-          Take profit (percents % ):
+          Take profit:
           <InputWrapper
             allowNegative={false}
             decimals={2}
@@ -158,7 +158,7 @@ export const ClassicScalpelOptionsView = ({
         </InputElementContainer>
 
         <InputElementContainer>
-          Token entry point (percents %):
+          Falling:
           <InputWrapper
             allowNegative={false}
             decimals={2}
