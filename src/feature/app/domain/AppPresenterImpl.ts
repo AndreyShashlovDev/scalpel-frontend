@@ -2,6 +2,7 @@ import { BehaviorSubject, Observable } from 'rxjs'
 import { MenuItem } from '../../../common/app-ui/AppMenuView.tsx'
 import { AppException } from '../../../common/repository/data/source/exception/AppException.ts'
 import { UnauthorizedException } from '../../../common/repository/data/source/exception/UnauthorizedException.ts'
+import { AppAuthService } from '../../../common/service/auth/AppAuthService.ts'
 import { ExceptionHandlerService } from '../../../common/service/exception-handler/ExceptionHandlerService.ts'
 import { AppRouter } from '../router/AppRouter.ts'
 import { AppMainMenuIds } from './AppMainMenuIds.ts'
@@ -17,10 +18,12 @@ export class AppPresenterImpl extends AppPresenter {
     {text: 'Transactions', id: AppMainMenuIds.TRANSACTIONS_MENU_ID},
     {text: 'Create order', id: AppMainMenuIds.CREATE_ORDER_MENU_ID},
     {text: 'Simulation', id: AppMainMenuIds.SIMULATION_MENU_ID},
+    {text: 'Logout', id: AppMainMenuIds.LOGOUT},
   ])
 
   constructor(
     private readonly exceptionNotifierService: ExceptionHandlerService,
+    private readonly authService: AppAuthService,
     private readonly router: AppRouter,
   ) {
     super()
@@ -65,6 +68,10 @@ export class AppPresenterImpl extends AppPresenter {
 
     } else if (id === AppMainMenuIds.SIMULATION_MENU_ID) {
       this.router.openSimulationPage()
+
+    } else if (id === AppMainMenuIds.LOGOUT) {
+      this.authService.clearData()
+        .then(() => this.router.openLoginPage())
     }
 
     this.selectedMenuItem.next(Number(id))

@@ -5,4 +5,5 @@ export enum AppMainMenuIds {
   CREATE_ORDER_MENU_ID,
   TRANSACTIONS_MENU_ID,
   SIMULATION_MENU_ID,
+  LOGOUT,
 }
