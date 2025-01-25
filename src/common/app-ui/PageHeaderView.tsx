@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { useApp } from '../../AppProvider.tsx'
+import BackArrowIcon from '../../assets/icons/app/BackArrowIcon.svg'
 import { AppBurgerButtonView } from './AppBurgerButtonView.tsx'
 import { AppIconButton, AppIconButtonProps } from './AppIconButton.tsx'
 import { AppTitleProps, AppTitleView } from './AppTitleView.tsx'
@@ -15,6 +16,7 @@ const ButtonsContainer = styled.div`
   justify-content: center;
   align-items: center;
   gap: 24px;
+  justify-self: start;
 `
 
 const TitleContainer = styled.div`
@@ -27,7 +29,7 @@ export const PageHeaderContainer = styled(AppTitleView)`
   display: flex;
   padding: 0 14px;
   position: sticky;
-  justify-content: end;
+  justify-content: space-between;
   align-items: center;
   height: ${({theme}) => theme.size.header};
   text-align: center;
@@ -41,15 +43,30 @@ export const PageHeaderContainer = styled(AppTitleView)`
 export interface PageHeaderProps extends AppTitleProps {
   hasMainMenu?: boolean,
   buttons?: AppIconButtonProps[]
+  hasBackButton?: boolean
+  onBackButtonClick?: () => void
 }
 
-export const PageHeaderView = ({text, hasMainMenu, buttons}: PageHeaderProps) => {
+export const PageHeaderView = ({text, hasBackButton, onBackButtonClick, hasMainMenu, buttons}: PageHeaderProps) => {
   const {visibilityAppMenu, seVisibilityAppMenu} = useApp()
   return (
     <Container>
       <PageHeaderContainer text={''}>
         <>
+          <ButtonsContainer>
+            {
+              (hasBackButton ?? false)
+                ? <AppIconButton
+                  icon={<BackArrowIcon />}
+                  size={ComponentSize.SMALL}
+                  onClick={() => onBackButtonClick && onBackButtonClick()}
+                />
+                : <span />
+            }
+          </ButtonsContainer>
+
           <TitleContainer>{text}</TitleContainer>
+
           <ButtonsContainer>
             {buttons?.map((item, index) => (
               <AppIconButton

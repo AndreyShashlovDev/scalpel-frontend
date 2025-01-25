@@ -67,4 +67,8 @@ export class LoginPagePresenterImpl extends LoginPagePresenter {
   public disconnectWalletClick(): void {
     this.walletConnection.disconnect()
   }
+
+  public onDemoClick(): void {
+    this.router.openDemoPage()
+  }
 }

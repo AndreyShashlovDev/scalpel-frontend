@@ -32,7 +32,7 @@ export const SimulationPageView = () => {
 
   const presenter = usePresenter(SimulationPagePresenter)
   const dialogProvider = useMemo(() => getDIValue(SimulationPageDialogProvider), [])
-  const listItems = useObservable(presenter.getLogItems(), [])
+  const listItems = useObservable(presenter.getItems(), [])
   const isLastPage = useObservable(presenter.getIsLastPage(), true)
   const isLoading = useObservable(presenter.getIsLoading(), true)
   const isLoadingFinished = useObservable(presenter.getLoadingFinished(), undefined)

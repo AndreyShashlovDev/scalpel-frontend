@@ -11,6 +11,7 @@ const CreateStrategyPageView = lazy(() => import('../../feature/create-strategy/
 const WalletsPageView = lazy(() => import('../../feature/wallet/presentation/WalletPageView.tsx'))
 const TransactionsPageView = lazy(() => import('../../feature/transaction/presentation/TransactionPageView.tsx'))
 const SimulationPageView = lazy(() => import('../../feature/simulator/presentation/SimulationPageView.tsx'))
+const DemoPageView = lazy(() => import('../../feature/demo/presentation/DemoPageView.tsx'))
 
 export const AppRouting = createMemoryRouter(
   [
@@ -78,6 +79,16 @@ export const AppRouting = createMemoryRouter(
         <ErrorBoundary fallback={<PageNotLoadedView />}>
         <Suspense fallback={<EntrypointView />}>
           <SimulationPageView key={'simulation-page'} />
+        </Suspense>
+      </ErrorBoundary>
+      ,
+    },
+    {
+      path: '/demo',
+      element:
+        <ErrorBoundary fallback={<PageNotLoadedView />}>
+        <Suspense fallback={<EntrypointView />}>
+          <DemoPageView key={'demo-page'} />
         </Suspense>
       </ErrorBoundary>
       ,

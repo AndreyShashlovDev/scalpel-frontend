@@ -1,21 +1,17 @@
 import { BehaviorSubject, from, Observable, Subject, Subscription } from 'rxjs'
 import { Pageable } from '../../../common/repository/data/model/Pageable.ts'
 import { SimulationResponse } from '../data/model/SimulationResponse.ts'
-import { SimulationStatus } from '../data/model/SimulationStatus.ts'
 import { SimulationRepository } from '../data/simulation-repository/SimulationRepository.ts'
 import {
   SimulationResponseToSimulationListItem
 } from '../presentation/mapping/SimulationResponseToSimulationListItem.ts'
 import { SimulationListItemModel } from '../presentation/model/SimulationListItemModel.ts'
-import { SimulationListItemClickId } from './router/SimulationListItemClickId.ts'
-import { SimulationPageRouter } from './router/SimulationPageRouter.ts'
-import { SimulationPagePresenter } from './SimulationPagePresenter.ts'
+import { DemoPagePresenter } from './DemoPagePresenter.ts'
+import { DemoPageRouter } from './router/DemoPageRouter.ts'
 
-export class SimulationPagePresenterImpl extends SimulationPagePresenter {
+export class DemoPagePresenterImpl extends DemoPagePresenter {
 
-  private static readonly PAGE_LIMIT: number = 10
-
-  private readonly DELETE_SIMULATION_RESULT_ID = 42124
+  private static readonly PAGE_LIMIT: number = 20
 
   private readonly listItems = new BehaviorSubject<SimulationListItemModel[]>([])
   private readonly isLastPage: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
@@ -27,7 +23,7 @@ export class SimulationPagePresenterImpl extends SimulationPagePresenter {
 
   constructor(
     private readonly simulationRepository: SimulationRepository,
-    private readonly router: SimulationPageRouter,
+    private readonly router: DemoPageRouter,
   ) {
     super()
   }
@@ -67,9 +63,9 @@ export class SimulationPagePresenterImpl extends SimulationPagePresenter {
     this.isLoading.next(this.listItems.value.length === 0)
     this.fetchSubscription?.unsubscribe()
 
-    this.fetchSubscription = from(this.simulationRepository.getSimulations(
+    this.fetchSubscription = from(this.simulationRepository.getDemoSimulations(
       (this.prevResponse?.page ?? 0) + 1,
-      SimulationPagePresenterImpl.PAGE_LIMIT,
+      DemoPagePresenterImpl.PAGE_LIMIT,
     )).subscribe({
       next: (result) => {
         const transform = result.data.map(SimulationResponseToSimulationListItem)
@@ -78,7 +74,7 @@ export class SimulationPagePresenterImpl extends SimulationPagePresenter {
 
         this.isLastPage.next(
           result.total <= list.length ||
-          result.data.length < SimulationPagePresenterImpl.PAGE_LIMIT
+          result.data.length < DemoPagePresenterImpl.PAGE_LIMIT
         )
 
         this.listItems.next(list)
@@ -90,39 +86,12 @@ export class SimulationPagePresenterImpl extends SimulationPagePresenter {
     })
   }
 
-  public onCreateNewSimulationClick(): void {
-    const waitedCount = this.listItems.value.filter(item => item.status === SimulationStatus.WAIT).length
-
-    if (waitedCount >= 3) {
-      this.router.openWarnTooMuchInQueue()
-
-    } else if ((this.prevResponse?.total ?? 0) >= 10) {
-      this.router.openWarnTooMuchSimulations()
-
-    } else {
-      this.router.openCreateSimulation()
-    }
-  }
-
   public onListItemClick(hash: string, viewId: number, _: unknown): void {
     const item = this.listItems.value.find(item => item.hash === hash)
-
-    if (viewId === SimulationListItemClickId.BUTTON_DELETE_ID && item) {
-      this.router.openDeleteSimulation(this.DELETE_SIMULATION_RESULT_ID, item.id)
-    }
+    console.log(item, viewId, _)
   }
 
-  public onActionResultCallback(data: unknown, dialogId: number | string): void {
-    if (dialogId === this.DELETE_SIMULATION_RESULT_ID && typeof data === 'number') {
-      this.onDeleteSimulation(data)
-    }
-  }
-
-  private onDeleteSimulation(simulationId: number): void {
-    this.simulationRepository.deleteSimulation(simulationId)
-      .then(() => {
-        const updatedList = this.listItems.value.filter(item => item.id !== simulationId)
-        this.listItems.next(updatedList)
-      })
+  public onBackClick(): void {
+    this.router.openLoginPage()
   }
 }

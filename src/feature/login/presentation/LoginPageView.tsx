@@ -66,6 +66,11 @@ export const LoginPageView = () => {
                   text={'Login'}
                   onClick={() => presenter.signMessageClick()}
                 />
+
+                <AppButton
+                  text={'Demo'}
+                  onClick={() => presenter.onDemoClick()}
+                />
               </LoginButtonContainer>
             </>
           )
