@@ -82,7 +82,7 @@ export const AppMenuView = ({selected, items, isOpened, toggle, onMenuItemClick}
                     <ItemMenuContainer
                       $selected={item.id === selected && (item.selectable ?? true)}
                       onClick={() => {
-                        if (item.id === selected || !(item.selectable ?? true)) {
+                        if (item.id === selected) {
                           return
                         }
                         toggle(false)
@@ -95,7 +95,7 @@ export const AppMenuView = ({selected, items, isOpened, toggle, onMenuItemClick}
                     </ItemMenuContainer>
                   )
                 } else {
-                  return (<EmptyItemMenuContainer key={Math.random()}/>)
+                  return (<EmptyItemMenuContainer key={Math.random()} />)
                 }
               }
             ))
