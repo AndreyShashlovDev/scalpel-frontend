@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 
 const GTagAnalytics = () => {
   useEffect(() => {
-    let gtagScript: any
+    let gtagScript: HTMLScriptElement | undefined
 
     try {
       if (window.location.hostname === 'localhost') {
@@ -16,18 +16,19 @@ const GTagAnalytics = () => {
 
       gtagScript.onload = () => {
         console.log('Google Tag Manager script loaded successfully.')
-        // @ts-ignore
+        // @ts-expect-error ignore
         window.dataLayer = window.dataLayer || []
 
-        // @ts-ignore
+        // @ts-expect-error ignore
         window.gtag = function gtag() {
-          // @ts-ignore
+          // @ts-expect-error ignore
+          // eslint-disable-next-line prefer-rest-params
           window.dataLayer.push(arguments)
         }
 
-        // @ts-ignore
+        // @ts-expect-error ignore
         window.gtag('js', new Date())
-        // @ts-ignore
+        // @ts-expect-error ignore
         window.gtag('config', 'G-ZZXEYG66VZ')
       }
 
@@ -40,9 +41,8 @@ const GTagAnalytics = () => {
       console.error(e)
     }
 
-    return () => {
-      document.body.removeChild(gtagScript)
-    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    return () => {gtagScript && document.body.removeChild(gtagScript)}
   }, [])
 
   return <></>
