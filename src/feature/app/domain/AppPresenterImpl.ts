@@ -18,7 +18,8 @@ export class AppPresenterImpl extends AppPresenter {
     {text: 'Transactions', id: AppMainMenuIds.TRANSACTIONS_MENU_ID},
     {text: 'Create order', id: AppMainMenuIds.CREATE_ORDER_MENU_ID},
     {text: 'Simulation', id: AppMainMenuIds.SIMULATION_MENU_ID},
-    {text: 'Logout', id: AppMainMenuIds.LOGOUT},
+    {text: undefined, id: -1},// space
+    {text: 'Logout', id: AppMainMenuIds.LOGOUT, selectable: false},
   ])
 
   constructor(

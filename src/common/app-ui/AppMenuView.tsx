@@ -40,9 +40,15 @@ const ItemMenuContainer = styled(motion.div)<{ $selected: boolean }>`
   cursor: ${({$selected}) => $selected ? 'none' : 'pointer'};
 `
 
+const EmptyItemMenuContainer = styled.div`
+  height: 32px;
+  width: 100%;
+`
+
 export interface MenuItem {
-  text: string
+  text?: string
   id: string | number
+  selectable?: boolean
 }
 
 export interface AppMenuProps {
@@ -70,21 +76,28 @@ export const AppMenuView = ({selected, items, isOpened, toggle, onMenuItemClick}
           transition={{type: 'spring', stiffness: 300, damping: 30}}
         >
           {
-            items.map((item =>
-                <ItemMenuContainer
-                  $selected={item.id === selected}
-                  onClick={() => {
-                    if (item.id === selected) {
-                      return
-                    }
-                    toggle(false)
-                    onMenuItemClick(item.id)
-                  }}
-                  whileTap={item.id === selected ? undefined : {scale: 0.98}}
-                  key={item.id}
-                >
-              {item.text}
-            </ItemMenuContainer>
+            items.map((item => {
+                if (item.text) {
+                  return (
+                    <ItemMenuContainer
+                      $selected={item.id === selected && (item.selectable ?? true)}
+                      onClick={() => {
+                        if (item.id === selected || !(item.selectable ?? true)) {
+                          return
+                        }
+                        toggle(false)
+                        onMenuItemClick(item.id)
+                      }}
+                      whileTap={item.id === selected ? undefined : {scale: 0.98}}
+                      key={item.id}
+                    >
+                      {item.text}
+                    </ItemMenuContainer>
+                  )
+                } else {
+                  return (<EmptyItemMenuContainer />)
+                }
+              }
             ))
           }
         </MenuContainer>

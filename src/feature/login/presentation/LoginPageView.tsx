@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { AppAddressView } from '../../../common/app-ui/AppAddressView.tsx'
 import { AppButton } from '../../../common/app-ui/AppButton.tsx'
+import { AppSpaceView } from '../../../common/app-ui/AppSpaceView.tsx'
 import { AppTitleView } from '../../../common/app-ui/AppTitleView.tsx'
 import { ComponentSize } from '../../../common/app-ui/ComponentSize.ts'
 import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
@@ -67,6 +68,7 @@ export const LoginPageView = () => {
                   onClick={() => presenter.signMessageClick()}
                 />
 
+                <AppSpaceView/>
                 <AppButton
                   text={'Demo'}
                   onClick={() => presenter.onDemoClick()}
