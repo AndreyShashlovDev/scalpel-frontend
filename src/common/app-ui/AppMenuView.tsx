@@ -95,7 +95,7 @@ export const AppMenuView = ({selected, items, isOpened, toggle, onMenuItemClick}
                     </ItemMenuContainer>
                   )
                 } else {
-                  return (<EmptyItemMenuContainer />)
+                  return (<EmptyItemMenuContainer key={Math.random()}/>)
                 }
               }
             ))
