@@ -1,3 +1,4 @@
+import { AuthRepositoryImpl } from './common/repository/data/auth-repository/AuthRepositoryImpl.ts'
 import { CurrencyRepository } from './common/repository/data/currencies/CurrencyRepository.ts'
 import { CurrencyRepositoryImpl } from './common/repository/data/currencies/CurrencyRepositoryImpl.ts'
 import { ChainType } from './common/repository/data/model/ChainType.ts'
@@ -5,6 +6,7 @@ import { PreferencesRepository } from './common/repository/data/preferences/Pref
 import { PreferencesRepositoryImpl } from './common/repository/data/preferences/PreferencesRepositoryImpl.ts'
 import { AppAuthHttpsService } from './common/repository/data/source/AppAuthHttpsService.ts'
 import { AppSourceService } from './common/repository/data/source/AppSourceService.ts'
+import { AppSourceServiceImpl } from './common/repository/data/source/AppSourceServiceImpl.ts'
 import { ApplicationRouter } from './common/router/domain/ApplicationRouter.ts'
 import { ApplicationRouterImpl } from './common/router/domain/ApplicationRouterImpl.ts'
 import { AppAuthService } from './common/service/auth/AppAuthService.ts'
@@ -77,7 +79,7 @@ const initValue = <T>(qualifier: Newable<unknown> | Abstract<unknown>): T => {
 export const getDIValue = <T>(qualifier: Newable<T> | Abstract<T>): T => initValue(qualifier)
 export const destroyDiInstance = <T>(qualifier: Newable<T> | Abstract<T>): boolean => mapSingleton.delete(qualifier)
 
-const SCALPEL_ENDPOINT = import.meta.env.VITE_SCALPEL_ENDPOINT ?? ''
+const SCALPEL_ENDPOINT = import.meta.env.VITE_SCALPEL_ENDPOINT || window.location.origin
 export const IS_PRODUCTION = import.meta.env.PROD
 
 injectionKernel.set(
@@ -90,19 +92,22 @@ const exceptionService = new AppExceptionHandlerService()
 injectionKernel.set(ExceptionHandlerService, new Factory(() => exceptionService, true))
 injectionKernel.set(ExceptionNotifierService, new Factory(() => exceptionService, true))
 
-injectionKernel.set(AppAuthService, new Singleton(() => new AppAuthServiceImpl()))
+const appAuthSourceService = new AppAuthHttpsService(
+  SCALPEL_ENDPOINT,
+  'api',
+)
 
 injectionKernel.set(
   AppSourceService,
   new Singleton(
-    () => new AppSourceService(
-      new AppAuthHttpsService(
-        SCALPEL_ENDPOINT,
-        'api',
-        getDIValue(AppAuthService),
-      ),
-      getDIValue(ExceptionNotifierService)
-    )
+    () => new AppSourceServiceImpl(appAuthSourceService, getDIValue(ExceptionNotifierService))
+  )
+)
+
+injectionKernel.set(
+  AppAuthService,
+  new Singleton(
+    () => new AppAuthServiceImpl(appAuthSourceService, new AuthRepositoryImpl(getDIValue(AppSourceService)))
   )
 )
 

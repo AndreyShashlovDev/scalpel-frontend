@@ -1,4 +1,3 @@
-import { AppAuthService } from '../../../service/auth/AppAuthService.ts'
 import { AppException } from './exception/AppException.ts'
 import { UnauthorizedException } from './exception/UnauthorizedException.ts'
 import { UnknownException } from './exception/UnknownException.ts'
@@ -11,22 +10,10 @@ export class AppAuthHttpsService implements HttpService<Response> {
   constructor(
     private readonly base: string,
     private readonly prefix: string,
-    private readonly authService: AppAuthService,
-  ) {
-    this.authService.loadData()
+  ) {}
 
-    this.authService
-      .observe()
-      .subscribe({
-        next: (data: string | undefined) => {
-          if (data) {
-            this.authToken = data
-
-          } else {
-            this.authToken = undefined
-          }
-        }
-      })
+  public setToken(token?: string) {
+    this.authToken = token
   }
 
   public async get(
@@ -39,7 +26,7 @@ export class AppAuthHttpsService implements HttpService<Response> {
       url.searchParams.set(key, value)
     })
 
-    return transform(await fetch(url, {method: 'GET', headers: this.getHeaders()})
+    return transform(await fetch(url, {method: 'GET', headers: this.getHeaders(), credentials: 'same-origin'})
       .then(async response => {
         if (!response.ok) {
           this.catchException(await response.json())
@@ -86,7 +73,8 @@ export class AppAuthHttpsService implements HttpService<Response> {
         {
           method,
           body: request?.body ? JSON.stringify(request.body) : undefined,
-          headers: this.getHeaders(!!request?.body)
+          headers: this.getHeaders(!!request?.body),
+          credentials: 'same-origin'
         }
       ).then(async response => {
         if (!response.ok) {
@@ -124,8 +112,7 @@ export class AppAuthHttpsService implements HttpService<Response> {
     if (hasStatusCode) {
       // @ts-expect-error already check existed field
       if (e.statusCode === 401) {
-        this.authService.clearData()
-
+        this.authToken = undefined
         appError = UnauthorizedException.create()
       }
     }

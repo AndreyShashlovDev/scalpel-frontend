@@ -40,7 +40,8 @@ export class AppPresenterImpl extends AppPresenter {
       .subscribe({
         next: (error: AppException) => {
           if (error instanceof UnauthorizedException) {
-            this.router.openLoginPage()
+            this.authService.clearData()
+              .then(() => {this.router.openLoginPage()})
           }
         }
       })

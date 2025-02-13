@@ -12,12 +12,14 @@ export class LoginPagePresenterImpl extends LoginPagePresenter {
   constructor(
     private readonly walletConnection: WalletConnect<Wallet>,
     private readonly loginInteractor: Interactor<void, Promise<void>>,
-    readonly authService: AppAuthService,
+    private readonly authService: AppAuthService,
     private readonly router: LoginPageRouter,
   ) {
     super()
+  }
 
-    authService.loadData()
+  public ready(): void {
+    this.authService.loadData()
       .then((hasAuth) => {
         if (hasAuth) {
           this.router.openStrategiesPage()
@@ -30,9 +32,6 @@ export class LoginPagePresenterImpl extends LoginPagePresenter {
         console.error(e)
         this.isLoading.next(false)
       })
-  }
-
-  public ready(): void {
   }
 
   public destroy(): void {

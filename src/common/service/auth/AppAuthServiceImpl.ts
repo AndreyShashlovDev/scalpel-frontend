@@ -1,34 +1,36 @@
-import Cookies from 'js-cookie'
 import { Observable } from 'rxjs'
+import { AuthRepository } from '../../repository/data/auth-repository/AuthRepository.ts'
+import { AppAuthHttpsService } from '../../repository/data/source/AppAuthHttpsService.ts'
 import { AppAuthService } from './AppAuthService.ts'
 
 export class AppAuthServiceImpl extends AppAuthService {
 
-  private static readonly COOKIES_NAME = 'APP.SCALPEL.TOKEN'
+  constructor(
+    private readonly appAuthHttpsService: AppAuthHttpsService,
+    private readonly authRepository: AuthRepository
+  ) {
+    super()
+  }
 
-  public async saveData(data: string): Promise<void> {
-
-    Cookies.set(AppAuthServiceImpl.COOKIES_NAME, data, {
-      secure: true,
-      sameSite: 'strict',
-    })
-
-    this.data.next(data)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public async saveData(_data: string): Promise<void> {
+    // this.appAuthHttpsService.setToken(data)
   }
 
   public async loadData(): Promise<boolean> {
-    const result = Cookies.get(AppAuthServiceImpl.COOKIES_NAME)
-    this.data.next(result)
+    try {
+      await this.authRepository.refreshToken()
+      // this.appAuthHttpsService.setToken()
+      return true
+    } catch (e) {
+      console.error(e)
+    }
 
-    return !!result
+    return false
   }
 
   public async clearData(): Promise<void> {
-    Cookies.remove(AppAuthServiceImpl.COOKIES_NAME, {
-      secure: true,
-      sameSite: 'strict',
-    })
-    this.data.next(undefined)
+    this.appAuthHttpsService.setToken(undefined)
   }
 
   public observe(): Observable<string | undefined> {
