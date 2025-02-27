@@ -6,7 +6,7 @@ import { LoginPageRouter } from './router/LoginPageRouter.ts'
 
 export class LoginPagePresenterImpl extends LoginPagePresenter {
 
-  private readonly isLoading = new BehaviorSubject(true)
+  private readonly isLoading = new BehaviorSubject(false)
 
   constructor(
     private readonly walletConnection: WalletConnect<Wallet>,
