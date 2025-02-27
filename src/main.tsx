@@ -9,7 +9,7 @@ import './Injections.ts'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <GTagAnalytics/>
+    <GTagAnalytics />
     <AppProvider>
       <AppThemeProvider>
         <App />

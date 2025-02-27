@@ -73,8 +73,10 @@ export class AppPresenterImpl extends AppPresenter {
 
     } else if (id === AppMainMenuIds.LOGOUT) {
       this.authService.clearData()
-        .then(() => this.router.openLoginPage())
-      this.selectedMenuItem.next(AppMainMenuIds.ORDERS_MENU_ID)
+        .then(() => {
+          this.router.openLoginPage()
+          this.selectedMenuItem.next(AppMainMenuIds.ORDERS_MENU_ID)
+        })
     }
 
     const item = this.menuItems.value.find(item => item.id === id)

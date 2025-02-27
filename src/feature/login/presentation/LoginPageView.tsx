@@ -68,7 +68,7 @@ export const LoginPageView = () => {
                   onClick={() => presenter.signMessageClick()}
                 />
 
-                <AppSpaceView/>
+                <AppSpaceView />
                 <AppButton
                   text={'Demo'}
                   onClick={() => presenter.onDemoClick()}

@@ -13,10 +13,15 @@ export class SimulationRepositoryImpl extends SimulationRepository {
     page: number,
     limit: number,
   ): Promise<Pageable<SimulationResponse>> {
-    console.log(page, limit)
+    const query = new Map([
+      ['page', page.toString()],
+      ['limit', limit.toString()]
+    ])
+
     return this.appSourceService.get<SimulationResponse[], Pageable<SimulationResponse>>(
       {
         path: `/simulation/best-exchange`,
+        query,
       },
       async (response) => {
         if (response.success && response.data) {
