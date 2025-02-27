@@ -5,6 +5,8 @@ import { AppAuthService } from './AppAuthService.ts'
 
 export class AppAuthServiceImpl extends AppAuthService {
 
+  private loaded: boolean = false
+
   constructor(
     private readonly appAuthHttpsService: AppAuthHttpsService,
     private readonly authRepository: AuthRepository
@@ -15,11 +17,13 @@ export class AppAuthServiceImpl extends AppAuthService {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async saveData(_data: string): Promise<void> {
     // this.appAuthHttpsService.setToken(data)
+    this.loaded = true
   }
 
   public async loadData(): Promise<boolean> {
     try {
       await this.authRepository.refreshToken()
+      this.loaded = true
       // this.appAuthHttpsService.setToken()
       return true
     } catch (e) {
@@ -30,7 +34,13 @@ export class AppAuthServiceImpl extends AppAuthService {
   }
 
   public async clearData(): Promise<void> {
+    if (!this.loaded) {
+      return
+    }
+
     this.appAuthHttpsService.setToken(undefined)
+    await this.authRepository.logout()
+    this.loaded = false
   }
 
   public observe(): Observable<string | undefined> {

@@ -1,5 +1,6 @@
 import { AppSourceService } from '../source/AppSourceService.ts'
 import { UnauthorizedException } from '../source/exception/UnauthorizedException.ts'
+import { UnknownException } from '../source/exception/UnknownException.ts'
 import { AuthRepository } from './AuthRepository.ts'
 
 export class AuthRepositoryImpl extends AuthRepository {
@@ -19,6 +20,19 @@ export class AuthRepositoryImpl extends AuthRepository {
         }
 
         throw UnauthorizedException.create()
+      }
+    )
+  }
+
+  public logout(): Promise<void> {
+    return this.sourceService.post<void, void>(
+      {
+        path: '/auth/logout'
+      },
+      async (response) => {
+        if (!response.success) {
+          throw UnknownException.create('unknown error')
+        }
       }
     )
   }
