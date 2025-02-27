@@ -1,54 +1,46 @@
 import react from '@vitejs/plugin-react'
 import fs from 'fs'
+import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig } from 'vite'
-import { nodePolyfills } from 'vite-plugin-node-polyfills'
-// import { VitePWA } from 'vite-plugin-pwa'
 import svgr from 'vite-plugin-svgr'
 
 const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf-8'))
 const buildNumber = packageJson.version
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  server: {
-    proxy: {
-      '/api': {
-        target: 'http://127.0.0.1:3000',
-        changeOrigin: true,
-        secure: false,
+export default defineConfig(({command, mode}) => {
+  const isDev = command === 'serve' || mode === 'development'
+
+  const plugins = [
+    react(),
+    svgr({include: '**/*.svg'}),
+  ]
+
+  if (isDev) {
+    plugins.push(
+      // @ts-expect-error is ok.
+      visualizer({
+        open: false,
+        filename: './dist/stats.html',
+        gzipSize: true,
+        brotliSize: true,
+      })
+    )
+  }
+
+  return {
+    server: {
+      proxy: {
+        '/api': {
+          target: 'http://127.0.0.1:3000',
+          changeOrigin: true,
+          secure: false,
+        },
       },
     },
-  },
-  plugins: [
-    nodePolyfills({
-      globals: {
-        Buffer: true,
-        global: true,
-        process: true,
-      },
-      exclude: ['vm'],
-    }),
-    react(),
-    // basicSsl(),
-    svgr({include: '**/*.svg'}),
-    // VitePWA({
-    //   disable: false,
-    //   registerType: 'autoUpdate',
-    //   injectRegister: false,
-    //   includeAssets: ['favicon.ico', '/icons/icon-192x192.png', 'robots.txt'],
-    //   injectManifest: {
-    //     injectionPoint: 'self.__WB_MANIFEST',
-    //     globPatterns: []
-    //   },
-    //   workbox: {
-    //     // Пропустить предварительное кэширование
-    //     globPatterns: []
-    //   },
-    //   strategies: 'injectManifest',
-    //   manifest: false,
-    // })
-  ],
-  define: {
-    'process.env.VITE_BUILD_NUMBER': JSON.stringify(buildNumber),
-  },
+    plugins,
+    define: {
+      'process.env.VITE_BUILD_NUMBER': JSON.stringify(buildNumber),
+    },
+  }
 })

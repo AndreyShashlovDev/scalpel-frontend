@@ -5,6 +5,7 @@ import { EntrypointView } from './EntrypointView.tsx'
 import ErrorBoundary from './ErrorBoundary.tsx'
 import { PageNotLoadedView } from './PageNotLoadedView.tsx'
 
+const SplashPageView = lazy(() => import('../../feature/splash/presentation/SplashPageView.tsx'))
 const LoginPageView = lazy(() => import('../../feature/login/presentation/LoginPageView.tsx'))
 const StrategiesPageView = lazy(() => import('../../feature/strategies/presentation/StrategiesPageView.tsx'))
 const CreateStrategyPageView = lazy(() => import('../../feature/create-strategy/presentation/CreateStrategyPageView.tsx'))
@@ -21,6 +22,16 @@ export const AppRouting = createMemoryRouter(
     },
     {
       path: '/',
+      element:
+        <ErrorBoundary fallback={<PageNotLoadedView />}>
+        <Suspense fallback={<EntrypointView />}>
+          <SplashPageView key={'splash-page'} />
+        </Suspense>
+      </ErrorBoundary>
+      ,
+    },
+    {
+      path: '/login',
       element:
         <ErrorBoundary fallback={<PageNotLoadedView />}>
         <Suspense fallback={<EntrypointView />}>

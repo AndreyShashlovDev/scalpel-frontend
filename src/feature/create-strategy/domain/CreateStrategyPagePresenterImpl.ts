@@ -1,4 +1,3 @@
-import * as console from 'node:console'
 import { BehaviorSubject, Observable } from 'rxjs'
 import { CurrencyRepository } from '../../../common/repository/data/currencies/CurrencyRepository.ts'
 import { ChainType } from '../../../common/repository/data/model/ChainType.ts'

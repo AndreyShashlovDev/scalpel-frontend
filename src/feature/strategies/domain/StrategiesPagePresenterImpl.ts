@@ -1,4 +1,3 @@
-import * as console from 'node:console'
 import { BehaviorSubject, catchError, EMPTY, from, Observable, Subject, Subscription } from 'rxjs'
 import { Pageable } from '../../../common/repository/data/model/Pageable.ts'
 import { StrategyStatusType } from '../../../common/repository/data/model/StrategyResponse.ts'

@@ -1,4 +1,3 @@
-import * as console from 'node:console'
 import { BehaviorSubject, Observable } from 'rxjs'
 import { ExceptionHandlerService } from '../../../service/exception-handler/ExceptionHandlerService.ts'
 import { SnackBarItem, SnackbarPresenter } from './SnackbarPresenter.ts'

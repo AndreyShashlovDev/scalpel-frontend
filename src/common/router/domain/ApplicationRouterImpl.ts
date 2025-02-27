@@ -7,7 +7,7 @@ export class ApplicationRouterImpl extends ApplicationRouter {
   }
 
   public openLoginPage(): void {
-    this.navigateTo('/', {replace: true})
+    this.navigateTo('/login', {replace: true})
   }
 
   public openStrategiesPage(): void {

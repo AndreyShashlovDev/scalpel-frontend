@@ -1,5 +1,4 @@
 import { BehaviorSubject, map, Observable } from 'rxjs'
-import { AppAuthService } from '../../../common/service/auth/AppAuthService.ts'
 import { Wallet, WalletConnect } from '../../../common/service/wallet-connect/WalletConnect.ts'
 import { Interactor } from '../../../utils/arch/Interactor.ts'
 import { LoginPagePresenter } from './LoginPagePresenter.ts'
@@ -12,26 +11,12 @@ export class LoginPagePresenterImpl extends LoginPagePresenter {
   constructor(
     private readonly walletConnection: WalletConnect<Wallet>,
     private readonly loginInteractor: Interactor<void, Promise<void>>,
-    private readonly authService: AppAuthService,
     private readonly router: LoginPageRouter,
   ) {
     super()
   }
 
   public ready(): void {
-    this.authService.loadData()
-      .then((hasAuth) => {
-        if (hasAuth) {
-          this.router.openStrategiesPage()
-
-        } else {
-          this.isLoading.next(false)
-        }
-      })
-      .catch(e => {
-        console.error(e)
-        this.isLoading.next(false)
-      })
   }
 
   public destroy(): void {
