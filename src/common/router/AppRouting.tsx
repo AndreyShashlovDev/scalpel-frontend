@@ -1,6 +1,9 @@
 import { lazy, Suspense } from 'react'
 import { createMemoryRouter } from 'react-router-dom'
 import { CreateStrategyInjection } from '../../feature/create-strategy/domain/CreateStrategyInjection.ts'
+import { LoginPageModule } from '../../feature/login/di/LoginPageModule.ts'
+import { LoginPagePresenter } from '../../feature/login/domain/LoginPagePresenter.ts'
+import { createLazyRoute } from '../../utils/arch/CreateLazyRouter.tsx'
 import { EntrypointView } from './EntrypointView.tsx'
 import ErrorBoundary from './ErrorBoundary.tsx'
 import { PageNotLoadedView } from './PageNotLoadedView.tsx'
@@ -30,16 +33,12 @@ export const AppRouting = createMemoryRouter(
       </ErrorBoundary>
       ,
     },
-    {
+    createLazyRoute({
       path: '/login',
-      element:
-        <ErrorBoundary fallback={<PageNotLoadedView />}>
-        <Suspense fallback={<EntrypointView />}>
-          <LoginPageView key={'login-page'} />
-        </Suspense>
-      </ErrorBoundary>
-      ,
-    },
+      moduleLoader: LoginPageModule,
+      presenterType: LoginPagePresenter,
+      component: LoginPageView
+    }),
     {
       path: '/strategies',
       element:

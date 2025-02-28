@@ -14,8 +14,17 @@ import { AppExceptionHandlerService } from './common/service/exception-handler/A
 import { ExceptionHandlerService } from './common/service/exception-handler/ExceptionHandlerService.ts'
 import { ExceptionNotifierService } from './common/service/exception-handler/ExceptionNotifierService.ts'
 
-export class Factory<T> {
+export type Newable<T> = new (...args: unknown[]) => T
 
+export interface Abstract<T> {
+  prototype: T
+}
+
+export interface InjectionModule {
+  invokeInject: () => void
+}
+
+export class Factory<T> {
   private readonly creator: () => T
   private readonly singleton: boolean
 
@@ -39,43 +48,66 @@ export class Singleton<T> extends Factory<T> {
   }
 }
 
-export type Newable<T> = new (...args: unknown[]) => T
-
-export interface Abstract<T> {
-  prototype: T
-}
-
-export interface InjectionModule {
-  invokeInject: () => void
-}
-
 export const injectionKernel = new Map<Newable<unknown> | Abstract<unknown>, Factory<unknown>>()
 const mapSingleton = new Map<Newable<unknown> | Abstract<unknown>, unknown>()
 
-const initValue = <T>(qualifier: Newable<unknown> | Abstract<unknown>): T => {
-  if (injectionKernel.has(qualifier) && !mapSingleton.has(qualifier)) {
-    const factory = injectionKernel.get(qualifier)!
-    const result: T = factory?.create() as T
-
-    if (factory.isSingleton()) {
-      mapSingleton.set(qualifier, result)
-    }
-    return result
-  } else if (!injectionKernel.has(qualifier)) {
-    throw new Error(`${qualifier} not implemented`)
+export const getDIValue = <T>(qualifier: Newable<T> | Abstract<T>): T => {
+  if (mapSingleton.has(qualifier)) {
+    return mapSingleton.get(qualifier) as T
   }
 
-  const value = mapSingleton.get(qualifier) as T
+  if (!injectionKernel.has(qualifier)) {
+    throw new Error(`${qualifier.toString()} not implemented`)
+  }
 
-  return value as unknown as T
+  const factory = injectionKernel.get(qualifier)!
+  const result = factory.create()
+
+  if (factory.isSingleton()) {
+    mapSingleton.set(qualifier, result)
+  }
+
+  return result as T
 }
 
-export const getDIValue = <T>(qualifier: Newable<T> | Abstract<T>): T => initValue(qualifier)
-export const destroyDiInstance = <T>(qualifier: Newable<T> | Abstract<T>): boolean => mapSingleton.delete(qualifier)
+export const destroyDiInstance = <T>(qualifier: Newable<T> | Abstract<T>): boolean => {
+  return mapSingleton.delete(qualifier)
+}
+
+export type ModuleRegistrator = () => void;
+
+const loadedModules = new Set<ModuleRegistrator>()
+const loadingModules = new Map<ModuleRegistrator, Promise<void>>()
+
+export const loadModule = async (moduleRegistrator: ModuleRegistrator): Promise<void> => {
+  if (loadedModules.has(moduleRegistrator)) {
+    return
+  }
+
+  if (loadingModules.has(moduleRegistrator)) {
+    return loadingModules.get(moduleRegistrator)
+  }
+
+  const loadPromise = Promise.resolve().then(() => moduleRegistrator())
+  loadingModules.set(moduleRegistrator, loadPromise)
+
+  try {
+    await loadPromise
+    loadedModules.add(moduleRegistrator)
+    loadingModules.delete(moduleRegistrator)
+  } catch (error) {
+    loadingModules.delete(moduleRegistrator)
+    throw error
+  }
+}
+
+export const isModuleLoaded = (moduleRegistrator: ModuleRegistrator): boolean => {
+  return loadedModules.has(moduleRegistrator)
+}
 
 const SCALPEL_ENDPOINT = import.meta.env.VITE_SCALPEL_ENDPOINT || window.location.origin
 export const IS_PRODUCTION = import.meta.env.PROD
-console.log(`Build version: ${process.env.VITE_BUILD_NUMBER}`);
+console.log(`Build version: ${process.env.VITE_BUILD_NUMBER}`)
 
 injectionKernel.set(
   PreferencesRepository,

@@ -23,7 +23,7 @@ export const SplashPageView = () => {
     <div>
       <Container>
         <AppTitleView text={'Scalpel'} size={ComponentSize.LARGEST} />
-        <LoadingView size={ComponentSize.STANDARD}/>
+        <LoadingView size={ComponentSize.STANDARD} />
       </Container>
     </div>
   )

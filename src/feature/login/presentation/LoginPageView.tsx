@@ -9,7 +9,6 @@ import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
 import useObservable from '../../../hooks/useObservable.ts'
 import { usePresenter } from '../../../hooks/usePresenter.ts'
 import { LoginPagePresenter } from '../domain/LoginPagePresenter.ts'
-import '../domain/LoginPresenterModule.ts'
 
 const PageLayoutViewWrapper = styled(PageLayoutView)`
   display: flex;
@@ -30,6 +29,9 @@ const LoginButtonContainer = styled.div`
   gap: 16px;
   text-align: center;
   font-size: 24px;
+`
+const AddressContainer = styled.div`
+  height: 32px;
 `
 
 const AddressWrapper = styled(AppAddressView)`
@@ -54,9 +56,9 @@ export const LoginPageView = () => {
               <LoginButtonContainer>
                 <span>Authorization</span>
 
-                <div>
+                <AddressContainer>
                  {walletAddress && <AddressWrapper address={walletAddress} />}
-                </div>
+                </AddressContainer>
                 <AppButton
                   text={walletAddress && isConnected ? 'Disconnect' : 'Connect wallet'}
                   onClick={() => isConnected ? presenter.disconnectWalletClick() : presenter.connectWalletClick()}
