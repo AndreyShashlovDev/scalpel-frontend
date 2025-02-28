@@ -29,6 +29,42 @@ export default defineConfig(({command, mode}) => {
   }
 
   return {
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'react-core': ['react', 'react-dom', 'react-router-dom'],
+            'rxjs': ['rxjs', 'rxjs/operators'],
+            'appkit-core': ['@reown/appkit'],
+            'appkit-adapters': ['@reown/appkit-adapter-ethers'],
+            'appkit-common': ['@reown/appkit-common'],
+            'appkit-utils': ['@reown/appkit-utils'],
+            'appkit-ui': [
+              '@reown/appkit-ui',
+              '@reown/appkit-scaffold-ui'
+            ],
+            'appkit-polyfills': ['@reown/appkit-polyfills'],
+            'appkit-wallet': [
+              '@reown/appkit-wallet',
+              '@reown/appkit-siwe'
+            ],
+            'appkit-networks': ['@reown/appkit/networks'],
+
+            'ethereum-providers': ['ethers'],
+
+            'ui': ['recharts'],
+            'utils': ['lodash', 'dayjs'],
+          }
+        }
+      },
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true
+        }
+      }
+    },
     server: {
       proxy: {
         '/api': {

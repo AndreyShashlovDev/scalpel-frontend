@@ -5,7 +5,7 @@ module.exports = {
       url: ['http://localhost:4173/'],
       numberOfRuns: 3,
       startServerReadyPattern: 'Server is ready to handle requests',
-      startServerReadyTimeout: 20000,
+      startServerReadyTimeout: 120000,
     }, assert: {
       assertions: {
         'categories:performance': ['error', {minScore: 0.8}],
