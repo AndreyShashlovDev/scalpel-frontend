@@ -1,4 +1,5 @@
 import { AppAuthService } from '../../../common/service/auth/AppAuthService.ts'
+import { Delay } from '../../../utils/Delay.ts'
 import { SplashPageRouter } from './router/SplashPageRouter.ts'
 import { SplashPagePresenter } from './SplashPagePresenter.ts'
 
@@ -13,7 +14,9 @@ export class SplashPagePresenterImpl extends SplashPagePresenter {
 
   public ready(): void {
     this.authService.loadData()
-      .then((hasAuth) => {
+      .then(async (hasAuth) => {
+        await Delay(1000)
+
         if (hasAuth) {
           this.router.openStrategiesPage()
         } else {
