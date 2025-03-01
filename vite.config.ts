@@ -35,12 +35,8 @@ export default defineConfig(({command, mode}) => {
           manualChunks: {
             'react-core': ['react', 'react-dom', 'react-router-dom'],
             'rxjs': ['rxjs', 'rxjs/operators'],
-            'appkit-core': ['@reown/appkit'],
-            'appkit-ethers': ['@reown/appkit-adapter-ethers'],
-            'appkit-networks': ['@reown/appkit/networks'],
             'ethereum-providers': ['ethers'],
             'ui': ['recharts'],
-            'utils': ['lodash', 'dayjs'],
           }
         }
       },

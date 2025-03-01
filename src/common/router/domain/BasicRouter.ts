@@ -44,6 +44,10 @@ export abstract class BasicRouter {
     return this.deepLink
   }
 
+  public getCurrentPath(): string | undefined {
+    return this.stack[this.stack.length - 1]
+  }
+
   public getNavigationObservable(): Observable<RouteEvent> {
     return this.navigationSubject.asObservable()
   }

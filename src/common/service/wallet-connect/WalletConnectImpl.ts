@@ -5,11 +5,8 @@ import { mainnet, polygon } from '@reown/appkit/networks'
 import { BehaviorSubject, Observable } from 'rxjs'
 import { UnknownException } from '../../repository/data/source/exception/UnknownException.ts'
 import { ExceptionNotifierService } from '../exception-handler/ExceptionNotifierService.ts'
-import { Wallet, WalletConnect } from './WalletConnect.ts'
-
-export interface WalletProvider extends Wallet {
-  provider: unknown
-}
+import { WalletConnect } from './WalletConnect.ts'
+import { WalletProvider } from './WalletProvider.ts'
 
 export class WalletConnectImpl extends WalletConnect<WalletProvider> {
 

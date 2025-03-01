@@ -1,6 +1,6 @@
 import { BrowserProvider, Eip1193Provider } from 'ethers'
 import { WalletConnect } from '../wallet-connect/WalletConnect.ts'
-import { WalletProvider } from '../wallet-connect/WalletConnectImpl.ts'
+import { WalletProvider } from '../wallet-connect/WalletProvider.ts'
 import { MessageSigner, SignedMessage } from './MessageSigner.ts'
 
 export class MessageSingerImpl extends MessageSigner {

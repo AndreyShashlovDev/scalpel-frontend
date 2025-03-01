@@ -40,8 +40,15 @@ export class AppPresenterImpl extends AppPresenter {
       .subscribe({
         next: (error: AppException) => {
           if (error instanceof UnauthorizedException) {
-            this.authService.clearData()
-              .then(() => {this.router.openLoginPage()})
+            const mustRedirect = this.router.getCurrentPath() !== '/' &&
+              this.router.getCurrentPath() !== '/splash' &&
+              this.router.getCurrentPath() !== undefined
+              console.log('current', this.router.getCurrentPath(), mustRedirect)
+
+            if (mustRedirect) {
+              this.authService.clearData()
+                .then(() => {this.router.openLoginPage()})
+            }
           }
         }
       })

@@ -1,5 +1,7 @@
 export abstract class AppRouter {
 
+  public abstract getCurrentPath(): string | undefined
+
   public abstract openLoginPage(): void
 
   public abstract openStrategiesPage(): void
