@@ -9,7 +9,7 @@ import { AppRouting } from '../../../common/router/AppRouting.tsx'
 import useObservable from '../../../hooks/useObservable.ts'
 import { usePresenter } from '../../../hooks/usePresenter.ts'
 import { useAppTheme } from '../../../style/theme/AppThemeProvider.tsx'
-import '../domain/AppPresenterModule.ts'
+import '../di/AppPresenterModule.ts'
 import { AppPresenter } from '../domain/AppPresenter.ts'
 
 const GlobalStyle = createGlobalStyle`

@@ -2,7 +2,7 @@ import { ForwardedRef, forwardRef } from 'react'
 import styled from 'styled-components'
 import { BasicDialogView, DialogCallback } from '../../../../common/app-ui/dialog/BasicDialogView.tsx'
 import { PageHeaderView } from '../../../../common/app-ui/PageHeaderView.tsx'
-import { CreateSimulationInjection } from '../../../create-strategy/domain/CreateSimulationInjection.ts'
+import { CreateSimulationPageModule } from '../../../create-strategy/di/CreateSimulationPageModule.ts'
 import CreateStrategyPageView from '../../../create-strategy/presentation/CreateStrategyPageView.tsx'
 
 const Container = styled.div`
@@ -26,7 +26,7 @@ export const DialogCreateStrategyView = forwardRef((
       onClose={() => onCloseDialog()}
       content={
         <Container>
-          <CreateStrategyPageView invokeInject={CreateSimulationInjection} hasHeader={false} />
+          <CreateStrategyPageView invokeInject={CreateSimulationPageModule} hasHeader={false} />
         </Container>
       }
     />

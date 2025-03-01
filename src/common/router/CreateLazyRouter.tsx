@@ -1,8 +1,8 @@
 import { LazyExoticComponent, Suspense, useEffect, useState } from 'react'
-import { EntrypointView } from '../../common/router/EntrypointView.tsx'
 import ErrorBoundary from '../../common/router/ErrorBoundary.tsx'
-import { PageNotLoadedView } from '../../common/router/PageNotLoadedView.tsx'
 import { Abstract, injectionKernel, Newable } from '../../Injections.ts'
+import { EntrypointView } from './EntrypointView.tsx'
+import { PageNotLoadedView } from './PageNotLoadedView.tsx'
 
 export function createLazyRoute({
   path,

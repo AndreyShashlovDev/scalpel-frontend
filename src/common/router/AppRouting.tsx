@@ -1,9 +1,10 @@
 import { lazy, Suspense } from 'react'
 import { createMemoryRouter } from 'react-router-dom'
-import { CreateStrategyInjection } from '../../feature/create-strategy/domain/CreateStrategyInjection.ts'
+import { CreateStrategyPageModule } from '../../feature/create-strategy/di/CreateStrategyPageModule.ts'
+import { CreateStrategyPagePresenter } from '../../feature/create-strategy/domain/CreateStrategyPagePresenter.ts'
 import { LoginPageModule } from '../../feature/login/di/LoginPageModule.ts'
 import { LoginPagePresenter } from '../../feature/login/domain/LoginPagePresenter.ts'
-import { createLazyRoute } from '../../utils/arch/CreateLazyRouter.tsx'
+import { createLazyRoute } from './CreateLazyRouter.tsx'
 import { EntrypointView } from './EntrypointView.tsx'
 import ErrorBoundary from './ErrorBoundary.tsx'
 import { PageNotLoadedView } from './PageNotLoadedView.tsx'
@@ -49,20 +50,13 @@ export const AppRouting = createMemoryRouter(
       </ErrorBoundary>
       ,
     },
-    {
+    createLazyRoute({
       path: '/create-strategy',
-      element:
-        <ErrorBoundary fallback={<PageNotLoadedView />}>
-        <Suspense fallback={<EntrypointView />}>
-          <CreateStrategyPageView
-            key={'create-strategy-page'}
-            invokeInject={CreateStrategyInjection}
-            hasHeader={true}
-          />
-        </Suspense>
-      </ErrorBoundary>
-      ,
-    },
+      moduleLoader: CreateStrategyPageModule,
+      presenterType: CreateStrategyPagePresenter,
+      //@ts-expect-error fixme
+      component: CreateStrategyPageView
+    }),
     {
       path: '/wallets',
       element:

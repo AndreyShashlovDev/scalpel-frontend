@@ -8,7 +8,7 @@ import useObservable from '../../../hooks/useObservable.ts'
 import { usePresenter } from '../../../hooks/usePresenter.ts'
 import { TransactionPagePresenter } from '../domain/TransactionPagePresenter.ts'
 import { TransactionListView } from './components/wallet-list/TransactionListView.tsx'
-import '../domain/TransactionPagePresenterModule.ts'
+import '../di/TransactionPagePresenterModule.ts'
 
 const Container = styled(PageLayoutView)`
   overflow: hidden;

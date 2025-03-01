@@ -6,7 +6,7 @@ import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
 import useObservable from '../../../hooks/useObservable.ts'
 import { usePresenter } from '../../../hooks/usePresenter.ts'
 import { LogsPagePresenter } from '../domain/LogsPagePresenter.ts'
-import '../domain/LogsPagePresenterModule.ts'
+import '../di/LogsPagePresenterModule.ts'
 import { LogsListView } from './components/list/LogsListView.tsx'
 
 const Container = styled(PageLayoutView)`

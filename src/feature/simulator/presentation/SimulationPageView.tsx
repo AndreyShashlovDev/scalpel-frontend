@@ -14,7 +14,7 @@ import { usePresenter } from '../../../hooks/usePresenter.ts'
 import { getDIValue } from '../../../Injections.ts'
 import { SimulationPageDialogProvider } from '../domain/router/SimulationPageDialogProvider.ts'
 import { SimulationPagePresenter } from '../domain/SimulationPagePresenter.ts'
-import '../domain/SimulationPagePresenterModule.ts'
+import '../di/SimulationPagePresenterModule.ts'
 import { DialogCreateStrategyView } from './components/DialogCreateStrategyView.tsx'
 import { SimulationListView } from './components/list/SimulationListView.tsx'
 

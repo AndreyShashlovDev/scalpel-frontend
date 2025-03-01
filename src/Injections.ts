@@ -21,7 +21,7 @@ export interface Abstract<T> {
 }
 
 export interface InjectionModule {
-  invokeInject: () => void
+  invokeInject?: () => void
 }
 
 export class Factory<T> {

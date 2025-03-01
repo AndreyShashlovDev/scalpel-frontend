@@ -2,8 +2,8 @@ import { AppSourceService } from '../../../common/repository/data/source/AppSour
 import { ApplicationRouter } from '../../../common/router/domain/ApplicationRouter.ts'
 import { Factory, getDIValue, injectionKernel } from '../../../Injections.ts'
 import { SimulationRepositoryImpl } from '../data/simulation-repository/SimulationRepositoryImpl.ts'
-import { DemoPagePresenter } from './DemoPagePresenter.ts'
-import { DemoPagePresenterImpl } from './DemoPagePresenterImpl.ts'
+import { DemoPagePresenter } from '../domain/DemoPagePresenter.ts'
+import { DemoPagePresenterImpl } from '../domain/DemoPagePresenterImpl.ts'
 
 injectionKernel.set(
   DemoPagePresenter,

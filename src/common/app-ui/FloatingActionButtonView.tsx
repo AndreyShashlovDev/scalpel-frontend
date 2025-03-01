@@ -15,6 +15,7 @@ const ButtonContainer = styled(motion.div)`
   justify-content: center;
   align-items: center;
   z-index: 888;
+  cursor: pointer;
 `
 
 const buttonVariants = (visibleTop: number, hiddenTop: number) => {

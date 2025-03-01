@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { AppTitleView } from '../../../common/app-ui/AppTitleView.tsx'
 import { ComponentSize } from '../../../common/app-ui/ComponentSize.ts'
-import '../domain/SplashPagePresenterModule.ts'
+import '../di/SplashPagePresenterModule.ts'
 import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
 import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
 import { usePresenter } from '../../../hooks/usePresenter.ts'

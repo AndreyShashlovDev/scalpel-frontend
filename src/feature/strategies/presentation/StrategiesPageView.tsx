@@ -16,7 +16,7 @@ import { DialogLogsCallBack, DialogLogsView } from './components/DialogLogsView.
 import { DialogStrategyFilterCallBack, DialogStrategyFilterView } from './components/DialogStrategyFilterView.tsx'
 import { DialogSwapsCallBack, DialogSwapsView } from './components/DialogSwapsView.tsx'
 import { StrategyListView } from './components/strategy-list/StrategyListView.tsx'
-import '../domain/StrategiesPageModule.ts'
+import '../di/StrategiesPageModule.ts'
 
 const PageLayoutWrapper = styled(PageLayoutView)`
 `

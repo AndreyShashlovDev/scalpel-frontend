@@ -6,7 +6,7 @@ import useObservable from '../../../../hooks/useObservable.ts'
 import { usePresenter } from '../../../../hooks/usePresenter.ts'
 import { AnalyticsRange } from '../data/analytics-repository/AnalyticsRange.ts'
 import { AnalyticsPagePresenter } from '../domain/AnalyticsPagePresenter.ts'
-import '../domain/AnalyticsPagePresenterModule.ts'
+import '../di/AnalyticsPagePresenterModule.ts'
 import { SwapPriceChartView } from './components/SwapPriceChartView.tsx'
 
 const Container = styled(PageLayoutView)`

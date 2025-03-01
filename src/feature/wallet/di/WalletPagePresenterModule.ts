@@ -6,9 +6,9 @@ import { EthereumServiceImpl } from '../../../common/service/ethereum-service/Et
 import { EthereumServiceStrategy } from '../../../common/service/ethereum-service/EthereumServiceStrategy.ts'
 import { EthereumServiceStrategyImpl } from '../../../common/service/ethereum-service/EthereumServiceStrategyImpl.ts'
 import { Factory, getDIValue, injectionKernel } from '../../../Injections.ts'
-import { GetErc20BalanceInteractor } from './interactor/GetErc20BalanceInteractor.ts'
-import { WalletPagePresenter } from './WalletPagePresenter.ts'
-import { WalletPagePresenterImpl } from './WalletPagePresenterImpl.ts'
+import { GetErc20BalanceInteractor } from '../domain/interactor/GetErc20BalanceInteractor.ts'
+import { WalletPagePresenter } from '../domain/WalletPagePresenter.ts'
+import { WalletPagePresenterImpl } from '../domain/WalletPagePresenterImpl.ts'
 
 injectionKernel.set(EthereumServiceStrategy, new Factory(() => new EthereumServiceStrategyImpl(
   new Map([

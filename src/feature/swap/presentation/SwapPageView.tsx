@@ -7,7 +7,7 @@ import useObservable from '../../../hooks/useObservable.ts'
 import { usePresenter } from '../../../hooks/usePresenter.ts'
 import { SwapPagePresenter } from '../domain/SwapPagePresenter.ts'
 import { StrategyListView } from './components/swap-list/SwapListView.tsx'
-import '../domain/SwapPagePresenterModule.ts'
+import '../di/SwapPagePresenterModule.ts'
 
 const Container = styled(PageLayoutView)`
   overflow: hidden;

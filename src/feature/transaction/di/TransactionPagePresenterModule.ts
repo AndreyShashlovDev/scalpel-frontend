@@ -1,8 +1,8 @@
 import { AppSourceService } from '../../../common/repository/data/source/AppSourceService.ts'
 import { Factory, getDIValue, injectionKernel } from '../../../Injections.ts'
 import { TransactionRepositoryImpl } from '../data/transaction-repository/TransactionRepositoryImpl.ts'
-import { TransactionPagePresenter } from './TransactionPagePresenter.ts'
-import { TransactionPagePresenterImpl } from './TransactionPagePresenterImpl.ts'
+import { TransactionPagePresenter } from '../domain/TransactionPagePresenter.ts'
+import { TransactionPagePresenterImpl } from '../domain/TransactionPagePresenterImpl.ts'
 
 injectionKernel.set(
   TransactionPagePresenter,

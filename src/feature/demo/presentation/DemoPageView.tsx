@@ -7,7 +7,7 @@ import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
 import useObservable from '../../../hooks/useObservable.ts'
 import { usePresenter } from '../../../hooks/usePresenter.ts'
 import { DemoPagePresenter } from '../domain/DemoPagePresenter.ts'
-import '../domain/DemoPagePresenterModule.ts'
+import '../di/DemoPagePresenterModule.ts'
 import { SimulationListView } from './components/list/SimulationListView.tsx'
 
 const Container = styled(PageLayoutView)`

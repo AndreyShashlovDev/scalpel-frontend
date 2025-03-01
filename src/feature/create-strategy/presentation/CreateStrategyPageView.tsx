@@ -92,12 +92,12 @@ const OrangeColor = styled.span`
 `
 
 export interface CreateStrategyPageProps extends InjectionModule {
-  hasHeader: boolean
+  hasHeader?: boolean
 }
 
 const CreateStrategyPageView = ({invokeInject, hasHeader}: CreateStrategyPageProps) => {
 
-  useMemo(() => invokeInject(), [])
+  useMemo(() => invokeInject && invokeInject(), [invokeInject])
 
   const presenter = usePresenter(CreateStrategyPagePresenter)
   const state = useObservable(presenter.getCurrentState(), State.CHAIN)
