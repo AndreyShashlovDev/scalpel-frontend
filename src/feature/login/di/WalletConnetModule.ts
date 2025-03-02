@@ -3,10 +3,6 @@ import { WalletConnect } from '../../../common/service/wallet-connect/WalletConn
 import { getDIValue, injectionKernel, Singleton } from '../../../Injections.ts'
 
 export const WalletConnectModule = async () => {
-  if (injectionKernel.get(WalletConnect)) {
-    return
-  }
-
   const walletConnectModule = await import('../../../common/service/wallet-connect/WalletConnectImpl.ts')
   const WalletConnectImpl = walletConnectModule.WalletConnectImpl
 

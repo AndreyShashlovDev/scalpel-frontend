@@ -29,9 +29,9 @@ export class SnackbarPresenterImpl extends SnackbarPresenter {
     return this.items.asObservable()
   }
 
-  public onCloseItem(id: string | number, isAuto: boolean): void {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public onCloseItem(id: string | number, /* isAuto closed*/ _: boolean): void {
     this.items.next(this.items.value.filter(item => item.id !== id))
-    console.log(isAuto)
   }
 
   private addMessage(msg: string): void {

@@ -15,7 +15,7 @@ export class SplashPagePresenterImpl extends SplashPagePresenter {
   public ready(): void {
     this.authService.loadData()
       .then(async (hasAuth) => {
-        await Delay(1000)
+        await Delay(500)
 
         if (hasAuth) {
           this.router.openStrategiesPage()

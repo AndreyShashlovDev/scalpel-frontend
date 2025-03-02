@@ -41,6 +41,7 @@ export class WalletConnectImpl extends WalletConnect<WalletProvider> {
       features: {
         analytics: false, // Optional - defaults to your Cloud configuration
         socials: [],
+        collapseWallets: true,
         emailShowWallets: true,
         email: false,
       }
@@ -64,7 +65,6 @@ export class WalletConnectImpl extends WalletConnect<WalletProvider> {
 
   public async connect(): Promise<void> {
     try {
-      console.log(this.appKit.isOpen(), this.appKit.getIsConnectedState())
       if (!this.appKit.isOpen() && !this.appKit.getIsConnectedState()) {
         await this.appKit.open()
       }

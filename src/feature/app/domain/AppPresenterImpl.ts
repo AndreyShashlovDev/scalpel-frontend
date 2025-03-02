@@ -43,7 +43,6 @@ export class AppPresenterImpl extends AppPresenter {
             const mustRedirect = this.router.getCurrentPath() !== '/' &&
               this.router.getCurrentPath() !== '/splash' &&
               this.router.getCurrentPath() !== undefined
-              console.log('current', this.router.getCurrentPath(), mustRedirect)
 
             if (mustRedirect) {
               this.authService.clearData()

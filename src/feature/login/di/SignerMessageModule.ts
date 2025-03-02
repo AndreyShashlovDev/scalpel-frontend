@@ -6,10 +6,6 @@ import { WalletConnectModule } from './WalletConnetModule.ts'
 export const SignerMessageModule = async () => {
   await loadModule(WalletConnectModule)
 
-  if (injectionKernel.get(MessageSigner)) {
-    return
-  }
-
   const messageSignerModule = await import('../../../common/service/message-signer/MessageSingerImpl.ts')
   const MessageSignerImpl = messageSignerModule.MessageSingerImpl
 

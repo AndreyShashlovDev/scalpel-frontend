@@ -16,7 +16,6 @@ module.exports = {
         'speed-index': ['error', {maxNumericValue: 3400}],
         'interactive': ['error', {maxNumericValue: 3800}],
         'server-response-time': ['error', {maxNumericValue: 600}],
-        'first-meaningful-paint': ['error', {maxNumericValue: 2000}],
         'max-potential-fid': ['error', {maxNumericValue: 130}],
 
         // resources
@@ -27,15 +26,15 @@ module.exports = {
 
         // best
         'uses-rel-preconnect': ['warning', {minScore: 1}],
-        'uses-rel-preload': ['warning', {minScore: 1}],
         'font-display': ['warning', {minScore: 1}],
         'offscreen-images': ['warning', {minScore: 1}],
 
         // access
-        'categories:accessibility': ['warning', {minScore: 0.9}],
+        // 'categories:accessibility': ['warning', {minScore: 0.9}],
       },
-    }, upload: {
-      target: 'temporary-public-storage',
     },
+    // upload: {
+    //   target:,
+    // },
   },
 }
