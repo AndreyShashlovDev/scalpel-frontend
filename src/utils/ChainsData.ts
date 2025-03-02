@@ -1,4 +1,3 @@
-import { ethers } from 'ethers'
 import { ChainType } from '../common/repository/data/model/ChainType.ts'
 import { Address } from './types.ts'
 
@@ -16,7 +15,3 @@ export const ChainName = new Map<ChainType, string>([
   [ChainType.POLYGON, 'Polygon'],
   [ChainType.ETHEREUM_MAIN_NET, 'Ethereum']
 ])
-
-export const WeiToEth = (value: string) : number => {
-  return Number(ethers.formatUnits(value, 18))
-}

@@ -1,10 +1,10 @@
-import { ethers } from 'ethers'
 import { CurrencyResponse } from '../../../../common/repository/data/model/CurrencyResponse.ts'
 import { LogResponse } from '../../../../common/repository/data/model/LogResponse.ts'
 import { StrategyResponse } from '../../../../common/repository/data/model/StrategyResponse.ts'
 import { StrategyType } from '../../../../common/repository/data/model/StrategyType.ts'
 import { SwapResponse } from '../../../../common/repository/data/model/SwapResponse.ts'
 import { DateUtils } from '../../../../utils/DateUtils.ts'
+import { GweiToEther } from '../../../../utils/EthUnits.ts'
 import { NumberShortener } from '../../../../utils/Shortener.ts'
 import { JsonObject } from '../../../../utils/types.ts'
 import { SimpleHistoryResponse } from '../../data/model/SimpleHistoryResponse.ts'
@@ -126,7 +126,7 @@ export const StrategyResponseToStrategyListItem = (
     strategy.approvedA,
     strategy.approvedB,
     strategy.status,
-    Number(ethers.formatUnits(strategy.gasLimit, 9)),
+    GweiToEther(strategy.gasLimit),
     DateUtils.toFormat(strategy.createdAt, DateUtils.DATE_FORMAT_SHORT_NUMERIC),
     swapsUiModels,
     false /*waitChangeStatusPlayPause: boolean*/,

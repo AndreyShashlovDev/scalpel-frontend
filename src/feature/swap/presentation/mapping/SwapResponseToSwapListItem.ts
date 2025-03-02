@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
-import { ethers } from 'ethers'
 import { StrategyResponse } from '../../../../common/repository/data/model/StrategyResponse.ts'
 import { SwapResponse } from '../../../../common/repository/data/model/SwapResponse.ts'
 import { DateUtils } from '../../../../utils/DateUtils.ts'
+import { WeiToEther } from '../../../../utils/EthUnits.ts'
 import { NumberShortener } from '../../../../utils/Shortener.ts'
 import { SwapListItemModel } from '../model/SwapListItemModel.ts'
 
@@ -34,7 +34,7 @@ export const SwapResponseToSwapListItem = (
     swap.scalpelFeeAmount,
     swap.accumulatorFeeAmount,
     swap.txHash,
-    swap.txFee ? new BigNumber(ethers.formatEther(swap.txFee)).toFixed(4, 1) : undefined,
+    swap.txFee ? new BigNumber(WeiToEther(swap.txFee)).toFixed(4, 1) : undefined,
     swap.state,
     DateUtils.toFormat(swap.updateAt, DateUtils.DATE_FORMAT_SHORT)
   )

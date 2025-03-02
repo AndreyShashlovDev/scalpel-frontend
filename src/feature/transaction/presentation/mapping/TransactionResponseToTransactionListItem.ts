@@ -1,5 +1,6 @@
-import { ethers } from 'ethers'
 import { DateUtils } from '../../../../utils/DateUtils.ts'
+import { WeiToEther } from '../../../../utils/EthUnits.ts'
+
 import { TransactionResponse, TxStatus } from '../../data/model/TransactionResponse.ts'
 import { TransactionListItemModel } from '../model/TransactionListItemModel.ts'
 
@@ -17,7 +18,7 @@ export const TransactionResponseToTransactionListItem = (response: TransactionRe
   response.recipientAddress,
   response.address,
   response.gasMaxPrice,
-  response.txFee ? Number(Number(ethers.formatUnits(response.txFee, 'ether')).toFixed(6)) : undefined,
+  response.txFee ? Number(WeiToEther(response.txFee).toFixed(6)) : undefined,
   response.hash,
   response.nonce,
   response.success ?? (response.hash ? TxStatus.IN_PROGRESS : undefined),
