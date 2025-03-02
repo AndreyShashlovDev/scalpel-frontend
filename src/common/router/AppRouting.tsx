@@ -28,10 +28,10 @@ export const AppRouting = createMemoryRouter(
       path: '/',
       element:
         <ErrorBoundary fallback={<PageNotLoadedView />}>
-        <Suspense fallback={<EntrypointView />}>
-          <SplashPageView key={'splash-page'} />
-        </Suspense>
-      </ErrorBoundary>
+          <Suspense fallback={<EntrypointView />}>
+            <SplashPageView key={'splash-page'} />
+          </Suspense>
+        </ErrorBoundary>
       ,
     },
     createLazyRoute({
@@ -44,10 +44,10 @@ export const AppRouting = createMemoryRouter(
       path: '/strategies',
       element:
         <ErrorBoundary fallback={<PageNotLoadedView />}>
-        <Suspense fallback={<EntrypointView />}>
-          <StrategiesPageView key={'strategies-page'} />
-        </Suspense>
-      </ErrorBoundary>
+          <Suspense fallback={<EntrypointView />}>
+            <StrategiesPageView key={'strategies-page'} />
+          </Suspense>
+        </ErrorBoundary>
       ,
     },
     createLazyRoute({
@@ -61,40 +61,40 @@ export const AppRouting = createMemoryRouter(
       path: '/wallets',
       element:
         <ErrorBoundary fallback={<PageNotLoadedView />}>
-        <Suspense fallback={<EntrypointView />}>
-          <WalletsPageView key={'wallets-page'} />
-        </Suspense>
-      </ErrorBoundary>
+          <Suspense fallback={<EntrypointView />}>
+            <WalletsPageView key={'wallets-page'} />
+          </Suspense>
+        </ErrorBoundary>
       ,
     },
     {
       path: '/transactions',
       element:
         <ErrorBoundary fallback={<PageNotLoadedView />}>
-        <Suspense fallback={<EntrypointView />}>
-          <TransactionsPageView key={'transactions-page'} />
-        </Suspense>
-      </ErrorBoundary>
+          <Suspense fallback={<EntrypointView />}>
+            <TransactionsPageView key={'transactions-page'} />
+          </Suspense>
+        </ErrorBoundary>
       ,
     },
     {
       path: '/simulation',
       element:
         <ErrorBoundary fallback={<PageNotLoadedView />}>
-        <Suspense fallback={<EntrypointView />}>
-          <SimulationPageView key={'simulation-page'} />
-        </Suspense>
-      </ErrorBoundary>
+          <Suspense fallback={<EntrypointView />}>
+            <SimulationPageView key={'simulation-page'} />
+          </Suspense>
+        </ErrorBoundary>
       ,
     },
     {
       path: '/demo',
       element:
         <ErrorBoundary fallback={<PageNotLoadedView />}>
-        <Suspense fallback={<EntrypointView />}>
-          <DemoPageView key={'demo-page'} />
-        </Suspense>
-      </ErrorBoundary>
+          <Suspense fallback={<EntrypointView />}>
+            <DemoPageView key={'demo-page'} />
+          </Suspense>
+        </ErrorBoundary>
       ,
     },
   ],
