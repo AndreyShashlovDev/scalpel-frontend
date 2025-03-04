@@ -283,7 +283,7 @@ export interface ScalpelClassicStrategyOptions {
 
 export interface ScalpelClassicStrategyHolderProps {
   item: StrategyListItem<ScalpelClassicStrategyOptions>
-  onItemClick: (viewId: number,hash: string, data?: unknown) => void
+  onItemClick: (viewId: number, hash: string, data?: unknown) => void
 }
 
 export const ScalpelClassicStrategyHolderView = memo(
@@ -560,7 +560,11 @@ export const ScalpelClassicStrategyHolderView = memo(
 
                   <ButtonContainer
                     onClick={() => {
-                      onItemClick(StrategyHolderButtonIds.CHANGE_STOP_LOSS_PERCENT_BUTTON_ID, item.hash, stopLossPercents ?? null)
+                      onItemClick(
+                        StrategyHolderButtonIds.CHANGE_STOP_LOSS_PERCENT_BUTTON_ID,
+                        item.hash,
+                        stopLossPercents ?? null
+                      )
                       setEditStopLossPercent(false)
                     }}
                     whileTap={{scale: 0.95}}
@@ -599,7 +603,11 @@ export const ScalpelClassicStrategyHolderView = memo(
                 />
                   <ButtonContainer
                     onClick={() => {
-                      onItemClick(StrategyHolderButtonIds.CHANGE_TOKEN_B_PRICE_BUTTON_ID, item.hash, maxBuyPriceCoin ?? null)
+                      onItemClick(
+                        StrategyHolderButtonIds.CHANGE_TOKEN_B_PRICE_BUTTON_ID,
+                        item.hash,
+                        maxBuyPriceCoin ?? null
+                      )
                       setEditMaxTokenPrice(false)
                     }}
                     whileTap={{scale: 0.95}}
