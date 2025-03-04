@@ -34,7 +34,7 @@ export interface StrategyListProps {
 }
 
 export const StrategyListView = ({itemsObservable, onNextFetch, hasNext, onItemClick}: StrategyListProps) => {
-  const strategies = useObservable(itemsObservable, undefined)
+  const list = useObservable(itemsObservable, undefined)
 
   const getHolderView = useCallback((item: ListItem, _: number, ref: (element: HTMLElement | null) => void) => {
     return (
@@ -49,7 +49,7 @@ export const StrategyListView = ({itemsObservable, onNextFetch, hasNext, onItemC
 
   return (
     <ListWrapper
-      items={strategies ?? []}
+      items={Array.from(list ?? [])}
       onNextFetch={onNextFetch}
       hasNext={hasNext}
       loadingElement={<LoadingView />}
