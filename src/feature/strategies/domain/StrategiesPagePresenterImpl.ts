@@ -23,6 +23,8 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
   private readonly isLastPage = new BehaviorSubject<boolean>(true)
   private readonly isLoading = new BehaviorSubject<boolean>(true)
   private readonly isLoadingFinished = new Subject<boolean>()
+  private readonly isEmpty = new Subject<boolean>()
+
   private readonly filter = new BehaviorSubject<StrategiesFilter>(new StrategiesFilter(
     [
       new StrategyTypeFilterItem(StrategyStatusType.IN_PROGRESS, 'In progress'),
@@ -98,6 +100,10 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
     return this.isLoadingFinished.asObservable()
   }
 
+  public getIsEmpty(): Observable<boolean> {
+    return this.isEmpty.asObservable()
+  }
+
   public fetchNextPage(): void {
     this.listFetchSubscriber?.unsubscribe()
     this.isLoading.next(this.strategiesList.value.length === 0)
@@ -126,6 +132,9 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
             result.total <= list.length ||
             result.data.length < StrategiesPagePresenterImpl.PAGE_LIMIT
           )
+          if (list.length ===0 && result.page === 1) {
+            this.isEmpty.next(true)
+          }
         },
         complete: () => {
           this.isLoading.next(false)
@@ -172,7 +181,12 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
     }
   }
 
-  public onListItemClick(viewId: number, item: StrategyListItem<unknown>, data?: number | null): void {
+  public onListItemClick(viewId: number, hash: string, data?: number | null): void {
+    const item = this.strategiesList.value.find(item => item.hash == hash)
+    if (!item) {
+      return
+    }
+
     if (viewId === StrategyHolderButtonIds.OPEN_SWAP_BUTTON_ID) {
       this.onShowSwapsClick(item.hash)
 

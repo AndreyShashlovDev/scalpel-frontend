@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { ForwardedRef, forwardRef, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { ForwardedRef, forwardRef, memo, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import ArrowIcon from '../../../../../../assets/icons/app/ArrowIcon.svg'
 import CollapseArrowIcon from '../../../../../../assets/icons/app/CollapseArrowIcon.svg'
@@ -283,127 +283,129 @@ export interface ScalpelClassicStrategyOptions {
 
 export interface ScalpelClassicStrategyHolderProps {
   item: StrategyListItem<ScalpelClassicStrategyOptions>
-  onItemClick: (viewId: number, data?: unknown) => void
+  onItemClick: (viewId: number,hash: string, data?: unknown) => void
 }
 
-export const ScalpelClassicStrategyHolderView = forwardRef((
-  {item, onItemClick}: ScalpelClassicStrategyHolderProps,
-  ref: ForwardedRef<HTMLDivElement>
-) => {
+export const ScalpelClassicStrategyHolderView = memo(
+  forwardRef((
+    {item, onItemClick}: ScalpelClassicStrategyHolderProps,
+    ref: ForwardedRef<HTMLDivElement>
+  ) => {
 
-  const [isMoreInfo, setIsMoreInfo] = useState(false)
-  const [editGasPrice, setEditGasPrice] = useState(false)
-  const [editGrowPercent, setEditGrowPercent] = useState(false)
-  const [editFallPercent, setEditFallPercent] = useState(false)
-  const [editMaxTokenPrice, setEditMaxTokenPrice] = useState(false)
-  const [editStopLossPercent, setEditStopLossPercent] = useState(false)
+    const [isMoreInfo, setIsMoreInfo] = useState(false)
+    const [editGasPrice, setEditGasPrice] = useState(false)
+    const [editGrowPercent, setEditGrowPercent] = useState(false)
+    const [editFallPercent, setEditFallPercent] = useState(false)
+    const [editMaxTokenPrice, setEditMaxTokenPrice] = useState(false)
+    const [editStopLossPercent, setEditStopLossPercent] = useState(false)
 
-  const [maxGasPrice, setMaxGasPrice] = useState<number>(item.gasLimit)
-  const [growPercent, setGrowPercent] = useState<number>(
-    (item.options.growDiffPercentsUp ?? item.options.growDiffPercents ?? 0)
-  )
-  const [fallPercent, setFallPercent] = useState<number>(
-    (item.options.growDiffPercentsDown ?? item.options.growDiffPercents ?? 0)
-  )
-  const [maxBuyPriceCoin, setMaxBuyPriceCoin] = useState<number | undefined>(item.options.buyMaxPrice)
-  const [stopLossPercents, setStopLossPercents] = useState<number | undefined>(item.options.stopLossPercents)
+    const [maxGasPrice, setMaxGasPrice] = useState<number>(item.gasLimit)
+    const [growPercent, setGrowPercent] = useState<number>(
+      (item.options.growDiffPercentsUp ?? item.options.growDiffPercents ?? 0)
+    )
+    const [fallPercent, setFallPercent] = useState<number>(
+      (item.options.growDiffPercentsDown ?? item.options.growDiffPercents ?? 0)
+    )
+    const [maxBuyPriceCoin, setMaxBuyPriceCoin] = useState<number | undefined>(item.options.buyMaxPrice)
+    const [stopLossPercents, setStopLossPercents] = useState<number | undefined>(item.options.stopLossPercents)
 
-  useEffect(() => {
-    setMaxGasPrice(item.gasLimit)
-    setGrowPercent((item.options.growDiffPercentsUp ?? item.options.growDiffPercents ?? 0))
-    setFallPercent((item.options.growDiffPercentsDown ?? item.options.growDiffPercents ?? 0))
-    setMaxBuyPriceCoin(item.options.buyMaxPrice)
-    setStopLossPercents(item.options.stopLossPercents)
+    useEffect(() => {
+      setMaxGasPrice(item.gasLimit)
+      setGrowPercent((item.options.growDiffPercentsUp ?? item.options.growDiffPercents ?? 0))
+      setFallPercent((item.options.growDiffPercentsDown ?? item.options.growDiffPercents ?? 0))
+      setMaxBuyPriceCoin(item.options.buyMaxPrice)
+      setStopLossPercents(item.options.stopLossPercents)
 
-  }, [item.options, item.gasLimit])
+    }, [item.options, item.gasLimit])
 
-  const getIconPlayPause = useMemo(() => {
-    if (PlayStatus.has(item.status)) {
-      return <PlayIconWrapper />
+    const getIconPlayPause = useMemo(() => {
+      if (PlayStatus.has(item.status)) {
+        return <PlayIconWrapper />
 
-    } else if (PauseStatus.has(item.status)) {
-      return <PauseIconWrapper />
-    }
-    return undefined
-  }, [item.status])
+      } else if (PauseStatus.has(item.status)) {
+        return <PauseIconWrapper />
+      }
+      return undefined
+    }, [item.status])
 
-  const getActionButtons = useCallback(
-    () => {
-      return (
-        <ActionButtonsContainer>
+    const getActionButtons = useCallback(
+      () => {
+        return (
+          <ActionButtonsContainer>
           {
             item.status === StrategyStatusType.CANCELED && (
               <AppIconButton
                 onClick={() => {
-                  onItemClick(StrategyHolderButtonIds.DELETE_ORDER_BUTTON_ID)
+                  onItemClick(StrategyHolderButtonIds.DELETE_ORDER_BUTTON_ID, item.hash)
                 }}
                 icon={<DeleteIconWrapper />}
                 size={ComponentSize.STANDARD}
               />
             )
           }
-          {
-            item.status !== StrategyStatusType.CANCELED && (
-              <AppIconButton
-                disabled={item.waitChangeStatusCancel}
-                onClick={() => {
-                  onItemClick(StrategyHolderButtonIds.CANCEL_ORDER_BUTTON_ID)
-                }}
-                icon={item.waitChangeStatusCancel ? <LoadingView size={ComponentSize.SMALL} /> : <ArchiveIconWrapper />}
-                size={ComponentSize.STANDARD}
-              />
-            )
-          }
-
-          {
-            item.status !== StrategyStatusType.CANCELED &&
-            item.status !== StrategyStatusType.APPROVE_IN_PROGRESS &&
-            item.status !== StrategyStatusType.CREATED
-              ? (
+            {
+              item.status !== StrategyStatusType.CANCELED && (
                 <AppIconButton
-                  disabled={item.waitForceExecute}
-                  onClick={() => {onItemClick(StrategyHolderButtonIds.FORCE_EXECUTE_ORDER_BUTTON_ID)}}
-                  icon={item.waitForceExecute ? <LoadingView size={ComponentSize.SMALL} /> : <ExitIconWrapper />}
+                  disabled={item.waitChangeStatusCancel}
+                  onClick={() => {
+                    onItemClick(StrategyHolderButtonIds.CANCEL_ORDER_BUTTON_ID, item.hash)
+                  }}
+                  icon={item.waitChangeStatusCancel ? <LoadingView size={ComponentSize.SMALL} /> : <ArchiveIconWrapper />}
                   size={ComponentSize.STANDARD}
                 />
               )
-              : undefined
-          }
+            }
 
-          {
-            getIconPlayPause && (
-              <AppIconButton
-                disabled={item.waitChangeStatusPlayPause}
-                onClick={() => {
-                  if (PlayStatus.has(item.status)) {
-                    onItemClick(StrategyHolderButtonIds.PLAY_ORDER_BUTTON_ID)
+            {
+              item.status !== StrategyStatusType.CANCELED &&
+              item.status !== StrategyStatusType.APPROVE_IN_PROGRESS &&
+              item.status !== StrategyStatusType.CREATED
+                ? (
+                  <AppIconButton
+                    disabled={item.waitForceExecute}
+                    onClick={() => {onItemClick(StrategyHolderButtonIds.FORCE_EXECUTE_ORDER_BUTTON_ID, item.hash)}}
+                    icon={item.waitForceExecute ? <LoadingView size={ComponentSize.SMALL} /> : <ExitIconWrapper />}
+                    size={ComponentSize.STANDARD}
+                  />
+                )
+                : undefined
+            }
 
-                  } else if (PauseStatus.has(item.status)) {
-                    onItemClick(StrategyHolderButtonIds.PAUSE_ORDER_BUTTON_ID)
-                  }
-                }}
-                icon={item.waitChangeStatusPlayPause ? <LoadingView size={ComponentSize.SMALL} /> : getIconPlayPause}
-                size={ComponentSize.STANDARD}
-              />
-            )
-          }
+            {
+              getIconPlayPause && (
+                <AppIconButton
+                  disabled={item.waitChangeStatusPlayPause}
+                  onClick={() => {
+                    if (PlayStatus.has(item.status)) {
+                      onItemClick(StrategyHolderButtonIds.PLAY_ORDER_BUTTON_ID, item.hash)
+
+                    } else if (PauseStatus.has(item.status)) {
+                      onItemClick(StrategyHolderButtonIds.PAUSE_ORDER_BUTTON_ID, item.hash)
+                    }
+                  }}
+                  icon={item.waitChangeStatusPlayPause ? <LoadingView size={ComponentSize.SMALL} /> : getIconPlayPause}
+                  size={ComponentSize.STANDARD}
+                />
+              )
+            }
       </ActionButtonsContainer>
-      )
-    },
-    [
-      item.waitForceExecute,
-      getIconPlayPause,
-      item.status,
-      item.waitChangeStatusCancel,
-      item.waitChangeStatusPlayPause,
-      onItemClick
-    ]
-  )
+        )
+      },
+      [
+        item.hash,
+        item.waitForceExecute,
+        getIconPlayPause,
+        item.status,
+        item.waitChangeStatusCancel,
+        item.waitChangeStatusPlayPause,
+        onItemClick
+      ]
+    )
 
-  const getFullView = useCallback(
-    () => {
-      return (
-        <>
+    const getFullView = useCallback(
+      () => {
+        return (
+          <>
         <AppSpaceView />
         <ElementContainer>Strategy: {item.type}</ElementContainer>
         <ElementContainer>Wallet:&nbsp;<AppAddressView address={item.wallet} /></ElementContainer>
@@ -433,7 +435,7 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
                   />
                   <ButtonContainer
                     onClick={() => {
-                      onItemClick(StrategyHolderButtonIds.CHANGE_GAS_PRICE_BUTTON_ID, maxGasPrice)
+                      onItemClick(StrategyHolderButtonIds.CHANGE_GAS_PRICE_BUTTON_ID, item.hash, maxGasPrice)
                       setEditGasPrice(false)
                     }}
                     whileTap={{scale: 0.95}}
@@ -475,7 +477,7 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
 
                   <ButtonContainer
                     onClick={() => {
-                      onItemClick(StrategyHolderButtonIds.CHANGE_GROW_PERCENT_BUTTON_ID, growPercent)
+                      onItemClick(StrategyHolderButtonIds.CHANGE_GROW_PERCENT_BUTTON_ID, item.hash, growPercent)
                       setEditGrowPercent(false)
                     }}
                     whileTap={{scale: 0.95}}
@@ -516,7 +518,7 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
 
                   <ButtonContainer
                     onClick={() => {
-                      onItemClick(StrategyHolderButtonIds.CHANGE_FALL_PERCENT_BUTTON_ID, fallPercent)
+                      onItemClick(StrategyHolderButtonIds.CHANGE_FALL_PERCENT_BUTTON_ID, item.hash, fallPercent)
                       setEditFallPercent(false)
                     }}
                     whileTap={{scale: 0.95}}
@@ -558,7 +560,7 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
 
                   <ButtonContainer
                     onClick={() => {
-                      onItemClick(StrategyHolderButtonIds.CHANGE_STOP_LOSS_PERCENT_BUTTON_ID, stopLossPercents ?? null)
+                      onItemClick(StrategyHolderButtonIds.CHANGE_STOP_LOSS_PERCENT_BUTTON_ID, item.hash, stopLossPercents ?? null)
                       setEditStopLossPercent(false)
                     }}
                     whileTap={{scale: 0.95}}
@@ -597,7 +599,7 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
                 />
                   <ButtonContainer
                     onClick={() => {
-                      onItemClick(StrategyHolderButtonIds.CHANGE_TOKEN_B_PRICE_BUTTON_ID, maxBuyPriceCoin ?? null)
+                      onItemClick(StrategyHolderButtonIds.CHANGE_TOKEN_B_PRICE_BUTTON_ID, item.hash, maxBuyPriceCoin ?? null)
                       setEditMaxTokenPrice(false)
                     }}
                     whileTap={{scale: 0.95}}
@@ -619,50 +621,50 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
               )
           }
         </ElementContainer>
-          {getActionButtons()}
+            {getActionButtons()}
       </>
-      )
-    },
-    [
-      getActionButtons,
-      onItemClick,
-      item,
-      fallPercent,
-      growPercent,
-      maxGasPrice,
-      maxBuyPriceCoin,
-      editFallPercent,
-      editGrowPercent,
-      editGasPrice,
-      editMaxTokenPrice,
-      stopLossPercents,
-      editStopLossPercent,
-    ]
-  )
+        )
+      },
+      [
+        getActionButtons,
+        onItemClick,
+        item,
+        fallPercent,
+        growPercent,
+        maxGasPrice,
+        maxBuyPriceCoin,
+        editFallPercent,
+        editGrowPercent,
+        editGasPrice,
+        editMaxTokenPrice,
+        stopLossPercents,
+        editStopLossPercent,
+      ]
+    )
 
-  const getSwapStatusIcon = useCallback((status: SwapState): ReactNode => {
-    if (status === SwapState.FAILED || status === SwapState.EXECUTION_FAILED || status === SwapState.CANCELLED) {
-      return <FailIconWrapper />
-    }
-    if (status === SwapState.EXECUTION_SUCCESS) {
-      return <SuccessIconWrapper />
-    }
-    if (status === SwapState.WAIT_FOR_ACTION) {
-      return <WarningIconWrapper />
-    }
-    if (status === SwapState.EXECUTION) {
-      return <LoadingView size={ComponentSize.SMALLEST} />
-    }
-  }, [])
+    const getSwapStatusIcon = useCallback((status: SwapState): ReactNode => {
+      if (status === SwapState.FAILED || status === SwapState.EXECUTION_FAILED || status === SwapState.CANCELLED) {
+        return <FailIconWrapper />
+      }
+      if (status === SwapState.EXECUTION_SUCCESS) {
+        return <SuccessIconWrapper />
+      }
+      if (status === SwapState.WAIT_FOR_ACTION) {
+        return <WarningIconWrapper />
+      }
+      if (status === SwapState.EXECUTION) {
+        return <LoadingView size={ComponentSize.SMALLEST} />
+      }
+    }, [])
 
-  return (
-    <Container
-      ref={ref}
-      initial={{opacity: 0}}
-      animate={{opacity: 1}}
-      exit={{opacity: 0}}
-      transition={{exit: {duration: 0.1}}}
-    >
+    return (
+      <Container
+        ref={ref}
+        initial={{opacity: 0}}
+        animate={{opacity: 1}}
+        exit={{opacity: 0}}
+        transition={{exit: {duration: 0.1}}}
+      >
       <ContainerHeader>
         <ChainIconView chain={item.chain} size={ComponentSize.SMALL} />
 
@@ -711,22 +713,22 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
         {item.currencyB.symbol} Price: ${item.currencyBUsdPrice ?? '-'}
       </ElementContainer>
 
-      {
-        item.adaptiveUsdPrice && (
-          <ElementContainer>
+        {
+          item.adaptiveUsdPrice && (
+            <ElementContainer>
             Exchange adaptive price: ${item.adaptiveUsdPrice}
           </ElementContainer>
-        )
-      }
+          )
+        }
 
-      <ElementContainer>
+        <ElementContainer>
         Usd amount:&nbsp;
-        <ProfitValueContainer
-          $value={(item.totalUsdAmountB > 0 ? item.totalUsdAmountB : item.totalAmountA) - item.initialAmountA}
-        >
+          <ProfitValueContainer
+            $value={(item.totalUsdAmountB > 0 ? item.totalUsdAmountB : item.totalAmountA) - item.initialAmountA}
+          >
           ${item.totalUsdAmountB > 0 ? item.totalUsdAmountB : item.totalAmountA}
           </ProfitValueContainer>
-        &nbsp;/ ${item.initialAmountA}
+          &nbsp;/ ${item.initialAmountA}
       </ElementContainer>
 
       <ElementContainer>
@@ -747,45 +749,45 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
       </ElementContainer>
 
       <AnalyticsButtonWrapper
-        onClick={() => onItemClick(StrategyHolderButtonIds.OPEN_ANALYTICS_BUTTON_ID)}
+        onClick={() => onItemClick(StrategyHolderButtonIds.OPEN_ANALYTICS_BUTTON_ID, item.hash)}
         size={ComponentSize.SMALL}
         text={'Analytics'}
       />
 
-      {isMoreInfo ? getFullView() : undefined}
-      {item.status ===
-      StrategyStatusType.CANCELED ||
-      item.status ===
-      StrategyStatusType.PAUSED ||
-      item.logs.length ===
-      0
-        ? undefined
-        : (
-          <SwapsLogsBlock onClick={() => onItemClick(StrategyHolderButtonIds.OPEN_LOGS_BUTTON_ID)}>
+        {isMoreInfo ? getFullView() : undefined}
+        {item.status ===
+        StrategyStatusType.CANCELED ||
+        item.status ===
+        StrategyStatusType.PAUSED ||
+        item.logs.length ===
+        0
+          ? undefined
+          : (
+            <SwapsLogsBlock onClick={() => onItemClick(StrategyHolderButtonIds.OPEN_LOGS_BUTTON_ID, item.hash)}>
             <div>
               Latest Logs <TextUnderline>(see more...)</TextUnderline>:
             </div>
-            {item.logs.map((log, index) => (
-              <LogsContainer key={index}>
+              {item.logs.map((log, index) => (
+                <LogsContainer key={index}>
                 <LogItemContainer>
                   <ArrowIconContainer>{getArrowTrend(log.trend)}</ArrowIconContainer>{log.diff}
                 </LogItemContainer>
                 <div>{log.createdAt}</div>
               </LogsContainer>
-            ))}
+              ))}
           </SwapsLogsBlock>
-        )
-      }
+          )
+        }
 
-      {item.swaps.length === 0
-        ? undefined
-        : (
-          <SwapsLogsBlock onClick={() => onItemClick(StrategyHolderButtonIds.OPEN_SWAP_BUTTON_ID)}>
+        {item.swaps.length === 0
+          ? undefined
+          : (
+            <SwapsLogsBlock onClick={() => onItemClick(StrategyHolderButtonIds.OPEN_SWAP_BUTTON_ID, item.hash)}>
             <div>
               Latest swaps <TextUnderline>(see more...)</TextUnderline>:
             </div>
-            {item.swaps.map((swap, index) => (
-              <SwapContainer key={index}>
+              {item.swaps.map((swap, index) => (
+                <SwapContainer key={index}>
                 <IconContainer>{getSwapStatusIcon(swap.state)}</IconContainer>
                 <SwapSubItem>
                   <TokenIconView
@@ -811,11 +813,12 @@ export const ScalpelClassicStrategyHolderView = forwardRef((
                 </SwapSubItem>
                 <SwapItemDateContainer>{swap.date}</SwapItemDateContainer>
               </SwapContainer>
-            ))}
+              ))}
           </SwapsLogsBlock>
-        )
-      }
+          )
+        }
 
     </Container>
-  )
-})
+    )
+  })
+)

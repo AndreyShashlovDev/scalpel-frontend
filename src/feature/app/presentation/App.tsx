@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { RouterProvider } from 'react-router-dom'
 import styled, { createGlobalStyle, ThemeProvider } from 'styled-components'
 import { useApp } from '../../../AppProvider.tsx'
@@ -28,35 +28,39 @@ const BasicContainer = styled(motion.div)`
   overflow: hidden;
 `
 
-function App() {
+export const App = () => {
   const presenter = usePresenter(AppPresenter)
   const menuItems = useObservable(presenter.getMainMenuItems(), [])
   const selectedMenuItemId = useObservable(presenter.getSelectedMenuItemId(), undefined)
-  const routing = useCallback(() => AppRouting, [])
+  const routing = useMemo(() => AppRouting, [])
   const {theme} = useAppTheme()
   const {seVisibilityAppMenu, visibilityAppMenu} = useApp()
+
+  const handleMenuItemClick = useCallback((id: string | number) => {
+    presenter.onMenuItemClick(id)
+  }, [presenter])
+
+  const handleToggleMenu = useCallback((v: boolean) => {
+    seVisibilityAppMenu(v)
+  }, [seVisibilityAppMenu])
 
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
       <BasicContainer>
-        <AnimatePresence>
-          <RouterProvider
-            router={routing()}
-          />
-          <AppMenuView
-            selected={selectedMenuItemId}
-            items={menuItems}
-            isOpened={visibilityAppMenu}
-            toggle={(v) => seVisibilityAppMenu(v)}
-            key={'app-menu'}
-            onMenuItemClick={(id) => presenter.onMenuItemClick(id)}
-          />
-        </AnimatePresence>
+      <RouterProvider router={routing} />
+      <AnimatePresence>
+        <AppMenuView
+          selected={selectedMenuItemId}
+          items={menuItems}
+          isOpened={visibilityAppMenu}
+          toggle={handleToggleMenu}
+          key={'app-menu'}
+          onMenuItemClick={handleMenuItemClick}
+        />
+      </AnimatePresence>
       </BasicContainer>
       <SnackbarView />
     </ThemeProvider>
   )
 }
-
-export default App

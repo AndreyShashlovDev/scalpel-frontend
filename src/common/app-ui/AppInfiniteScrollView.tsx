@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   forwardRef,
+  memo,
   ReactElement,
   RefObject,
   useCallback,
@@ -47,7 +48,7 @@ export interface InfiniteScrollListProps<T extends ListItem> {
   scrollParent?: RefObject<HTMLDivElement | undefined>
 }
 
-const InfiniteScrollListView = forwardRef((
+const InfiniteScrollListView = memo(forwardRef((
   {
     items,
     getHolderView,
@@ -201,6 +202,6 @@ const InfiniteScrollListView = forwardRef((
       </AnimatePresence>
     </Container>
   )
-})
+}))
 
 export default InfiniteScrollListView

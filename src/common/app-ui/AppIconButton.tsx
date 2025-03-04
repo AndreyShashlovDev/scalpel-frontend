@@ -1,4 +1,4 @@
-import { ReactElement, useCallback } from 'react'
+import { memo, ReactElement, useCallback } from 'react'
 import styled, { css } from 'styled-components'
 import { AppButton } from './AppButton.tsx'
 import { ComponentSize } from './ComponentSize.ts'
@@ -25,7 +25,7 @@ export interface AppIconButtonProps {
   disabled?: boolean
 }
 
-export const AppIconButton = ({icon, size, onClick, disabled}: AppIconButtonProps) => {
+export const AppIconButton = memo(({icon, size, onClick, disabled}: AppIconButtonProps) => {
 
   const getSize = useCallback(() => {
     if (size === ComponentSize.SMALL) {
@@ -42,4 +42,4 @@ export const AppIconButton = ({icon, size, onClick, disabled}: AppIconButtonProp
   }, [size])
 
   return <ButtonWrapper disabled={disabled} $size={getSize()} onClick={onClick} text={icon} />
-}
+})

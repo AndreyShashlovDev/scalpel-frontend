@@ -15,11 +15,13 @@ export abstract class StrategiesPagePresenter extends BasicPresenter<void> {
 
   public abstract getIsLastPage(): Observable<boolean>
 
+  public abstract getIsEmpty(): Observable<boolean>
+
   public abstract fetchNextPage(): void
 
   public abstract onListItemClick(
     viewId: number,
-    item: StrategyListItem<unknown>,
+    hash: string,
     data?: number | null
   ): void
 

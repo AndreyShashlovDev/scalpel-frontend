@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import FilterIcon from '../../../assets/icons/app/FilterIcon.svg'
 import { DialogQuestionCallBack, DialogQuestionView } from '../../../common/app-ui/dialog/DialogQuestionView.tsx'
@@ -31,7 +31,7 @@ export const StrategiesPageView = () => {
 
   const presenter = usePresenter(StrategiesPagePresenter)
   const dialogProvider = useMemo(() => getDIValue(StrategyPageDialogProvider), [])
-  const strategies = useObservable(presenter.getStrategiesList(), undefined)
+  const isEmptyPage = useObservable(presenter.getIsEmpty(), false)
   const isLastPage = useObservable(presenter.getIsLastPage(), true)
   const isLoading = useObservable(presenter.getIsLoading(), true)
   const isLoadingFinished = useObservable(presenter.getLoadingFinished(), undefined)
@@ -78,39 +78,51 @@ export const StrategiesPageView = () => {
     }
   }, [isLoadingFinished])
 
+  const handleItemClick = useCallback((viewId: number, hash: string, data?: unknown) => {
+    presenter.onListItemClick(
+      viewId,
+      hash,
+      data as number | null | undefined
+    )
+  }, [presenter])
+
+  const handleFetchNext = useCallback(() => {
+    presenter.fetchNextPage()
+  }, [presenter])
+
+  const handleRefresh = useCallback(() => {
+    setPullToRefreshLoading(true)
+    presenter.refresh()
+  }, [presenter])
+
+  const headerButtons = useMemo(() => [
+    {
+      icon: <FilterIcon />,
+      onClick: () => presenter.onFilterButtonClick()
+    }
+  ], [presenter])
+
   return (
     <div>
       <PageHeaderView
         text={'Orders'}
-        buttons={[
-          {
-            icon: <FilterIcon />,
-            onClick: () => presenter.onFilterButtonClick()
-          }
-        ]}
+        buttons={headerButtons}
       />
       <PageLayoutWrapper
         fetched={!isLoading}
-        refresh={() => {
-          setPullToRefreshLoading(true)
-          presenter.refresh()
-        }}
+        refresh={handleRefresh}
       >
       {
-        !isLoading && (strategies?.length ?? 0) === 0
+        !isLoading && isEmptyPage
           ? <div>List empty</div>
           : isLoading && !pullToRefreshLoading && <LoadingView />
       }
 
         <ListContainer ref={listScrollContainerRef}>
           <StrategyListView
-            items={strategies ?? []}
-            onItemClick={(viewId, item, data) => presenter.onListItemClick(
-              viewId,
-              item,
-              data as number | null | undefined
-            )}
-            onNextFetch={() => presenter.fetchNextPage()}
+            itemsObservable={presenter.getStrategiesList()}
+            onItemClick={handleItemClick}
+            onNextFetch={handleFetchNext}
             hasNext={!isLastPage}
           />
         </ListContainer>
@@ -119,12 +131,12 @@ export const StrategiesPageView = () => {
         <DialogLogsView ref={dialogLogsRef} />
         <DialogAnalyticsView ref={dialogAnalyticsRef} />
         <DialogQuestionView
-          onOkClick={(data: unknown, dialogId) => presenter.onActionResultCallback(data, dialogId)}
+          onOkClick={presenter.onActionResultCallback}
           ref={dialogQuestionRef}
         />
         <DialogStrategyFilterView
           ref={dialogStrategiesFilterRef}
-          onChangeFilter={(filter) => presenter.onChangeFilter(filter)}
+          onChangeFilter={presenter.onChangeFilter}
         />
       </PageLayoutWrapper>
     </div>

@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { memo, useRef } from 'react'
 import { NumericFormat } from 'react-number-format'
 
 export interface AppNumberInputProps {
@@ -15,7 +15,9 @@ export interface AppNumberInputProps {
   defaultValue?: number | undefined
 }
 
-export const AppNumberInputView = ({
+const MemoNumericFormat = memo(NumericFormat)
+
+export const AppNumberInputView = memo(({
   prefix,
   suffix,
   onChange,
@@ -30,7 +32,7 @@ export const AppNumberInputView = ({
   const val = useRef<number | undefined>(defaultValue)
 
   return (
-    <NumericFormat
+    <MemoNumericFormat
       allowLeadingZeros
       prefix={prefix}
       allowNegative={allowNegative}
@@ -46,6 +48,7 @@ export const AppNumberInputView = ({
       }}
       decimalSeparator={','}
       thousandSeparator={' '}
+      onBlur={() => onChange(val.current)}
       onValueChange={(values) => {
         val.current = values.floatValue
 
@@ -53,10 +56,8 @@ export const AppNumberInputView = ({
           onChange(min ?? 0)
           return
         }
-
-        onChange(values.floatValue)
       }}
       {...props}
     />
   )
-}
+})

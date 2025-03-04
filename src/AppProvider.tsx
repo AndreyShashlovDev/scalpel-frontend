@@ -1,11 +1,5 @@
 import { createContext, ReactNode, useContext, useState } from 'react'
 
-export interface HeaderProps {
-  title?: string,
-  subTitle?: string
-  backButton?: boolean
-}
-
 export interface AppContextInterface {
   visibilityAppMenu: boolean,
   seVisibilityAppMenu: (value: boolean) => void

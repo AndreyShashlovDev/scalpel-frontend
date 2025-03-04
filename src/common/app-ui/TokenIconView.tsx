@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import styled from 'styled-components'
 import { ChainType } from '../repository/data/model/ChainType.ts'
 import { ComponentSize, ComponentSizeProps } from './ComponentSize.ts'
@@ -89,7 +90,7 @@ const mapChainName: Map<ChainType, string> = new Map([
 
 const url = 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/<chain>/assets/<address>/logo.png'
 const nativeCurrencyUrl = 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/<chain>/info/logo.png'
-export const TokenIconView = ({chain, address, symbol, size}: TokenIconProps) => {
+export const TokenIconView = memo(({chain, address, symbol, size}: TokenIconProps) => {
   return (
     <Container size={size}>
       <img
@@ -101,4 +102,4 @@ export const TokenIconView = ({chain, address, symbol, size}: TokenIconProps) =>
       />
     </Container>
   )
-}
+})

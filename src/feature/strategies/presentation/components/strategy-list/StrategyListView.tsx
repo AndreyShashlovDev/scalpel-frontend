@@ -1,6 +1,9 @@
+import { useCallback } from 'react'
+import { Observable } from 'rxjs'
 import styled from 'styled-components'
-import InfiniteScrollListView from '../../../../../common/app-ui/AppInfiniteScrollView.tsx'
+import InfiniteScrollListView, { ListItem } from '../../../../../common/app-ui/AppInfiniteScrollView.tsx'
 import { LoadingView } from '../../../../../common/app-ui/LoadingView.tsx'
+import useObservable from '../../../../../hooks/useObservable.ts'
 import { StrategyListItem } from '../../model/StrategyListItem.ts'
 import {
   ScalpelClassicStrategyHolderView,
@@ -15,41 +18,42 @@ const ListWrapper = styled(InfiniteScrollListView)`
   > div {
     margin-bottom: 8px;
   }
-  
+
   > div:last-child {
     margin-bottom: 18px;
   }
 `
 
 export interface StrategyListProps {
-  items: StrategyListItem<unknown>[]
+  itemsObservable: Observable<StrategyListItem<unknown>[]> | undefined
   onNextFetch: () => void
-  onItemClick: (viewId: number, item: StrategyListItem<unknown>, data?: unknown) => void
+  onItemClick: (viewId: number, hash: string, data?: unknown) => void
   hasNext: boolean
   // defaultIndexSelected?: number
   // initialScrollY?: number
 }
 
-export const StrategyListView = ({items, onNextFetch, hasNext, onItemClick}: StrategyListProps) => {
+export const StrategyListView = ({itemsObservable, onNextFetch, hasNext, onItemClick}: StrategyListProps) => {
+  const strategies = useObservable(itemsObservable, undefined)
+
+  const getHolderView = useCallback((item: ListItem, _: number, ref: (element: HTMLElement | null) => void) => {
+    return (
+      <ScalpelClassicStrategyHolderView
+        item={item as StrategyListItem<ScalpelClassicStrategyOptions>}
+        onItemClick={onItemClick}
+        key={item.hash}
+        ref={ref}
+      />
+    )
+  }, [onItemClick])
 
   return (
     <ListWrapper
-      items={items}
+      items={strategies ?? []}
       onNextFetch={onNextFetch}
       hasNext={hasNext}
       loadingElement={<LoadingView />}
-      getHolderView={(item, _, ref) => {
-        return <ScalpelClassicStrategyHolderView
-          item={item as StrategyListItem<ScalpelClassicStrategyOptions>}
-          onItemClick={(viewId, data) => onItemClick(
-            viewId,
-            item as StrategyListItem<ScalpelClassicStrategyOptions>,
-            data
-          )}
-          key={item.hash}
-          ref={ref}
-        />
-      }}
+      getHolderView={getHolderView}
     />
   )
 }

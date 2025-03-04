@@ -56,7 +56,7 @@ export const SnackbarItemView = ({
     >
       <SnackbarItemMessageContainer>{text}</SnackbarItemMessageContainer>
       <SnackbarItemCloseContainer>
-       {closeButton && <AppIconButton size={ComponentSize.SMALLEST} icon={<CloseIcon />} onClick={() => onCloseClick()} />}
+       {closeButton && <AppIconButton size={ComponentSize.SMALLEST} icon={<CloseIcon />} onClick={onCloseClick} />}
       </SnackbarItemCloseContainer>
     </SnackbarItemContainer>
   )

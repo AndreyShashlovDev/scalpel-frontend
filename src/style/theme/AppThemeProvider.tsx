@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react'
+import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react'
 import { DefaultTheme } from 'styled-components'
 import { CommonDarkTheme } from './CommonDarkTheme.ts'
 import { CommonLightTheme } from './CommonLightTheme.ts'
@@ -22,26 +22,26 @@ export function useAppTheme() {
 }
 
 export const AppThemeProvider = ({children}: { children: ReactNode }) => {
-
   const [currentThemeColor, setCurrentThemeColor] = useState<ThemeColorType>('dark')
-  const [theme, setTheme] = useState<CommonLightTheme>(new CommonLightTheme())
 
-  const changeThemeColor = (color: ThemeColorType) => {
+  const theme = useMemo(
+    () =>
+      currentThemeColor === 'light' ? new CommonLightTheme() : new CommonDarkTheme(),
+    [currentThemeColor]
+  )
+
+  const changeThemeColor = useCallback((color: ThemeColorType) => {
     setCurrentThemeColor(color)
-  }
+  }, [])
 
-  useEffect(() => {
-    setTheme(currentThemeColor === 'light' ? new CommonLightTheme() : new CommonDarkTheme())
-  }, [currentThemeColor])
+  const contextValue = useMemo(() => ({
+    changeThemeColor,
+    currentThemeColor,
+    theme
+  }), [changeThemeColor, currentThemeColor, theme])
 
   return (
-    <AppThemeContext.Provider
-      value={{
-        changeThemeColor,
-        currentThemeColor,
-        theme
-      }}
-    >
+    <AppThemeContext.Provider value={contextValue}>
       {children}
     </AppThemeContext.Provider>
   )
