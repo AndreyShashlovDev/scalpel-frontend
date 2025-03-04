@@ -102,6 +102,14 @@ export const StrategiesPageView = () => {
     }
   ], [presenter])
 
+  const handleDialogResult = useCallback((data: unknown, dialogId: string | number) => {
+    presenter.onActionResultCallback(data, dialogId)
+  }, [presenter])
+
+  const handleChangeFilter = useCallback((filter: StrategiesFilter) => {
+    presenter.onChangeFilter(filter)
+  }, [presenter])
+
   return (
     <div>
       <PageHeaderView
@@ -131,12 +139,12 @@ export const StrategiesPageView = () => {
         <DialogLogsView ref={dialogLogsRef} />
         <DialogAnalyticsView ref={dialogAnalyticsRef} />
         <DialogQuestionView
-          onOkClick={presenter.onActionResultCallback}
+          onOkClick={handleDialogResult}
           ref={dialogQuestionRef}
         />
         <DialogStrategyFilterView
           ref={dialogStrategiesFilterRef}
-          onChangeFilter={presenter.onChangeFilter}
+          onChangeFilter={handleChangeFilter}
         />
       </PageLayoutWrapper>
     </div>
