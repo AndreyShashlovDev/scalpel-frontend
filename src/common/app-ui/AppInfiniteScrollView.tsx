@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
   forwardRef,
   memo,
@@ -7,6 +7,7 @@ import {
   useCallback,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState
 } from 'react'
@@ -62,6 +63,7 @@ const InfiniteScrollListView = memo(forwardRef((
   }: InfiniteScrollListProps<ListItem>, ref
 ) => {
   const itemRefs = useRef(new Map<string, HTMLElement>())
+  const refSetterCache = useRef(new Map<string, (element: HTMLElement | null) => void>())
   const callNextFetch = useRef(false)
   const [isEndReached, setIsEndReached] = useState(false)
   const wasInit = useRef(false)
@@ -169,6 +171,14 @@ const InfiniteScrollListView = memo(forwardRef((
       moveToIndex(defaultIndexSelected, 'bottom', false)
     }
 
+    const currentHashes = new Set(items.map(item => item.hash))
+
+    Array.from(refSetterCache.current.keys()).forEach(hash => {
+      if (!currentHashes.has(hash)) {
+        refSetterCache.current.delete(hash)
+      }
+    })
+
     const itemsRefs = itemRefs.current
 
     return () => {
@@ -183,23 +193,34 @@ const InfiniteScrollListView = memo(forwardRef((
     }
   }, [isEndReached, onNextFetch, hasNext, initialScrollY, moveToIndex, defaultIndexSelected, items])
 
+  const getRefSetter = useCallback((hash: string) => {
+    let setter = refSetterCache.current.get(hash)
+
+    if (!setter) {
+      setter = (element: HTMLElement | null) => {
+        if (element) {
+          itemRefs.current.set(hash, element)
+          element.setAttribute('data-key', hash)
+        } else {
+          itemRefs.current.delete(hash)
+        }
+      }
+      refSetterCache.current.set(hash, setter)
+    }
+
+    return setter
+  }, [])
+
+  const renderedItems = useMemo(() => {
+    return items.map((item, index) =>
+      getHolderView(item, index, getRefSetter(item.hash))
+    )
+  }, [items, getHolderView, getRefSetter])
+
   return (
     <Container {...props}>
-      <AnimatePresence>
-        {items.map((item, index) => {
-          const setRef = (element: HTMLElement | null) => {
-            if (element) {
-              itemRefs.current.set(item.hash, element)
-
-            } else {
-              itemRefs.current.delete(item.hash)
-            }
-          }
-
-          return getHolderView(item, index, setRef)
-        })}
-        {isEndReached && hasNext && loadingElement}
-      </AnimatePresence>
+      {renderedItems}
+      {isEndReached && hasNext && loadingElement}
     </Container>
   )
 }))
