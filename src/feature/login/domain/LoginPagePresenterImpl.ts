@@ -50,6 +50,7 @@ export class LoginPagePresenterImpl extends LoginPagePresenter {
 
   public disconnectWalletClick(): void {
     this.walletConnection.disconnect()
+      .catch(e => console.warn(e))
   }
 
   public onDemoClick(): void {

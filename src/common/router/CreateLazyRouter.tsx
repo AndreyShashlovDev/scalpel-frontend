@@ -1,6 +1,6 @@
 import { LazyExoticComponent, Suspense, useEffect, useState } from 'react'
 import ErrorBoundary from '../../common/router/ErrorBoundary.tsx'
-import { Abstract, injectionKernel, Newable } from '../../Injections.ts'
+import { Abstract, injectionKernel, Newable } from '../../utils/arch/Injections.ts'
 import { EntrypointView } from './EntrypointView.tsx'
 import { PageNotLoadedView } from './PageNotLoadedView.tsx'
 

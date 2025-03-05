@@ -1,5 +1,5 @@
 import { AppSourceService } from '../../../common/repository/data/source/AppSourceService.ts'
-import { Factory, getDIValue, injectionKernel } from '../../../Injections.ts'
+import { Factory, getDIValue, injectionKernel } from '../../../utils/arch/Injections.ts'
 import { SimulationRepositoryImpl } from '../data/simulation-repository/SimulationRepositoryImpl.ts'
 import { SimulationPageDialogProvider } from '../domain/router/SimulationPageDialogProvider.ts'
 import { SimulationPageRouter } from '../domain/router/SimulationPageRouter.ts'

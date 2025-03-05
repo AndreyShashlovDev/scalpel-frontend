@@ -1,6 +1,7 @@
 import { useLayoutEffect, useMemo, useRef } from 'react'
-import { Abstract, getDIValue, IS_PRODUCTION, Newable } from '../Injections.ts'
+import { IS_PRODUCTION } from '../CoreModule.ts'
 import { BasicPresenter } from '../utils/arch/BasicPresenter.ts'
+import { Abstract, getDIValue, Newable } from '../utils/arch/Injections.ts'
 
 export const usePresenter = <T extends BasicPresenter<A>, A>(
   qualifier: Newable<T> | Abstract<T>,
@@ -9,7 +10,7 @@ export const usePresenter = <T extends BasicPresenter<A>, A>(
   const isFirstInit = useRef(false)
   const indexForStrictMode = useRef(0)
 
-  const presenter = useMemo(() => getDIValue(qualifier), [/* no add DependencyList */])
+  const presenter = useMemo(() => getDIValue(qualifier), [qualifier])
 
   useLayoutEffect(() => {
     indexForStrictMode.current++
@@ -27,7 +28,7 @@ export const usePresenter = <T extends BasicPresenter<A>, A>(
         // destroyDiInstance(qualifier)
       }
     }
-  }, [/* no add DependencyList */])
+  }, [presenter, args])
 
   return presenter
 }

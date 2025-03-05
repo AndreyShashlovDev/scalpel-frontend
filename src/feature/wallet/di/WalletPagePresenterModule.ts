@@ -5,7 +5,7 @@ import { WalletRepositoryImpl } from '../../../common/repository/data/wallet/Wal
 import { EthereumServiceImpl } from '../../../common/service/ethereum-service/EthereumServiceImpl.ts'
 import { EthereumServiceStrategy } from '../../../common/service/ethereum-service/EthereumServiceStrategy.ts'
 import { EthereumServiceStrategyImpl } from '../../../common/service/ethereum-service/EthereumServiceStrategyImpl.ts'
-import { Factory, getDIValue, injectionKernel } from '../../../Injections.ts'
+import { Factory, getDIValue, injectionKernel } from '../../../utils/arch/Injections.ts'
 import { GetErc20BalanceInteractor } from '../domain/interactor/GetErc20BalanceInteractor.ts'
 import { WalletPagePresenter } from '../domain/WalletPagePresenter.ts'
 import { WalletPagePresenterImpl } from '../domain/WalletPagePresenterImpl.ts'

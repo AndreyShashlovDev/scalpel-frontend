@@ -132,7 +132,7 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
             result.total <= list.length ||
             result.data.length < StrategiesPagePresenterImpl.PAGE_LIMIT
           )
-          if (list.length ===0 && result.page === 1) {
+          if (list.length === 0 && result.page === 1) {
             this.isEmpty.next(true)
           }
         },

@@ -2,7 +2,7 @@ import { CurrencyRepository } from '../../../common/repository/data/currencies/C
 import { AppSourceService } from '../../../common/repository/data/source/AppSourceService.ts'
 import { WalletRepositoryImpl } from '../../../common/repository/data/wallet/WalletRepositoryImpl.ts'
 import { ApplicationRouter } from '../../../common/router/domain/ApplicationRouter.ts'
-import { Factory, getDIValue, injectionKernel } from '../../../Injections.ts'
+import { Factory, getDIValue, injectionKernel } from '../../../utils/arch/Injections.ts'
 import { StrategyRepositoryImpl } from '../data/strategy-repository/StrategyRepositoryImpl.ts'
 import { CreateStrategyPagePresenter } from '../domain/CreateStrategyPagePresenter.ts'
 import { CreateStrategyPagePresenterImpl } from '../domain/CreateStrategyPagePresenterImpl.ts'

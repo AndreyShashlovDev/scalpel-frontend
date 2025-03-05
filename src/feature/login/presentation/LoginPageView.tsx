@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import styled from 'styled-components'
 import { AppAddressView } from '../../../common/app-ui/AppAddressView.tsx'
 import { AppButton } from '../../../common/app-ui/AppButton.tsx'
@@ -44,6 +45,18 @@ export const LoginPageView = () => {
   const isConnected = useObservable(presenter.IsWalletConnected(), false)
   const isLoading = useObservable(presenter.getIsLoading(), true)
 
+  const handleConnectDisconnectClick = useCallback(() => {
+    if (isConnected) {
+      presenter.disconnectWalletClick()
+    } else {
+      presenter.connectWalletClick()
+    }
+  }, [presenter, isConnected])
+
+  const handleLoginClick = useCallback(() => {
+    presenter.signMessageClick()
+  }, [presenter])
+
   return (
     <PageLayoutViewWrapper>
       {
@@ -59,15 +72,16 @@ export const LoginPageView = () => {
                 <AddressContainer>
                  {walletAddress && <AddressWrapper address={walletAddress} />}
                 </AddressContainer>
+
                 <AppButton
                   text={walletAddress && isConnected ? 'Disconnect' : 'Connect wallet'}
-                  onClick={() => isConnected ? presenter.disconnectWalletClick() : presenter.connectWalletClick()}
+                  onClick={handleConnectDisconnectClick}
                 />
 
                 <AppButton
                   disabled={!isConnected}
                   text={'Login'}
-                  onClick={() => presenter.signMessageClick()}
+                  onClick={handleLoginClick}
                 />
 
                 <AppSpaceView />

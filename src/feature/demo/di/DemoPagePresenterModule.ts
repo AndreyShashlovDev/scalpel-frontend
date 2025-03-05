@@ -1,6 +1,6 @@
 import { AppSourceService } from '../../../common/repository/data/source/AppSourceService.ts'
 import { ApplicationRouter } from '../../../common/router/domain/ApplicationRouter.ts'
-import { Factory, getDIValue, injectionKernel } from '../../../Injections.ts'
+import { Factory, getDIValue, injectionKernel } from '../../../utils/arch/Injections.ts'
 import { SimulationRepositoryImpl } from '../data/simulation-repository/SimulationRepositoryImpl.ts'
 import { DemoPagePresenter } from '../domain/DemoPagePresenter.ts'
 import { DemoPagePresenterImpl } from '../domain/DemoPagePresenterImpl.ts'

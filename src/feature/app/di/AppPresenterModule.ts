@@ -1,7 +1,7 @@
 import { ApplicationRouter } from '../../../common/router/domain/ApplicationRouter.ts'
 import { AppAuthService } from '../../../common/service/auth/AppAuthService.ts'
 import { ExceptionHandlerService } from '../../../common/service/exception-handler/ExceptionHandlerService.ts'
-import { getDIValue, injectionKernel, Singleton } from '../../../Injections.ts'
+import { getDIValue, injectionKernel, Singleton } from '../../../utils/arch/Injections.ts'
 import { AppPresenter } from '../domain/AppPresenter.ts'
 import { AppPresenterImpl } from '../domain/AppPresenterImpl.ts'
 
