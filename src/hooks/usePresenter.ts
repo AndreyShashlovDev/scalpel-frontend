@@ -28,7 +28,7 @@ export const usePresenter = <T extends BasicPresenter<A>, A>(
         // destroyDiInstance(qualifier)
       }
     }
-  }, [presenter, args])
+  }, [presenter, JSON.stringify(args)])
 
   return presenter
 }
