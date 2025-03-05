@@ -3,6 +3,7 @@ import { ChainType } from '../../../../common/repository/data/model/ChainType.ts
 import { CurrencyResponse } from '../../../../common/repository/data/model/CurrencyResponse.ts'
 import { WalletStatisticResponse } from '../../../../common/repository/data/model/WalletStatisticResponse.ts'
 import { ChainNativeCurrency } from '../../../../utils/ChainsData.ts'
+import { WeiToEther } from '../../../../utils/EthUnits.ts'
 import { NumberShortener } from '../../../../utils/Shortener.ts'
 import { Address } from '../../../../utils/types.ts'
 import { WalletCurrencyUiModel, WalletListItemModel } from '../model/WalletListItemModel.ts'
@@ -14,12 +15,10 @@ export const WalletResponseToWalletListItem = (
 ) => {
   const fees = new Map(Object.keys(response.txFee)
     .map(key => {
-      // @ts-expect-error not error
-      const chain = ChainType[key]
+      const chain = ChainType[key as ChainType]
       const wrapped = ChainNativeCurrency.get(chain)?.wrapped ?? '0x'
       const nativeCurrency = currencyPrices.get(chain)?.get(wrapped)
-      // @ts-expect-error not error
-      const nativeEthFee = WeiToEth(response.txFee[chain])
+      const nativeEthFee = WeiToEther(response.txFee[chain])
 
       const usdPrice = nativeCurrency?.price && wrapped
         ? new BigNumber(nativeCurrency?.price.usdtPrice ?? '0').div(new BigNumber(10).pow(6))
