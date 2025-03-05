@@ -311,7 +311,7 @@ const CreateStrategyPageView = ({invokeInject, hasHeader}: CreateStrategyPagePro
 
   return (
     <Wrapper>
-      {hasHeader && <PageHeaderView text={'Create strategy'} />}
+      {(hasHeader ?? true) && <PageHeaderView text={'Create strategy'} />}
       <Container>
         <ScrollPageContainer>
             <ContentContainer>
