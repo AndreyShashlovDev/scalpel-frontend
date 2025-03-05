@@ -1,4 +1,5 @@
 import { AppSourceService } from '../../../../common/repository/data/source/AppSourceService.ts'
+import { UnauthorizedException } from '../../../../common/repository/data/source/exception/UnauthorizedException.ts'
 import { UnknownException } from '../../../../common/repository/data/source/exception/UnknownException.ts'
 import { AuthRepository } from './AuthRepository.ts'
 
@@ -38,7 +39,7 @@ export class AuthRepositoryImpl extends AuthRepository {
           return response.data!
         }
 
-        throw UnknownException.create()
+        throw UnauthorizedException.create()
       }
     )
   }

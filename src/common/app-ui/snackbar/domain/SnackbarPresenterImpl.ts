@@ -36,7 +36,7 @@ export class SnackbarPresenterImpl extends SnackbarPresenter {
 
   private addMessage(msg: string): void {
     const id = Math.random()
-    const timeout = 15000
+    const timeout = 5000
 
     const list = this.items.value.concat([
       new SnackBarItem(
