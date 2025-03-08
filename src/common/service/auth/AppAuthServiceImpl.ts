@@ -38,9 +38,9 @@ export class AppAuthServiceImpl extends AppAuthService {
       return
     }
 
-    this.appAuthHttpsService.setToken(undefined)
-    await this.authRepository.logout()
     this.loaded = false
+    this.appAuthHttpsService.setToken(undefined)
+    await this.authRepository.logout().catch(e => console.warn(e))
   }
 
   public observe(): Observable<string | undefined> {
