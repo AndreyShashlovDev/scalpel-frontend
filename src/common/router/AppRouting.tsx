@@ -4,6 +4,8 @@ import { CreateStrategyPageModule } from '../../feature/create-strategy/di/Creat
 import { CreateStrategyPagePresenter } from '../../feature/create-strategy/domain/CreateStrategyPagePresenter.ts'
 import { LoginPageModule } from '../../feature/login/di/LoginPageModule.ts'
 import { LoginPagePresenter } from '../../feature/login/domain/LoginPagePresenter.ts'
+import { WalletPageModule } from '../../feature/wallet/di/WalletPagePresenterModule.ts'
+import { WalletPagePresenter } from '../../feature/wallet/domain/WalletPagePresenter.ts'
 import { createLazyRoute } from './CreateLazyRouter.tsx'
 import { EntrypointView } from './EntrypointView.tsx'
 import ErrorBoundary from './ErrorBoundary.tsx'
@@ -57,16 +59,12 @@ export const AppRouting = createMemoryRouter(
       //@ts-expect-error fixme
       component: CreateStrategyPageView
     }),
-    {
+    createLazyRoute({
       path: '/wallets',
-      element:
-        <ErrorBoundary fallback={<PageNotLoadedView />}>
-          <Suspense fallback={<EntrypointView />}>
-            <WalletsPageView key={'wallets-page'} />
-          </Suspense>
-        </ErrorBoundary>
-      ,
-    },
+      moduleLoader: WalletPageModule,
+      presenterType: WalletPagePresenter,
+      component: WalletsPageView
+    }),
     {
       path: '/transactions',
       element:

@@ -1,4 +1,5 @@
 import { Address } from '../../../../utils/types.ts'
+import { ExportWalletResponse } from '../model/ExportWalletResponse.ts'
 import { Pageable } from '../model/Pageable.ts'
 import { WalletResponse } from '../model/WalletResponse.ts'
 import { WalletStatisticResponse } from '../model/WalletStatisticResponse.ts'
@@ -65,10 +66,10 @@ export class WalletRepositoryImpl extends WalletRepository {
     )
   }
 
-  public changeWalletName(address: Address, name: string | null): Promise<void> {
+  public changeWalletName(account: Address, name: string | null): Promise<void> {
     return this.appSourceService.post<void, void>(
       {
-        path: `/wallet/${address}/change`,
+        path: `/wallet/${account}/change`,
         body: {
           name: name
         }
@@ -76,6 +77,25 @@ export class WalletRepositoryImpl extends WalletRepository {
       async (response) => {
         if (response.success) {
           return
+        }
+
+        throw UnknownException.create(JSON.stringify(response.errors))
+      }
+    )
+  }
+
+  public async exportWallet(msg: string, sig: string): Promise<ExportWalletResponse> {
+    return this.appSourceService.post<ExportWalletResponse, ExportWalletResponse>(
+      {
+        path: `/wallet/export`,
+        body: {
+          msg,
+          sig
+        }
+      },
+      async (response) => {
+        if (response.success && response.data) {
+          return ExportWalletResponse.valueOfJson(response.data)
         }
 
         throw UnknownException.create(JSON.stringify(response.errors))

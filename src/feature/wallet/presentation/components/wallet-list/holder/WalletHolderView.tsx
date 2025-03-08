@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { ForwardedRef, forwardRef, useState } from 'react'
+import { ForwardedRef, forwardRef, memo, useCallback, useState } from 'react'
 import styled from 'styled-components'
 import EditIcon from '../../../../../../assets/icons/app/EditIcon.svg'
 import SaveIcon from '../../../../../../assets/icons/app/SaveIcon.svg'
@@ -12,9 +12,11 @@ import { ChainIconView } from '../../../../../../common/app-ui/ChainIconView.tsx
 import { ComponentSize } from '../../../../../../common/app-ui/ComponentSize.ts'
 import { ComponentVariant } from '../../../../../../common/app-ui/ComponentVariant.ts'
 import { LoadingView } from '../../../../../../common/app-ui/LoadingView.tsx'
+import { PrivateKeyView } from '../../../../../../common/app-ui/PrivateKeyView.tsx'
 import { ProfitValueContainer } from '../../../../../../common/app-ui/ProfitValueContainer.tsx'
 import { TokenIconView } from '../../../../../../common/app-ui/TokenIconView.tsx'
 import { NumberShortener } from '../../../../../../utils/Shortener.ts'
+import { Address } from '../../../../../../utils/types.ts'
 import { WalletListItemIds } from '../../../../domain/model/WalletListItemIds.ts'
 import { WalletListItemModel } from '../../../model/WalletListItemModel.ts'
 
@@ -113,16 +115,51 @@ const TextInputWrapper = styled(AppTextInputView)`
   width: 200px;
 `
 
+const PrivateKeyContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`
+
 export interface WalletListHolderProps extends ListItemHolder<WalletListItemModel> {
 }
 
-export const WalletHolderView = forwardRef((
+export const WalletHolderView = memo(forwardRef((
   {item, onItemClick}: WalletListHolderProps,
   ref: ForwardedRef<HTMLDivElement>
 ) => {
 
   const [isEditName, setIsEditName] = useState(false)
   const [walletName, setWalletName] = useState<string | undefined>(item.name ?? '')
+  const [showDeletePrivateKeyButton, setShowDeletePrivateKeyButton] = useState(false)
+
+  const handleEditName = useCallback(() => {
+    if (isEditName) {
+      onItemClick(item.hash, WalletListItemIds.BUTTON_CHANGE_NAME, walletName)
+    }
+
+    setIsEditName(!isEditName)
+  }, [isEditName, onItemClick, item.hash, walletName])
+
+  const handleExportWallet = useCallback(() => {
+    onItemClick(item.hash, WalletListItemIds.BUTTON_EXPORT_WALLET)
+  }, [onItemClick, item.hash])
+
+  const handleWithdraw = useCallback(
+    (currency: Address) => () => {
+      onItemClick(item.hash, WalletListItemIds.BUTTON_WITHDRAW, currency)
+    },
+    [onItemClick, item.hash]
+  )
+
+  const handlePkShown = useCallback(() => {
+      setShowDeletePrivateKeyButton(true)
+    }, []
+  )
+
+  const handleDeletePrivateKey = useCallback(() => {
+    onItemClick(item.hash, WalletListItemIds.BUTTON_DELETE_PRIVATE_KEY)
+  }, [onItemClick, item.hash])
 
   return (
     <Container
@@ -143,13 +180,7 @@ export const WalletHolderView = forwardRef((
         <AppIconButton
           icon={isEditName ? <SaveIcon /> : <EditIcon />}
           size={ComponentSize.SMALLEST}
-          onClick={() => {
-            if (isEditName) {
-              onItemClick(item.hash, WalletListItemIds.BUTTON_CHANGE_NAME, walletName)
-            }
-
-            setIsEditName(!isEditName)
-          }}
+          onClick={handleEditName}
         />
       </LineContainer>
       <LineContainer>Total orders: {item.totalOrders}</LineContainer>
@@ -165,11 +196,30 @@ export const WalletHolderView = forwardRef((
         </ProfitValueContainer>
       </LineContainer>
       <ActionsContainer>
-        <AppButton
-          variant={ComponentVariant.DANGER}
-          size={ComponentSize.SMALL}
-          onClick={() => {}} text={'Export private key'}
-        />
+        {item.privateKey
+          ? (
+            <PrivateKeyContainer>
+              <PrivateKeyView pk={item.privateKey} onPKShown={handlePkShown} />
+              {showDeletePrivateKeyButton && (
+                <AppButton
+                  onClick={handleDeletePrivateKey}
+                  variant={ComponentVariant.DANGER}
+                  size={ComponentSize.SMALL}
+                  text={'Delete PK from server'}
+                />
+              )
+              }
+            </PrivateKeyContainer>
+          )
+          : (
+            <AppButton
+              variant={ComponentVariant.DANGER}
+              size={ComponentSize.SMALL}
+              onClick={handleExportWallet}
+              text={'Export private key'}
+            />
+          )
+        }
       </ActionsContainer>
       <FeeContainer>
         <FeeTitleContainer>Total fee:</FeeTitleContainer>
@@ -227,7 +277,7 @@ export const WalletHolderView = forwardRef((
                       actualBalance && actualBalance > amount
                         ? (
                           <WithdrawButtonWrapper
-                            onClick={() => {onItemClick(item.hash, 1, currency)}}
+                            onClick={handleWithdraw(currency.address)}
                             size={ComponentSize.SMALL}
                             text={'Withdraw'}
                           />
@@ -254,4 +304,4 @@ export const WalletHolderView = forwardRef((
       }
     </Container>
   )
-})
+}))

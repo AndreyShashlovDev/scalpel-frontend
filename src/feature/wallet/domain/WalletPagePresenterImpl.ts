@@ -8,13 +8,17 @@ import { WalletRepository } from '../../../common/repository/data/wallet/WalletR
 import { Address } from '../../../utils/types.ts'
 import { WalletResponseToWalletListItem } from '../presentation/mapping/WalletResponseToWalletListItem.ts'
 import { WalletListItemModel } from '../presentation/model/WalletListItemModel.ts'
+import { WalletPageRouter } from '../router/WalletPageRouter.ts'
+import { ExportWalletPrivateKeyInteractor } from './interactor/ExportWalletPrivateKeyInteractor.ts'
 import { GetErc20BalanceInteractor } from './interactor/GetErc20BalanceInteractor.ts'
 import { WalletListItemIds } from './model/WalletListItemIds.ts'
 import { WalletPagePresenter } from './WalletPagePresenter.ts'
 
 export class WalletPagePresenterImpl extends WalletPagePresenter {
 
-  public static readonly PAGE_LIMIT = 5
+  private static readonly PAGE_LIMIT = 5
+  private static readonly EXPORT_PRIVATE_KEY_RESULT_ID: number = Math.random()
+  private static readonly DELETE_PRIVATE_KEY_RESULT_ID: number = Math.random()
 
   private readonly walletItems: BehaviorSubject<WalletListItemModel[]> = new BehaviorSubject<WalletListItemModel[]>([])
   private readonly isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
@@ -29,6 +33,8 @@ export class WalletPagePresenterImpl extends WalletPagePresenter {
     private readonly walletRepository: WalletRepository,
     private readonly getBalancesInteractor: GetErc20BalanceInteractor,
     private readonly currencyRepository: CurrencyRepository,
+    private readonly exportWalletInteractor: ExportWalletPrivateKeyInteractor,
+    private readonly router: WalletPageRouter,
   ) {
     super()
   }
@@ -156,11 +162,52 @@ export class WalletPagePresenterImpl extends WalletPagePresenter {
   public onListItemClick(hash: string, viewId: number, data: unknown): void {
     const wallet = this.walletItems.value.find(item => item.hash === hash)
 
-    if (WalletListItemIds.BUTTON_CHANGE_NAME === viewId && wallet) {
+    if (!wallet) {
+      return
+    }
+
+    if (WalletListItemIds.BUTTON_CHANGE_NAME === viewId) {
       const validName = (((data as string | undefined)?.length ?? 0) === 0 ? null : data as string)
 
       this.walletRepository.changeWalletName(wallet.address, validName)
         .catch(e => console.error(e))
+
+    } else if (WalletListItemIds.BUTTON_EXPORT_WALLET === viewId) {
+      this.router.openExportPrivateKey(wallet.hash, WalletPagePresenterImpl.EXPORT_PRIVATE_KEY_RESULT_ID)
+
+    } else if (WalletListItemIds.BUTTON_DELETE_PRIVATE_KEY === viewId) {
+      this.router.openDeletePrivateKey(wallet.hash, WalletPagePresenterImpl.DELETE_PRIVATE_KEY_RESULT_ID)
     }
+  }
+
+  public onActionResultCallback(data: unknown, dialogId: string | number): void {
+    const wallet = this.walletItems.value.find(item => item.hash === data)
+
+    if (!wallet) {
+      return
+    }
+
+    if (dialogId === WalletPagePresenterImpl.EXPORT_PRIVATE_KEY_RESULT_ID) {
+      this.exportPrivateKey(wallet)
+
+    } else if (dialogId === WalletPagePresenterImpl.DELETE_PRIVATE_KEY_RESULT_ID && data) {
+      this.deletePrivateKey(wallet)
+    }
+  }
+
+  private deletePrivateKey(wallet: WalletListItemModel) {
+    console.log(wallet)
+  }
+
+  private exportPrivateKey(exportWallet: WalletListItemModel): void {
+    this.exportWalletInteractor.invoke({account: exportWallet.address})
+      .then(pk => {
+        const updatedList = this.walletItems.value.map(
+          wallet => wallet.hash === exportWallet.hash ? wallet.copy({privateKey: pk}) : wallet
+        )
+
+        this.walletItems.next(updatedList)
+      })
+      .catch(e => console.error(e))
   }
 }

@@ -7,8 +7,8 @@ import { Factory, getDIValue, injectionKernel, loadModule } from '../../../utils
 import { AuthRepositoryImpl } from '../data/auth-repository/AuthRepositoryImpl.ts'
 import { LoginInteractor } from '../domain/interactor/LoginInteractor.ts'
 import { LoginPagePresenter } from '../domain/LoginPagePresenter.ts'
-import { SignerMessageModule } from './SignerMessageModule.ts'
-import { WalletConnectModule } from './WalletConnetModule.ts'
+import { SignerMessageModule } from '../../../common/di/SignerMessageModule.ts'
+import { WalletConnectModule } from '../../../common/di/WalletConnetModule.ts'
 
 export const LoginPageModule = async () => {
 

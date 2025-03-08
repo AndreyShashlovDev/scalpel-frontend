@@ -17,4 +17,6 @@ export abstract class WalletPagePresenter extends BasicPresenter<void> {
   public abstract refresh(): void
 
   public abstract onListItemClick(hash: string, viewId: number, data: unknown): void
+
+  public abstract onActionResultCallback(data: unknown, dialogId: string | number): void
 }

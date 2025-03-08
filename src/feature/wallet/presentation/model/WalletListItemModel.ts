@@ -39,6 +39,7 @@ export class WalletListItemModel implements ListItem {
   public readonly currencies: Map<ChainType, WalletCurrencyUiModel[]>
   public readonly totalValueWalletUsdt: Map<ChainType, number>
   public readonly totalActualValueWalletUsdt: Map<ChainType, number | undefined>
+  public readonly privateKey?: string
 
   constructor(
     address: Address,
@@ -52,6 +53,7 @@ export class WalletListItemModel implements ListItem {
     currencies: Map<ChainType, WalletCurrencyUiModel[]>,
     totalValueWalletUsdt: Map<ChainType, number>,
     totalActualValueWalletUsdt: Map<ChainType, number | undefined>,
+    privateKey?: string
   ) {
     this.hash = address
     this.address = address
@@ -65,6 +67,7 @@ export class WalletListItemModel implements ListItem {
     this.currencies = currencies
     this.totalValueWalletUsdt = totalValueWalletUsdt
     this.totalActualValueWalletUsdt = totalActualValueWalletUsdt
+    this.privateKey = privateKey
   }
 
   public copy(entity: Partial<WalletListItemModel>): WalletListItemModel {

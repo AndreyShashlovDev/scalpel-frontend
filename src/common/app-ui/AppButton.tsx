@@ -39,7 +39,7 @@ const BasicButton = styled(motion.button)<{
     if ($variant === ComponentVariant.DANGER) {
       return theme.color.button.normal.border.error
     }
-    
+
     return theme.color.button.normal.border.primary!
   }};
 
@@ -98,8 +98,15 @@ const BasicButton = styled(motion.button)<{
 
 export interface AppButtonProps extends ComponentSizeProps, ComponentVariantProps {
   text?: ReactNode
-  onClick: () => void
+  onClick?: () => void
   disabled?: boolean
+  onMouseDown?: () => void;
+  onMouseUp?: () => void;
+  onMouseLeave?: () => void;
+  onMouseMove?: () => void;
+  onTouchStart?: () => void;
+  onTouchEnd?: () => void;
+  onTouchMove?: () => void;
 }
 
 export const AppButton = ({text, onClick, disabled, size, variant, ...props}: AppButtonProps) => {
@@ -112,7 +119,7 @@ export const AppButton = ({text, onClick, disabled, size, variant, ...props}: Ap
       // type='button'
       // value={text}
       disabled={disabled}
-      onClick={() => !disabled && onClick()}
+      onClick={() => !disabled && onClick && onClick()}
       $disabled={disabled}
       {...props}
     >

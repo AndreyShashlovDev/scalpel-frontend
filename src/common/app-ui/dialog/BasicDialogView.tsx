@@ -41,6 +41,7 @@ const DialogWindowContainer = styled.div`
 
 const DialogWindowContent = styled.div`
   width: 80%;
+  max-width: 480px;
   height: fit-content;
   display: flex;
   flex-direction: column;
