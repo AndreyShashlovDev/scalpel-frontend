@@ -9,6 +9,7 @@ import { ComponentSize } from './ComponentSize.ts'
 const Container = styled.div`
   display: flex;
   background: ${({theme}) => theme.color.background};
+  width: 100%;
 `
 
 const ButtonsContainer = styled.div`
@@ -22,7 +23,9 @@ const ButtonsContainer = styled.div`
 const TitleContainer = styled.div`
   position: absolute;
   left: 50%;
-  transform: translateX(-50%)
+  transform: translateX(-50%);
+  width: 100%;
+  pointer-events: none;
 `
 
 export const PageHeaderContainer = styled(AppTitleView)`

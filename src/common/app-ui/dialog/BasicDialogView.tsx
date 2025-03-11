@@ -3,6 +3,7 @@ import { ForwardedRef, forwardRef, ReactNode, useCallback, useImperativeHandle, 
 import { createPortal } from 'react-dom'
 import styled from 'styled-components'
 import { AppTitleView } from '../AppTitleView.tsx'
+import { ComponentSize } from '../ComponentSize.ts'
 
 const BackgroundLayer = styled(motion.div)`
   position: absolute;
@@ -115,7 +116,7 @@ export const BasicDialogView = forwardRef((
   const getTitleView = useMemo(() => {
     return (
       <TitleContainer $canClose={canClose ?? true}>
-        {title && typeof title === 'string' ? <AppTitleView text={title} /> : title}
+        {title && typeof title === 'string' ? <AppTitleView text={title} size={ComponentSize.SMALL} /> : title}
         {(canClose ?? true) && (
           <CloseButton
             whileTap={{scale: 0.95}}

@@ -43,4 +43,24 @@ export class AuthRepositoryImpl extends AuthRepository {
       }
     )
   }
+
+  public async registration(address: string, message: string, sig: string): Promise<string> {
+    return this.sourceService.post<string, string>(
+      {
+        path: '/auth/signup',
+        body: {
+          address,
+          message,
+          sign: sig
+        }
+      },
+      async (response) => {
+        if (response.success) {
+          return response.data!
+        }
+
+        throw UnknownException.create()
+      }
+    )
+  }
 }

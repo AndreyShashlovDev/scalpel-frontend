@@ -16,4 +16,6 @@ export abstract class LoginPagePresenter extends BasicPresenter<void> {
   public abstract disconnectWalletClick(): void
 
   public abstract onDemoClick(): void
+
+  public abstract onRegisterClick(): void
 }

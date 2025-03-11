@@ -1,4 +1,4 @@
-import { ForwardedRef, forwardRef, useState } from 'react'
+import { ForwardedRef, forwardRef, ReactElement, useState } from 'react'
 import styled from 'styled-components'
 import { AppButton } from '../AppButton.tsx'
 import { PageHeaderView } from '../PageHeaderView.tsx'
@@ -6,7 +6,7 @@ import { BasicDialogView, DialogCallback } from './BasicDialogView.tsx'
 
 type CallBackDataType = {
   title: string
-  message: string
+  message: string | ReactElement
 }
 
 export interface DialogAlertCallBack extends DialogCallback<CallBackDataType> {}
@@ -18,6 +18,7 @@ const DescContainer = styled.div`
   font-size: ${({theme}) => theme.size.fontSize.medium};
   text-align: center;
   margin-top: 12px;
+  overflow: hidden;
 `
 
 const ButtonsContainer = styled.div`

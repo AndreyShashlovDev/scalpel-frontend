@@ -1,8 +1,8 @@
 import { BehaviorSubject, map, Observable } from 'rxjs'
 import { Wallet, WalletConnect } from '../../../common/service/wallet-connect/WalletConnect.ts'
 import { Interactor } from '../../../utils/arch/Interactor.ts'
+import { LoginPageRouter } from '../router/LoginPageRouter.ts'
 import { LoginPagePresenter } from './LoginPagePresenter.ts'
-import { LoginPageRouter } from './router/LoginPageRouter.ts'
 
 export class LoginPagePresenterImpl extends LoginPagePresenter {
 
@@ -11,6 +11,7 @@ export class LoginPagePresenterImpl extends LoginPagePresenter {
   constructor(
     private readonly walletConnection: WalletConnect<Wallet>,
     private readonly loginInteractor: Interactor<void, Promise<void>>,
+    private readonly registrationInteractor: Interactor<void, Promise<string>>,
     private readonly router: LoginPageRouter,
   ) {
     super()
@@ -55,5 +56,11 @@ export class LoginPagePresenterImpl extends LoginPagePresenter {
 
   public onDemoClick(): void {
     this.router.openDemoPage()
+  }
+
+  public onRegisterClick(): void {
+    this.registrationInteractor.invoke()
+      .then((joinCode) => this.router.openJoinTelegramBot(joinCode))
+      .catch(e => console.error(e))
   }
 }
