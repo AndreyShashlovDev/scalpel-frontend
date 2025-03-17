@@ -860,7 +860,7 @@
     "@babel/types" "^7.4.4"
     esutils "^2.0.2"
 
-"@babel/runtime@^7.11.2", "@babel/runtime@^7.23.2", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7":
+"@babel/runtime@^7.11.2", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7":
   version "7.26.0"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.26.0.tgz#8600c2f595f277c60815256418b85356a65173c1"
   integrity sha512-FDSOghenHTiToteC/QRlv2q3DhPZ/oOXTBoirfWNx1Cx3TMVcGWQtMMmQcSvb/JjpNeGzx8Pq/b4fKEJuWm1sw==
@@ -871,6 +871,13 @@
   version "7.26.9"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.26.9.tgz#aa4c6facc65b9cb3f87d75125ffd47781b475433"
   integrity sha512-aA63XwOkcl4xxQa3HjPMqOP6LiK0ZDv3mUPYEFXkpHbaFjtGggE1A61FjFzJnB+p7/oy2gA8E+rcBNl/zC1tMg==
+  dependencies:
+    regenerator-runtime "^0.14.0"
+
+"@babel/runtime@^7.26.10":
+  version "7.26.10"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.26.10.tgz#a07b4d8fa27af131a633d7b3524db803eb4764c2"
+  integrity sha512-2WJMeRQPHKSPemqk/awGrAiuFfzBmOIPXKizAsVhWH9YJqLZ0H+HS4c8loHGgW6utJ3E/ejXQUsiGaQy2NZ9Fw==
   dependencies:
     regenerator-runtime "^0.14.0"
 
@@ -4334,6 +4341,11 @@ fd-slicer@~1.1.0:
   dependencies:
     pend "~1.2.0"
 
+fdir@^6.4.3:
+  version "6.4.3"
+  resolved "https://registry.yarnpkg.com/fdir/-/fdir-6.4.3.tgz#011cdacf837eca9b811c89dbb902df714273db72"
+  integrity sha512-PMXmW2y1hDDfTSRc9gaXIuCCRpuoz3Kaz8cUelp3smouvfT632ozg2vrT6lJsHKKOF59YLbOGfAWGUcKEfRMQw==
+
 figures@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/figures/-/figures-2.0.0.tgz#3ab1a2d2a62c8bfb431a0c94cb797a2fce27c962"
@@ -4755,12 +4767,12 @@ human-signals@^5.0.0:
   resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-5.0.0.tgz#42665a284f9ae0dade3ba41ebc37eb4b852f3a28"
   integrity sha512-AXcZb6vzzrFAUE61HnN4mpLqd/cSIwNQjtNWR0euPm6y0iqx3G4gOXaIDdtdDwZmhwe82LA6+zinmW4UBWVePQ==
 
-i18next@^23.10.1:
-  version "23.16.4"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-23.16.4.tgz#79c07544f6d6fa803fe8427108d547542c1d6cf4"
-  integrity sha512-9NIYBVy9cs4wIqzurf7nLXPyf3R78xYbxExVqHLK9od3038rjpyOEzW+XB130kZ1N4PZ9inTtJ471CRJ4Ituyg==
+i18next@^24.2.3:
+  version "24.2.3"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-24.2.3.tgz#3a05f72615cbd7c00d7e348667e2aabef1df753b"
+  integrity sha512-lfbf80OzkocvX7nmZtu7nSTNbrTYR52sLWxPtlXX1zAhVw8WEnFk4puUkCR4B1dNQwbSpEHHHemcZu//7EcB7A==
   dependencies:
-    "@babel/runtime" "^7.23.2"
+    "@babel/runtime" "^7.26.10"
 
 iconv-lite@0.4.24, iconv-lite@^0.4.24:
   version "0.4.24"
@@ -6447,10 +6459,10 @@ react-simple-pull-to-refresh@=1.3.3:
   resolved "https://registry.yarnpkg.com/react-simple-pull-to-refresh/-/react-simple-pull-to-refresh-1.3.3.tgz#118afe0d8ba6cade87094786b3889fb2ffd5b9bc"
   integrity sha512-6qXsa5RtNVmKJhLWvDLIX8UK51HFtCEGjdqQGf+M1Qjrcc4qH4fki97sgVpGEFBRwbY7DiVDA5N5p97kF16DTw==
 
-react-smooth@^4.0.0:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/react-smooth/-/react-smooth-4.0.1.tgz#6200d8699bfe051ae40ba187988323b1449eab1a"
-  integrity sha512-OE4hm7XqR0jNOq3Qmk9mFLyd6p2+j6bvbPJ7qlB7+oo0eNcL2l7WQzG6MBnT3EXY6xzkLMUBec3AfewJdA0J8w==
+react-smooth@^4.0.4:
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/react-smooth/-/react-smooth-4.0.4.tgz#a5875f8bb61963ca61b819cedc569dc2453894b4"
+  integrity sha512-gnGKTpYwqL0Iii09gHobNolvX4Kiq4PKx6eWBCYYix+8cdw+cGo3do906l1NBPKkSWx1DghC1dlWG9L2uGd61Q==
   dependencies:
     fast-equals "^5.0.1"
     prop-types "^15.8.1"
@@ -6506,16 +6518,16 @@ recharts-scale@^0.4.4:
   dependencies:
     decimal.js-light "^2.4.1"
 
-recharts@=2.13.3:
-  version "2.13.3"
-  resolved "https://registry.yarnpkg.com/recharts/-/recharts-2.13.3.tgz#a5ce61e493dff921a14a14a8f42a9f2d2bbefd5a"
-  integrity sha512-YDZ9dOfK9t3ycwxgKbrnDlRC4BHdjlY73fet3a0C1+qGMjXVZe6+VXmpOIIhzkje5MMEL8AN4hLIe4AMskBzlA==
+recharts@^2.15.1:
+  version "2.15.1"
+  resolved "https://registry.yarnpkg.com/recharts/-/recharts-2.15.1.tgz#0941adf0402528d54f6d81997eb15840c893aa3c"
+  integrity sha512-v8PUTUlyiDe56qUj82w/EDVuzEFXwEHp9/xOowGAZwfLjB9uAy3GllQVIYMWF6nU+qibx85WF75zD7AjqoT54Q==
   dependencies:
     clsx "^2.0.0"
     eventemitter3 "^4.0.1"
     lodash "^4.17.21"
     react-is "^18.3.1"
-    react-smooth "^4.0.0"
+    react-smooth "^4.0.4"
     recharts-scale "^0.4.4"
     tiny-invariant "^1.3.1"
     victory-vendor "^36.6.8"
@@ -7343,6 +7355,14 @@ tiny-invariant@^1.3.1:
   resolved "https://registry.yarnpkg.com/tiny-invariant/-/tiny-invariant-1.3.3.tgz#46680b7a873a0d5d10005995eb90a70d74d60127"
   integrity sha512-+FbBPE1o9QAYvviau/qC5SE3caw21q3xkvWKBtja5vgqOWIHHJ3ioaq1VPfn/Szqctz2bU/oYeKd9/z5BL+PVg==
 
+tinyglobby@^0.2.10:
+  version "0.2.12"
+  resolved "https://registry.yarnpkg.com/tinyglobby/-/tinyglobby-0.2.12.tgz#ac941a42e0c5773bd0b5d08f32de82e74a1a61b5"
+  integrity sha512-qkf4trmKSIiMTs/E63cxH+ojC2unam7rJ0WrauAzpT3ECNTxGRMlaXxVbfxMUC/w0LaYk6jQ4y/nGR9uBO3tww==
+  dependencies:
+    fdir "^6.4.3"
+    picomatch "^4.0.2"
+
 tldts-core@^6.1.79:
   version "6.1.79"
   resolved "https://registry.yarnpkg.com/tldts-core/-/tldts-core-6.1.79.tgz#2d98689a161fbafe38a6640a54f5d4c88bd941a1"
@@ -7782,16 +7802,16 @@ viem@>=2.23, viem@>=2.23.0:
     ox "0.6.7"
     ws "8.18.0"
 
-vite-plugin-pwa@^0.19.8:
-  version "0.19.8"
-  resolved "https://registry.yarnpkg.com/vite-plugin-pwa/-/vite-plugin-pwa-0.19.8.tgz#f7be200a4426207358aef807b4a6e1ecbc14d345"
-  integrity sha512-e1oK0dfhzhDhY3VBuML6c0h8Xfx6EkOVYqolj7g+u8eRfdauZe5RLteCIA/c5gH0CBQ0CNFAuv/AFTx4Z7IXTw==
+vite-plugin-pwa@^0.21.1:
+  version "0.21.1"
+  resolved "https://registry.yarnpkg.com/vite-plugin-pwa/-/vite-plugin-pwa-0.21.1.tgz#2fb718ce6c7e62729d51e91bce739232e4a8e792"
+  integrity sha512-rkTbKFbd232WdiRJ9R3u+hZmf5SfQljX1b45NF6oLA6DSktEKpYllgTo1l2lkiZWMWV78pABJtFjNXfBef3/3Q==
   dependencies:
-    debug "^4.3.4"
-    fast-glob "^3.3.2"
+    debug "^4.3.6"
     pretty-bytes "^6.1.1"
-    workbox-build "^7.0.0"
-    workbox-window "^7.0.0"
+    tinyglobby "^0.2.10"
+    workbox-build "^7.3.0"
+    workbox-window "^7.3.0"
 
 vite-plugin-svgr@^4.3.0:
   version "4.3.0"
@@ -7937,7 +7957,7 @@ workbox-broadcast-update@7.3.0:
   dependencies:
     workbox-core "7.3.0"
 
-workbox-build@^7.0.0:
+workbox-build@^7.3.0:
   version "7.3.0"
   resolved "https://registry.yarnpkg.com/workbox-build/-/workbox-build-7.3.0.tgz#ab688f3241b32862236aeeb62b240195f1fe4b62"
   integrity sha512-JGL6vZTPlxnlqZRhR/K/msqg3wKP+m0wfEUVosK7gsYzSgeIxvZLi1ViJJzVL7CEeI8r7rGFV973RiEqkP3lWQ==
@@ -8072,7 +8092,7 @@ workbox-sw@7.3.0:
   resolved "https://registry.yarnpkg.com/workbox-sw/-/workbox-sw-7.3.0.tgz#39215017e868d7cfe6835b2961f55369d89b3e73"
   integrity sha512-aCUyoAZU9IZtH05mn0ACUpyHzPs0lMeJimAYkQkBsOWiqaJLgusfDCR+yllkPkFRxWpZKF8vSvgHYeG7LwhlmA==
 
-workbox-window@7.3.0, workbox-window@^7.0.0:
+workbox-window@7.3.0, workbox-window@^7.3.0:
   version "7.3.0"
   resolved "https://registry.yarnpkg.com/workbox-window/-/workbox-window-7.3.0.tgz#e71bb0b4d880d2295c96bf1ccadb6cea0df51c07"
   integrity sha512-qW8PDy16OV1UBaUNGlTVcepzrlzyzNW/ZJvFQQs2j2TzGsg6IKjcpZC1RSquqQnTOafl5pCj5bGfAHlCjOOjdA==
