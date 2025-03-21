@@ -1,7 +1,9 @@
 import { Observable, Subject } from 'rxjs'
+import { Injectable } from '../../../../utils/di-core/decorator/decorators.ts'
 import { Preference } from '../model/Preference.ts'
 import { PreferencesRepository } from './PreferencesRepository.ts'
 
+@Injectable()
 export class PreferencesRepositoryImpl extends PreferencesRepository {
 
   private static readonly PREFERENCE_KEY = 'SCALPEL_PREFERENCE'

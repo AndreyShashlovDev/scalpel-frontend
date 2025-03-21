@@ -1,11 +1,14 @@
 import { LogResponse } from '../../../../common/repository/data/model/LogResponse.ts'
 import { Pageable } from '../../../../common/repository/data/model/Pageable.ts'
 import { AppSourceService } from '../../../../common/repository/data/source/AppSourceService.ts'
+import { Inject, Injectable } from '../../../../utils/di-core/decorator/decorators.ts'
 import { LogsRepository } from './LogsRepository.ts'
 
+@Injectable()
 export class LogsRepositoryImpl extends LogsRepository {
 
-  constructor(private readonly appSourceService: AppSourceService) {
+  constructor(
+    @Inject(AppSourceService) private readonly appSourceService: AppSourceService) {
     super()
   }
 

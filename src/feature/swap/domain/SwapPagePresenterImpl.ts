@@ -3,12 +3,14 @@ import { Pageable } from '../../../common/repository/data/model/Pageable.ts'
 import { SortOrder } from '../../../common/repository/data/model/SortOrder.ts'
 import { StrategyResponse } from '../../../common/repository/data/model/StrategyResponse.ts'
 import { SwapResponse } from '../../../common/repository/data/model/SwapResponse.ts'
+import { Inject, Injectable } from '../../../utils/di-core/decorator/decorators.ts'
 import { StrategyRepository } from '../data/strategy-repository/StrategyRepository.ts'
 import { SwapRepository } from '../data/swap-repository/SwapRepository.ts'
 import { SwapResponseToSwapListItem } from '../presentation/mapping/SwapResponseToSwapListItem.ts'
 import { SwapListItemModel } from '../presentation/model/SwapListItemModel.ts'
 import { SwapPagePresenter } from './SwapPagePresenter.ts'
 
+@Injectable()
 export class SwapPagePresenterImpl extends SwapPagePresenter {
 
   private static readonly PAGE_LIMIT: number = 10
@@ -23,8 +25,8 @@ export class SwapPagePresenterImpl extends SwapPagePresenter {
   private strategy: StrategyResponse | undefined
 
   constructor(
-    private readonly strategyRepository: StrategyRepository,
-    private readonly swapRepository: SwapRepository,
+    @Inject(StrategyRepository) private readonly strategyRepository: StrategyRepository,
+    @Inject(SwapRepository) private readonly swapRepository: SwapRepository,
   ) {
     super()
   }

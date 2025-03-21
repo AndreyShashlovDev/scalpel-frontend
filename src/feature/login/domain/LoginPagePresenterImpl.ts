@@ -15,6 +15,7 @@ export class LoginPagePresenterImpl extends LoginPagePresenter {
     private readonly router: LoginPageRouter,
   ) {
     super()
+    console.log('CREATE LoginPagePresenterImpl')
   }
 
   public ready(): void {

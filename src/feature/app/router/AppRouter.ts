@@ -1,3 +1,6 @@
+import { Observable } from 'rxjs'
+import { RouteEvent } from '../../../common/router/domain/BasicRouter.ts'
+
 export abstract class AppRouter {
 
   public abstract getCurrentPath(): string | undefined
@@ -13,4 +16,6 @@ export abstract class AppRouter {
   public abstract openTransactionsPage(): void
 
   public abstract openSimulationPage(): void
+
+  public abstract getNavigationObservable(): Observable<RouteEvent>
 }

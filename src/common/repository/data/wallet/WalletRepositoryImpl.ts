@@ -1,3 +1,4 @@
+import { Inject, Injectable } from '../../../../utils/di-core/decorator/decorators.ts'
 import { Address } from '../../../../utils/types.ts'
 import { ExportWalletResponse } from '../model/ExportWalletResponse.ts'
 import { Pageable } from '../model/Pageable.ts'
@@ -7,9 +8,12 @@ import { AppSourceService } from '../source/AppSourceService.ts'
 import { UnknownException } from '../source/exception/UnknownException.ts'
 import { WalletRepository } from './WalletRepository.ts'
 
+@Injectable()
 export class WalletRepositoryImpl extends WalletRepository {
 
-  constructor(private readonly appSourceService: AppSourceService) {
+  constructor(
+    @Inject(AppSourceService) private readonly appSourceService: AppSourceService
+  ) {
     super()
   }
 

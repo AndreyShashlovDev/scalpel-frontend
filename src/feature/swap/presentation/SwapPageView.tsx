@@ -3,11 +3,10 @@ import styled from 'styled-components'
 import { ComponentSize } from '../../../common/app-ui/ComponentSize.ts'
 import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
 import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
-import useObservable from '../../../hooks/useObservable.ts'
-import { usePresenter } from '../../../hooks/usePresenter.ts'
+import useObservable from '../../../utils/di-core/react/hook/useObservable.ts'
+import { usePresenter } from '../../../utils/di-core/react/hook/usePresenter.ts'
 import { SwapPagePresenter } from '../domain/SwapPagePresenter.ts'
 import { StrategyListView } from './components/swap-list/SwapListView.tsx'
-import '../di/SwapPagePresenterModule.ts'
 
 const Container = styled(PageLayoutView)`
   overflow: hidden;

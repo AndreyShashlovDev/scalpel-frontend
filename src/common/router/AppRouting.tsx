@@ -1,14 +1,16 @@
-import { lazy, Suspense } from 'react'
+import { lazy } from 'react'
 import { createMemoryRouter } from 'react-router-dom'
 import { CreateStrategyPageModule } from '../../feature/create-strategy/di/CreateStrategyPageModule.ts'
-import { CreateStrategyPagePresenter } from '../../feature/create-strategy/domain/CreateStrategyPagePresenter.ts'
+import { DemoPageModule } from '../../feature/demo/di/DemoPageModule.ts'
 import { LoginPageModule } from '../../feature/login/di/LoginPageModule.ts'
-import { LoginPagePresenter } from '../../feature/login/domain/LoginPagePresenter.ts'
-import { WalletPageModule } from '../../feature/wallet/di/WalletPagePresenterModule.ts'
-import { WalletPagePresenter } from '../../feature/wallet/domain/WalletPagePresenter.ts'
-import { createLazyRoute } from './CreateLazyRouter.tsx'
+import { SimulationPageModule } from '../../feature/simulator/di/SimulationPageModule.ts'
+import { SplashPageModule } from '../../feature/splash/di/SplashPageModule.ts'
+import { StrategiesPageModule } from '../../feature/strategies/di/StrategiesPageModule.ts'
+import { TransactionsPageModule } from '../../feature/transaction/di/TransactionsPageModule.ts'
+import { WalletPageModule } from '../../feature/wallet/di/WalletPageModule.ts'
+import { createModuleRoute } from '../../utils/di-core/react/router/ModuleRouter.tsx'
+import { RouterPath } from './domain/ApplicationRouter.ts'
 import { EntrypointView } from './EntrypointView.tsx'
-import ErrorBoundary from './ErrorBoundary.tsx'
 import { PageNotLoadedView } from './PageNotLoadedView.tsx'
 
 const SplashPageView = lazy(() => import('../../feature/splash/presentation/SplashPageView.tsx'))
@@ -26,74 +28,62 @@ export const AppRouting = createMemoryRouter(
       path: '*',
       element: <PageNotLoadedView />
     },
-    {
-      path: '/',
-      element:
-        <ErrorBoundary fallback={<PageNotLoadedView />}>
-          <Suspense fallback={<EntrypointView />}>
-            <SplashPageView key={'splash-page'} />
-          </Suspense>
-        </ErrorBoundary>
-      ,
-    },
-    createLazyRoute({
-      path: '/login',
-      moduleLoader: LoginPageModule,
-      presenterType: LoginPagePresenter,
-      component: LoginPageView
+
+    createModuleRoute({
+      path: RouterPath.Root.path,
+      module: SplashPageModule,
+      component: SplashPageView,
+      LoadingComponent: EntrypointView
     }),
-    {
-      path: '/strategies',
-      element:
-        <ErrorBoundary fallback={<PageNotLoadedView />}>
-          <Suspense fallback={<EntrypointView />}>
-            <StrategiesPageView key={'strategies-page'} />
-          </Suspense>
-        </ErrorBoundary>
-      ,
-    },
-    createLazyRoute({
-      path: '/create-strategy',
-      moduleLoader: CreateStrategyPageModule,
-      presenterType: CreateStrategyPagePresenter,
-      //@ts-expect-error fixme
-      component: CreateStrategyPageView
+
+    createModuleRoute({
+      path: RouterPath.Login.path,
+      module: LoginPageModule,
+      component: LoginPageView,
+      LoadingComponent: EntrypointView
     }),
-    createLazyRoute({
-      path: '/wallets',
-      moduleLoader: WalletPageModule,
-      presenterType: WalletPagePresenter,
-      component: WalletsPageView
+
+    createModuleRoute({
+      path: RouterPath.Orders.path,
+      module: StrategiesPageModule,
+      component: StrategiesPageView,
+      LoadingComponent: EntrypointView
     }),
-    {
-      path: '/transactions',
-      element:
-        <ErrorBoundary fallback={<PageNotLoadedView />}>
-          <Suspense fallback={<EntrypointView />}>
-            <TransactionsPageView key={'transactions-page'} />
-          </Suspense>
-        </ErrorBoundary>
-      ,
-    },
-    {
-      path: '/simulation',
-      element:
-        <ErrorBoundary fallback={<PageNotLoadedView />}>
-          <Suspense fallback={<EntrypointView />}>
-            <SimulationPageView key={'simulation-page'} />
-          </Suspense>
-        </ErrorBoundary>
-      ,
-    },
-    {
-      path: '/demo',
-      element:
-        <ErrorBoundary fallback={<PageNotLoadedView />}>
-          <Suspense fallback={<EntrypointView />}>
-            <DemoPageView key={'demo-page'} />
-          </Suspense>
-        </ErrorBoundary>
-      ,
-    },
+
+    createModuleRoute({
+      path: RouterPath.CreateOrder.path,
+      module: CreateStrategyPageModule,
+      component: CreateStrategyPageView,
+      LoadingComponent: EntrypointView
+    }),
+
+    createModuleRoute({
+      path: RouterPath.Wallets.path,
+      module: WalletPageModule,
+      component: WalletsPageView,
+      LoadingComponent: EntrypointView
+    }),
+
+    createModuleRoute({
+      path: RouterPath.Transactions.path,
+      module: TransactionsPageModule,
+      component: TransactionsPageView,
+      LoadingComponent: EntrypointView
+    }),
+
+    createModuleRoute({
+      path: RouterPath.Simulation.path,
+      module: SimulationPageModule,
+      component: SimulationPageView,
+      LoadingComponent: EntrypointView
+    }),
+
+    createModuleRoute({
+      path: RouterPath.Demo.path,
+      module: DemoPageModule,
+      component: DemoPageView,
+      LoadingComponent: EntrypointView
+    }),
   ],
 )
+AppRouting.initialize()

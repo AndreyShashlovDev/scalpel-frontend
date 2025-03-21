@@ -3,10 +3,9 @@ import styled from 'styled-components'
 import { ComponentSize } from '../../../common/app-ui/ComponentSize.ts'
 import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
 import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
-import useObservable from '../../../hooks/useObservable.ts'
-import { usePresenter } from '../../../hooks/usePresenter.ts'
+import useObservable from '../../../utils/di-core/react/hook/useObservable.ts'
+import { usePresenter } from '../../../utils/di-core/react/hook/usePresenter.ts'
 import { LogsPagePresenter } from '../domain/LogsPagePresenter.ts'
-import '../di/LogsPagePresenterModule.ts'
 import { LogsListView } from './components/list/LogsListView.tsx'
 
 const Container = styled(PageLayoutView)`

@@ -1,5 +1,6 @@
 import { BehaviorSubject, from, Observable, Subject, Subscription } from 'rxjs'
 import { Pageable } from '../../../common/repository/data/model/Pageable.ts'
+import { Inject, Injectable } from '../../../utils/di-core/decorator/decorators.ts'
 import { TransactionResponse } from '../data/model/TransactionResponse.ts'
 import { TransactionRepository } from '../data/transaction-repository/TransactionRepository.ts'
 import {
@@ -8,6 +9,7 @@ import {
 import { TransactionListItemModel } from '../presentation/model/TransactionListItemModel.ts'
 import { TransactionPagePresenter } from './TransactionPagePresenter.ts'
 
+@Injectable()
 export class TransactionPagePresenterImpl extends TransactionPagePresenter {
 
   private static readonly PAGE_LIMIT = 10
@@ -21,7 +23,9 @@ export class TransactionPagePresenterImpl extends TransactionPagePresenter {
   private transactionFetchSubscription: Subscription | undefined
   private transactionLatestResult: Pageable<TransactionResponse> | undefined
 
-  constructor(private readonly transactionRepository: TransactionRepository) {
+  constructor(
+    @Inject(TransactionRepository) private readonly transactionRepository: TransactionRepository,
+  ) {
     super()
   }
 

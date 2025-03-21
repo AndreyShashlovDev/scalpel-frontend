@@ -1,10 +1,10 @@
 import styled from 'styled-components'
 import { AppTitleView } from '../../../common/app-ui/AppTitleView.tsx'
 import { ComponentSize } from '../../../common/app-ui/ComponentSize.ts'
-import '../di/SplashPagePresenterModule.ts'
+import '../di/SplashPageModule.ts'
 import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
 import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
-import { usePresenter } from '../../../hooks/usePresenter.ts'
+import { usePresenter } from '../../../utils/di-core/react/hook/usePresenter.ts'
 import { SplashPagePresenter } from '../domain/SplashPagePresenter.ts'
 
 const Container = styled(PageLayoutView)`

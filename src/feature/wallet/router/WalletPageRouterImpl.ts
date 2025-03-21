@@ -1,11 +1,12 @@
-import { BasicDialogProvider } from '../../../utils/arch/DialogProvider.ts'
-import { WalletDialogCallBacks } from './WalletPageDialogProvider.ts'
+import { Inject, Injectable } from '../../../utils/di-core/decorator/decorators.ts'
+import { WalletPageDialogProvider } from './WalletPageDialogProvider.ts'
 import { WalletPageRouter } from './WalletPageRouter.ts'
 
+@Injectable()
 export class WalletPageRouterImpl extends WalletPageRouter {
 
   constructor(
-    private readonly dialogProvider: BasicDialogProvider<WalletDialogCallBacks>,
+    @Inject(WalletPageDialogProvider) private readonly dialogProvider: WalletPageDialogProvider,
   ) {
     super()
   }

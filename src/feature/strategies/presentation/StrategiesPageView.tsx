@@ -5,9 +5,9 @@ import { DialogQuestionCallBack, DialogQuestionView } from '../../../common/app-
 import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
 import { PageHeaderView } from '../../../common/app-ui/PageHeaderView.tsx'
 import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
-import useObservable from '../../../hooks/useObservable.ts'
-import { usePresenter } from '../../../hooks/usePresenter.ts'
-import { getDIValue } from '../../../utils/arch/Injections.ts'
+import useObservable from '../../../utils/di-core/react/hook/useObservable.ts'
+import { useInject } from '../../../utils/di-core/react/hook/useInject.ts'
+import { usePresenter } from '../../../utils/di-core/react/hook/usePresenter.ts'
 import StrategiesFilter from '../domain/model/StrategiesFilter.ts'
 import { StrategiesPagePresenter } from '../domain/StrategiesPagePresenter.ts'
 import { StrategyPageDialogProvider } from '../router/StrategyPageDialogProvider.ts'
@@ -16,7 +16,6 @@ import { DialogLogsCallBack, DialogLogsView } from './components/DialogLogsView.
 import { DialogStrategyFilterCallBack, DialogStrategyFilterView } from './components/DialogStrategyFilterView.tsx'
 import { DialogSwapsCallBack, DialogSwapsView } from './components/DialogSwapsView.tsx'
 import { StrategyListView } from './components/strategy-list/StrategyListView.tsx'
-import '../di/StrategiesPageModule.ts'
 
 const PageLayoutWrapper = styled(PageLayoutView)`
 `
@@ -30,7 +29,7 @@ const ListContainer = styled.div`
 export const StrategiesPageView = () => {
 
   const presenter = usePresenter(StrategiesPagePresenter)
-  const dialogProvider = useMemo(() => getDIValue(StrategyPageDialogProvider), [])
+  const dialogProvider = useInject(StrategyPageDialogProvider)
   const isEmptyPage = useObservable(presenter.getIsEmpty(), false)
   const isLastPage = useObservable(presenter.getIsLastPage(), true)
   const isLoading = useObservable(presenter.getIsLoading(), true)
@@ -68,7 +67,7 @@ export const StrategiesPageView = () => {
     })
 
     return () => {
-      dialogProvider.destory()
+      dialogProvider.destroy()
     }
   }, [dialogProvider])
 

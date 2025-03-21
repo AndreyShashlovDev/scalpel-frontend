@@ -1,13 +1,16 @@
-import { BehaviorSubject, Observable } from 'rxjs'
+import { BehaviorSubject, distinctUntilChanged, Observable } from 'rxjs'
 import { MenuItem } from '../../../common/app-ui/AppMenuView.tsx'
 import { AppException } from '../../../common/repository/data/source/exception/AppException.ts'
 import { UnauthorizedException } from '../../../common/repository/data/source/exception/UnauthorizedException.ts'
+import { RouterPath } from '../../../common/router/domain/ApplicationRouter.ts'
 import { AppAuthService } from '../../../common/service/auth/AppAuthService.ts'
 import { ExceptionHandlerService } from '../../../common/service/exception-handler/ExceptionHandlerService.ts'
+import { Inject, Injectable } from '../../../utils/di-core/decorator/decorators.ts'
 import { AppRouter } from '../router/AppRouter.ts'
 import { AppMainMenuIds } from './AppMainMenuIds.ts'
 import { AppPresenter } from './AppPresenter.ts'
 
+@Injectable()
 export class AppPresenterImpl extends AppPresenter {
 
   private readonly selectedMenuItem = new BehaviorSubject<number>(AppMainMenuIds.ORDERS_MENU_ID)
@@ -22,10 +25,18 @@ export class AppPresenterImpl extends AppPresenter {
     {text: 'Logout', id: AppMainMenuIds.LOGOUT, selectable: false},
   ])
 
+  private readonly menuItemsByPath = new Map<string, number>([
+    [RouterPath.Orders.path, AppMainMenuIds.ORDERS_MENU_ID],
+    [RouterPath.Wallets.path, AppMainMenuIds.WALLET_MENU_ID],
+    [RouterPath.Transactions.path, AppMainMenuIds.TRANSACTIONS_MENU_ID],
+    [RouterPath.CreateOrder.path, AppMainMenuIds.CREATE_ORDER_MENU_ID],
+    [RouterPath.Simulation.path, AppMainMenuIds.SIMULATION_MENU_ID],
+  ])
+
   constructor(
-    private readonly exceptionNotifierService: ExceptionHandlerService,
-    private readonly authService: AppAuthService,
-    private readonly router: AppRouter,
+    @Inject(ExceptionHandlerService) private readonly exceptionNotifierService: ExceptionHandlerService,
+    @Inject(AppAuthService) private readonly authService: AppAuthService,
+    @Inject(AppRouter) private readonly router: AppRouter,
   ) {
     super()
   }
@@ -35,6 +46,20 @@ export class AppPresenterImpl extends AppPresenter {
   }
 
   public ready(): void {
+    this.router.getNavigationObservable()
+      .pipe(
+        distinctUntilChanged((prev, current) => prev.path == current.path)
+      )
+      .subscribe({
+        next: (value) => {
+          const menuId = this.menuItemsByPath.get(value.path)
+
+          if (menuId != undefined && this.selectedMenuItem.value !== menuId) {
+            this.selectedMenuItem.next(menuId)
+          }
+        }
+      })
+
     this.exceptionNotifierService
       .observe()
       .subscribe({

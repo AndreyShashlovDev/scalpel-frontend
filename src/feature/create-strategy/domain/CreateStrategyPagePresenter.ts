@@ -4,7 +4,14 @@ import { CurrencyResponse } from '../../../common/repository/data/model/Currency
 import { StrategyType } from '../../../common/repository/data/model/StrategyType.ts'
 import { BasicPresenter } from '../../../utils/arch/BasicPresenter.ts'
 import { StrategyOptionsData } from '../presentation/components/strategy-options/StrategyOptionsProps.ts'
-import { State } from './CreateStrategyPagePresenterImpl.ts'
+
+export enum State {
+  CHAIN = 'CHAIN',
+  // STRATEGY = 'STRATEGY'
+  COIN = 'COIN',
+  WALLET = 'WALLET',
+  OPTIONS = 'OPTIONS',
+}
 
 export abstract class CreateStrategyPagePresenter extends BasicPresenter<void> {
 

@@ -1,6 +1,8 @@
 import { ForwardedRef, forwardRef, useState } from 'react'
 import { BasicDialogView, DialogCallback } from '../../../../common/app-ui/dialog/BasicDialogView.tsx'
 import { PageHeaderView } from '../../../../common/app-ui/PageHeaderView.tsx'
+import { ModuleLoader } from '../../../../utils/di-core/react/provider/ModuleLoader.tsx'
+import { SwapPageModule } from '../../../swap/di/SwapPageModule.ts'
 import { SwapPageView } from '../../../swap/presentation/SwapPageView.tsx'
 
 type CallBackDataType = { strategyHash: string }
@@ -27,7 +29,12 @@ export const DialogSwapsView = forwardRef((
           setData(data)
         }
       }}
-      content={<SwapPageView strategyHash={data?.strategyHash} />}
+      content={
+        <ModuleLoader
+          module={SwapPageModule}
+          children={<SwapPageView strategyHash={data?.strategyHash} />}
+        />
+      }
     />
   )
 })

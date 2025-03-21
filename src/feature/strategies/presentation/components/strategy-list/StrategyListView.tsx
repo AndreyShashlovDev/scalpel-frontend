@@ -3,7 +3,7 @@ import { Observable } from 'rxjs'
 import styled from 'styled-components'
 import InfiniteScrollListView, { ListItem } from '../../../../../common/app-ui/AppInfiniteScrollView.tsx'
 import { LoadingView } from '../../../../../common/app-ui/LoadingView.tsx'
-import useObservable from '../../../../../hooks/useObservable.ts'
+import useObservable from '../../../../../utils/di-core/react/hook/useObservable.ts'
 import { StrategyListItem } from '../../model/StrategyListItem.ts'
 import {
   ScalpelClassicStrategyHolderView,

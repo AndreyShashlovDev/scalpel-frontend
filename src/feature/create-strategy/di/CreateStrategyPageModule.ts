@@ -1,21 +1,44 @@
 import { CurrencyRepository } from '../../../common/repository/data/currencies/CurrencyRepository.ts'
-import { AppSourceService } from '../../../common/repository/data/source/AppSourceService.ts'
-import { WalletRepositoryImpl } from '../../../common/repository/data/wallet/WalletRepositoryImpl.ts'
+import { WalletRepository } from '../../../common/repository/data/wallet/WalletRepository.ts'
 import { ApplicationRouter } from '../../../common/router/domain/ApplicationRouter.ts'
-import { Factory, getDIValue, injectionKernel } from '../../../utils/arch/Injections.ts'
+import { Module } from '../../../utils/di-core/di/Dependency.ts'
+import { StrategyRepository } from '../data/strategy-repository/StrategyRepository.ts'
 import { StrategyRepositoryImpl } from '../data/strategy-repository/StrategyRepositoryImpl.ts'
 import { CreateStrategyPagePresenter } from '../domain/CreateStrategyPagePresenter.ts'
 import { CreateStrategyPagePresenterImpl } from '../domain/CreateStrategyPagePresenterImpl.ts'
+import { CreateStrategyRouter } from '../domain/router/CreateStrategyRouter.ts'
 
-export const CreateStrategyPageModule = async () => {
-  injectionKernel.set(
-    CreateStrategyPagePresenter,
-    new Factory(() => new CreateStrategyPagePresenterImpl(
-      getDIValue(CurrencyRepository),
-      new WalletRepositoryImpl(getDIValue(AppSourceService)),
-      new StrategyRepositoryImpl(getDIValue(AppSourceService)),
-      getDIValue(ApplicationRouter),
-      false /* is simulation */
-    ), false)
-  )
-}
+@Module({
+  imports: [],
+  providers: [
+    {
+      provide: CreateStrategyRouter,
+      deps: [ApplicationRouter],
+      useFactory: (appRouter: ApplicationRouter) => appRouter
+    },
+    {
+      provide: StrategyRepository,
+      useClass: StrategyRepositoryImpl
+    },
+    {
+      provide: CreateStrategyPagePresenter,
+      deps: [CurrencyRepository, WalletRepository, StrategyRepository, CreateStrategyRouter],
+      useFactory: (
+        currencyRepository: CurrencyRepository,
+        walletRepository: WalletRepository,
+        strategyRepository: StrategyRepository,
+        createStrategyRouter: CreateStrategyRouter
+      ) => {
+        return new CreateStrategyPagePresenterImpl(
+          currencyRepository,
+          walletRepository,
+          strategyRepository,
+          createStrategyRouter,
+          false /* is simulation */
+        )
+      }
+    }
+  ],
+  exports: [CreateStrategyPagePresenter]
+})
+export class CreateStrategyPageModule {}

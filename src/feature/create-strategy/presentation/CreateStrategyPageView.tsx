@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import styled from 'styled-components'
 import PlayIcon from '../../../assets/icons/app/PlayIcon.svg'
 import { AppAddressView } from '../../../common/app-ui/AppAddressView.tsx'
@@ -10,11 +10,9 @@ import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
 import { PageHeaderView } from '../../../common/app-ui/PageHeaderView.tsx'
 import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
 import { StrategyType } from '../../../common/repository/data/model/StrategyType.ts'
-import useObservable from '../../../hooks/useObservable.ts'
-import { usePresenter } from '../../../hooks/usePresenter.ts'
-import { InjectionModule } from '../../../utils/arch/Injections.ts'
-import { CreateStrategyPagePresenter } from '../domain/CreateStrategyPagePresenter.ts'
-import { State } from '../domain/CreateStrategyPagePresenterImpl.ts'
+import useObservable from '../../../utils/di-core/react/hook/useObservable.ts'
+import { usePresenter } from '../../../utils/di-core/react/hook/usePresenter.ts'
+import { CreateStrategyPagePresenter, State } from '../domain/CreateStrategyPagePresenter.ts'
 import { ClassicScalpelOptionsView } from './components/strategy-options/ClassicScalpelOptionsView.tsx'
 
 const PlayIconWrapper = styled(PlayIcon)`
@@ -91,13 +89,7 @@ const OrangeColor = styled.span`
   color: ${({theme}) => theme.color.common.orange};
 `
 
-export interface CreateStrategyPageProps extends InjectionModule {
-  hasHeader?: boolean
-}
-
-const CreateStrategyPageView = ({invokeInject, hasHeader}: CreateStrategyPageProps) => {
-
-  useMemo(() => invokeInject && invokeInject(), [invokeInject])
+const CreateStrategyPageView = () => {
 
   const presenter = usePresenter(CreateStrategyPagePresenter)
   const state = useObservable(presenter.getCurrentState(), State.CHAIN)
@@ -311,7 +303,7 @@ const CreateStrategyPageView = ({invokeInject, hasHeader}: CreateStrategyPagePro
 
   return (
     <Wrapper>
-      {(hasHeader ?? true) && <PageHeaderView text={'Create strategy'} />}
+      {(!isSimulation) && <PageHeaderView text={'Create strategy'} />}
       <Container>
         <ScrollPageContainer>
             <ContentContainer>

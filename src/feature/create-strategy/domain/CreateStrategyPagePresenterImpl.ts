@@ -11,16 +11,8 @@ import { CreateScalpelStrategyRequest } from '../data/model/CreateStrategyReques
 import { StrategyRepository } from '../data/strategy-repository/StrategyRepository.ts'
 import { ClassicScalpelOptionsData } from '../presentation/components/strategy-options/ClassicScalpelOptionsView.tsx'
 import { StrategyOptionsData } from '../presentation/components/strategy-options/StrategyOptionsProps.ts'
-import { CreateStrategyPagePresenter } from './CreateStrategyPagePresenter.ts'
+import { CreateStrategyPagePresenter, State } from './CreateStrategyPagePresenter.ts'
 import { CreateStrategyRouter } from './router/CreateStrategyRouter.ts'
-
-export enum State {
-  CHAIN = 'CHAIN',
-  // STRATEGY = 'STRATEGY'
-  COIN = 'COIN',
-  WALLET = 'WALLET',
-  OPTIONS = 'OPTIONS',
-}
 
 export class CreateStrategyPagePresenterImpl extends CreateStrategyPagePresenter {
 

@@ -6,10 +6,10 @@ import { useApp } from '../../../AppProvider.tsx'
 import { AppMenuView } from '../../../common/app-ui/AppMenuView.tsx'
 import { SnackbarView } from '../../../common/app-ui/snackbar/presentation/SnackbarView.tsx'
 import { AppRouting } from '../../../common/router/AppRouting.tsx'
-import useObservable from '../../../hooks/useObservable.ts'
-import { usePresenter } from '../../../hooks/usePresenter.ts'
+import { RouterInitializer } from '../../../common/router/RouterInitializer.tsx'
+import useObservable from '../../../utils/di-core/react/hook/useObservable.ts'
 import { useAppTheme } from '../../../style/theme/AppThemeProvider.tsx'
-import '../di/AppPresenterModule.ts'
+import { usePresenter } from '../../../utils/di-core/react/hook/usePresenter.ts'
 import { AppPresenter } from '../domain/AppPresenter.ts'
 
 const GlobalStyle = createGlobalStyle`
@@ -49,7 +49,8 @@ export const App = () => {
       <GlobalStyle />
       <BasicContainer>
       <RouterProvider router={routing} />
-      <AnimatePresence>
+        <RouterInitializer router={routing} />
+        <AnimatePresence>
         <AppMenuView
           selected={selectedMenuItemId}
           items={menuItems}

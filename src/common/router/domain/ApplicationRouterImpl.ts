@@ -1,5 +1,7 @@
+import { Singleton } from '../../../utils/di-core/decorator/decorators.ts'
 import { ApplicationRouter } from './ApplicationRouter.ts'
 
+@Singleton()
 export class ApplicationRouterImpl extends ApplicationRouter {
 
   constructor() {

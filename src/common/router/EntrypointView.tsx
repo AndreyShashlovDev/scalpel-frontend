@@ -1,26 +1,25 @@
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import { getDIValue } from '../../utils/arch/Injections.ts'
+import { AppTitleView } from '../app-ui/AppTitleView.tsx'
+import { ComponentSize } from '../app-ui/ComponentSize.ts'
 import { LoadingView } from '../app-ui/LoadingView.tsx'
-import { ApplicationRouter } from './domain/ApplicationRouter.ts'
+import { PageLayoutView } from '../app-ui/PageLayoutView.tsx'
 
-const LoadingContainer = styled.div`
+const Container = styled(PageLayoutView)`
   display: flex;
+  overflow: hidden;
+  height: 100vh;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  flex-direction: column;
 `
 
 export const EntrypointView = () => {
-  const nav = useNavigate()
-
-  useEffect(
-    () => {
-      getDIValue(ApplicationRouter).setNavigate(nav)
-    },
-    [nav]
+  return (
+    <div>
+      <Container>
+        <AppTitleView text={'Scalpel'} size={ComponentSize.LARGEST} />
+        <LoadingView size={ComponentSize.STANDARD} />
+      </Container>
+    </div>
   )
-
-  return <LoadingContainer><LoadingView /></LoadingContainer>
 }

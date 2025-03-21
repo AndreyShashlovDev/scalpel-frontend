@@ -1,11 +1,10 @@
 import { AnimatePresence } from 'framer-motion'
 import { createPortal } from 'react-dom'
 import styled from 'styled-components'
-import useObservable from '../../../../hooks/useObservable.ts'
-import { usePresenter } from '../../../../hooks/usePresenter.ts'
+import useObservable from '../../../../utils/di-core/react/hook/useObservable.ts'
+import { usePresenter } from '../../../../utils/di-core/react/hook/usePresenter.ts'
 import { SnackbarPresenter } from '../domain/SnackbarPresenter.ts'
 import { SnackbarItemView } from './components/SnackbarItemView.tsx'
-import '../domain/SnackbarPresenterModule.ts'
 
 const SnackbarViewContainer = styled.div`
   position: fixed;
@@ -17,7 +16,7 @@ const SnackbarViewContainer = styled.div`
   }
 
   > div:first-child {
-    margin-top: 0px;
+    margin-top: 0;
   }
 
   > div:last-child {

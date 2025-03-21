@@ -1,12 +1,13 @@
-import { BasicDialogProvider } from '../../../utils/arch/DialogProvider.ts'
+import { Inject, Injectable } from '../../../utils/di-core/decorator/decorators.ts'
 import StrategiesFilter from '../domain/model/StrategiesFilter.ts'
-import { StrategyDialogCallBacks } from './StrategyPageDialogProvider.ts'
+import { StrategyPageDialogProvider } from './StrategyPageDialogProvider.ts'
 import { StrategyPageRouter } from './StrategyPageRouter.ts'
 
+@Injectable()
 export class StrategyPageRouterImpl extends StrategyPageRouter {
 
   constructor(
-    private readonly dialogProvider: BasicDialogProvider<StrategyDialogCallBacks>,
+    @Inject(StrategyPageDialogProvider) private readonly dialogProvider: StrategyPageDialogProvider,
   ) {
     super()
   }

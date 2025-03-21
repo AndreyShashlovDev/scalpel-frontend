@@ -1,4 +1,5 @@
 import { DialogProvider, DialogRouter } from '../../../../utils/arch/DialogProvider.ts'
+import { Singleton } from '../../../../utils/di-core/decorator/decorators.ts'
 
 export interface SimulationDialogCallBacks extends DialogRouter {
 
@@ -13,5 +14,6 @@ export interface SimulationDialogCallBacks extends DialogRouter {
   openWarnTooMuchSimulations(): void
 }
 
+@Singleton()
 export class SimulationPageDialogProvider extends DialogProvider<SimulationDialogCallBacks> {
 }

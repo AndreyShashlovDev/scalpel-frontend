@@ -4,14 +4,18 @@ import { StrategyResponse, StrategyStatusType } from '../../../../common/reposit
 import { SwapResponse } from '../../../../common/repository/data/model/SwapResponse.ts'
 import { AppSourceService } from '../../../../common/repository/data/source/AppSourceService.ts'
 import { UnknownException } from '../../../../common/repository/data/source/exception/UnknownException.ts'
+import { Inject, Injectable } from '../../../../utils/di-core/decorator/decorators.ts'
 import { ChangeOptionsRequest } from '../model/ChangeOptionsRequest.ts'
 import { CompositeStrategyResponse } from '../model/CompositeStrategyResponse.ts'
 import { SimpleHistoryResponse } from '../model/SimpleHistoryResponse.ts'
 import { StrategyRepository } from './StrategyRepository.ts'
 
+@Injectable()
 export class StrategyRepositoryImpl extends StrategyRepository {
 
-  constructor(private readonly appSourceService: AppSourceService) {
+  constructor(
+    @Inject(AppSourceService) private readonly appSourceService: AppSourceService
+  ) {
     super()
   }
 

@@ -2,6 +2,7 @@ import { BehaviorSubject, catchError, EMPTY, from, Observable, Subject, Subscrip
 import { Pageable } from '../../../common/repository/data/model/Pageable.ts'
 import { StrategyStatusType } from '../../../common/repository/data/model/StrategyResponse.ts'
 import { PreferencesRepository } from '../../../common/repository/data/preferences/PreferencesRepository.ts'
+import { Inject, Injectable } from '../../../utils/di-core/decorator/decorators.ts'
 import { ChangeOptionsRequest } from '../data/model/ChangeOptionsRequest.ts'
 import { CompositeStrategyResponse } from '../data/model/CompositeStrategyResponse.ts'
 import { StrategyRepository } from '../data/strategy-repository/StrategyRepository.ts'
@@ -12,6 +13,7 @@ import StrategiesFilter, { StrategyTypeFilterItem } from './model/StrategiesFilt
 import { StrategiesPagePresenter } from './StrategiesPagePresenter.ts'
 import { StrategyHolderButtonIds } from './StrategyHolderButtonIds.ts'
 
+@Injectable()
 export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
 
   private static PAGE_LIMIT: number = 5
@@ -50,9 +52,9 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
   private listFetchSubscriber: Subscription | undefined
 
   constructor(
-    private readonly strategiesRepository: StrategyRepository,
-    private readonly router: StrategyPageRouter,
-    private readonly preferencesRepository: PreferencesRepository,
+    @Inject(StrategyRepository) private readonly strategiesRepository: StrategyRepository,
+    @Inject(StrategyPageRouter) private readonly router: StrategyPageRouter,
+    @Inject(PreferencesRepository) private readonly preferencesRepository: PreferencesRepository,
   ) {
     super()
   }

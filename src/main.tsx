@@ -1,13 +1,15 @@
+import 'reflect-metadata'
 import i18n, { InitOptions } from 'i18next'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './style/index.css'
 import { initReactI18next } from 'react-i18next'
+import { AppModule } from './AppModule.ts'
 import { AppProvider } from './AppProvider.tsx'
 import GTagAnalytics from './common/service/analytics/google/GTagAnalytics.tsx'
 import { App } from './feature/app/presentation/App.tsx'
 import { AppThemeProvider } from './style/theme/AppThemeProvider.tsx'
-import './CoreModule.ts'
+import { RootModuleLoader } from './utils/di-core/react/provider/ModuleLoader.tsx'
 
 const res: InitOptions = {
   // the translations
@@ -28,11 +30,13 @@ i18n
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <GTagAnalytics />
-    <AppProvider>
-      <AppThemeProvider>
-        <App />
-      </AppThemeProvider>
-    </AppProvider>
+   <RootModuleLoader module={AppModule}>
+      <GTagAnalytics />
+      <AppProvider>
+        <AppThemeProvider>
+          <App />
+        </AppThemeProvider>
+      </AppProvider>
+    </RootModuleLoader>
   </StrictMode>,
 )

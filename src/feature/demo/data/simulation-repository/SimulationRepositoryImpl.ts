@@ -1,11 +1,15 @@
 import { Pageable } from '../../../../common/repository/data/model/Pageable.ts'
 import { AppSourceService } from '../../../../common/repository/data/source/AppSourceService.ts'
+import { Inject, Injectable } from '../../../../utils/di-core/decorator/decorators.ts'
 import { SimulationResponse } from '../model/SimulationResponse.ts'
 import { SimulationRepository } from './SimulationRepository.ts'
 
+@Injectable()
 export class SimulationRepositoryImpl extends SimulationRepository {
 
-  constructor(private readonly appSourceService: AppSourceService) {
+  constructor(
+    @Inject(AppSourceService) private readonly appSourceService: AppSourceService
+  ) {
     super()
   }
 

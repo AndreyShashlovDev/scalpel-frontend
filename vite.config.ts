@@ -34,7 +34,6 @@ export default defineConfig(({command, mode}) => {
         output: {
           manualChunks: {
             'react-core': ['react', 'react-dom', 'react-router-dom'],
-            'ui': ['recharts'],
           }
         }
       },

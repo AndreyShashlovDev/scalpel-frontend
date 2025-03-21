@@ -1,12 +1,12 @@
 import { Observable, Subject } from 'rxjs'
 
 export type NavigatorOptions = { replace?: boolean, state?: unknown, preventScrollReset?: boolean }
-type Navigator = {
+export type Navigator = {
   (route: string, options?: NavigatorOptions): void
   (delta: number): void;
 }
 
-type RouteEvent = { path: string, replace: boolean }
+export type RouteEvent = { path: string, replace: boolean }
 
 export abstract class BasicRouter {
 
@@ -77,27 +77,27 @@ export abstract class BasicRouter {
 
   public navigateTo(route: string, options?: NavigatorOptions) {
     const hasParams = route.indexOf('?') > -1
-    route += `${hasParams ? '&' : '?'}timestamp=${Date.now()}`
+    const uniqueRoute = route + `${hasParams ? '&' : '?'}timestamp=${Date.now()}`
 
     this.navigationSubject.next({path: route, replace: options?.replace ?? false})
 
     if (this.navigate) {
       if (options?.replace && this.stack.length > 0) {
-        this.stack[this.stack.length - 1] = route
+        this.stack[this.stack.length - 1] = uniqueRoute
 
         if (this.stack.length > 1) {
           window.history.replaceState({}, '')
         }
 
       } else {
-        this.stack.push(route)
+        this.stack.push(uniqueRoute)
 
         if (this.stack.length > 1) {
           window.history.pushState({}, '')
         }
       }
 
-      this.navigate(route, options)
+      this.navigate(uniqueRoute, options)
     } else {
       console.error('Navigate function not initialized')
     }

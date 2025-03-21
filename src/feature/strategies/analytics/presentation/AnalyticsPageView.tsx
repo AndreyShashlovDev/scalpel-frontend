@@ -2,11 +2,10 @@ import styled from 'styled-components'
 import { ComponentSize } from '../../../../common/app-ui/ComponentSize.ts'
 import { LoadingView } from '../../../../common/app-ui/LoadingView.tsx'
 import { PageLayoutView } from '../../../../common/app-ui/PageLayoutView.tsx'
-import useObservable from '../../../../hooks/useObservable.ts'
-import { usePresenter } from '../../../../hooks/usePresenter.ts'
+import useObservable from '../../../../utils/di-core/react/hook/useObservable.ts'
+import { usePresenter } from '../../../../utils/di-core/react/hook/usePresenter.ts'
 import { AnalyticsRange } from '../data/analytics-repository/AnalyticsRange.ts'
 import { AnalyticsPagePresenter } from '../domain/AnalyticsPagePresenter.ts'
-import '../di/AnalyticsPagePresenterModule.ts'
 import { SwapPriceChartView } from './components/SwapPriceChartView.tsx'
 
 const Container = styled(PageLayoutView)`

@@ -7,3 +7,10 @@
 #### This approach uses Domain/Data/Presentation/Router/DI layers. The project is divided into features by screens.
 
 # React + TypeScript + Vite
+
+# Architectural approaches:
+### Clean architecture
+### Separate "View" from business logic
+
+### MVP + Router + Interactor+Repository (like VIPER)
+### DI: Modular architecture

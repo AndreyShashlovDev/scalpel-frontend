@@ -1,5 +1,6 @@
 import { BehaviorSubject, from, Observable, Subject, Subscription } from 'rxjs'
 import { Pageable } from '../../../common/repository/data/model/Pageable.ts'
+import { Inject, Injectable } from '../../../utils/di-core/decorator/decorators.ts'
 import { SimulationResponse } from '../data/model/SimulationResponse.ts'
 import { SimulationRepository } from '../data/simulation-repository/SimulationRepository.ts'
 import {
@@ -9,6 +10,7 @@ import { SimulationListItemModel } from '../presentation/model/SimulationListIte
 import { DemoPagePresenter } from './DemoPagePresenter.ts'
 import { DemoPageRouter } from './router/DemoPageRouter.ts'
 
+@Injectable()
 export class DemoPagePresenterImpl extends DemoPagePresenter {
 
   private static readonly PAGE_LIMIT: number = 20
@@ -22,17 +24,20 @@ export class DemoPagePresenterImpl extends DemoPagePresenter {
   private prevResponse: Pageable<SimulationResponse> | undefined
 
   constructor(
-    private readonly simulationRepository: SimulationRepository,
-    private readonly router: DemoPageRouter,
+    @Inject(SimulationRepository) private readonly simulationRepository: SimulationRepository,
+    @Inject(DemoPageRouter) private readonly router: DemoPageRouter,
   ) {
     super()
+    console.log('DEMO CREATE', this.prevResponse)
   }
 
   public ready(): void {
+    console.log('DEMO ready')
     this.onFetchNext()
   }
 
   public destroy(): void {
+    console.log('DEMO destroy')
     this.fetchSubscription?.unsubscribe()
   }
 

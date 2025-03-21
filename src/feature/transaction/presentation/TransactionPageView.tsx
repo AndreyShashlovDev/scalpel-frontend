@@ -4,11 +4,10 @@ import { ComponentSize } from '../../../common/app-ui/ComponentSize.ts'
 import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
 import { PageHeaderView } from '../../../common/app-ui/PageHeaderView.tsx'
 import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
-import useObservable from '../../../hooks/useObservable.ts'
-import { usePresenter } from '../../../hooks/usePresenter.ts'
+import useObservable from '../../../utils/di-core/react/hook/useObservable.ts'
+import { usePresenter } from '../../../utils/di-core/react/hook/usePresenter.ts'
 import { TransactionPagePresenter } from '../domain/TransactionPagePresenter.ts'
 import { TransactionListView } from './components/wallet-list/TransactionListView.tsx'
-import '../di/TransactionPagePresenterModule.ts'
 
 const Container = styled(PageLayoutView)`
   overflow: hidden;

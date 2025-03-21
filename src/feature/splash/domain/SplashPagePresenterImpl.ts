@@ -1,13 +1,15 @@
 import { AppAuthService } from '../../../common/service/auth/AppAuthService.ts'
 import { Delay } from '../../../utils/Delay.ts'
+import { Inject, Injectable } from '../../../utils/di-core/decorator/decorators.ts'
 import { SplashPageRouter } from './router/SplashPageRouter.ts'
 import { SplashPagePresenter } from './SplashPagePresenter.ts'
 
+@Injectable()
 export class SplashPagePresenterImpl extends SplashPagePresenter {
 
   constructor(
-    private readonly router: SplashPageRouter,
-    private readonly authService: AppAuthService,
+    @Inject(SplashPageRouter) private readonly router: SplashPageRouter,
+    @Inject(AppAuthService) private readonly authService: AppAuthService,
   ) {
     super()
   }

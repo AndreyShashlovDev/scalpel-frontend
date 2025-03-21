@@ -7,6 +7,7 @@ export interface BasicDialogProvider<D extends DialogRouter> {
 }
 
 export abstract class DialogProvider<D extends DialogRouter> implements BasicDialogProvider<D> {
+
   private callbacks?: D = {} as D
 
   public setDialogCallback(callback: D): void {
@@ -17,7 +18,7 @@ export abstract class DialogProvider<D extends DialogRouter> implements BasicDia
     return this.callbacks
   }
 
-  public destory(): void {
+  public destroy(): void {
     this.callbacks = undefined
   }
 }

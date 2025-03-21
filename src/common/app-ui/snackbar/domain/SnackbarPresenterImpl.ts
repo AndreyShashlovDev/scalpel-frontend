@@ -1,12 +1,16 @@
 import { BehaviorSubject, Observable } from 'rxjs'
+import { Inject, Injectable } from '../../../../utils/di-core/decorator/decorators.ts'
 import { ExceptionHandlerService } from '../../../service/exception-handler/ExceptionHandlerService.ts'
 import { SnackBarItem, SnackbarPresenter } from './SnackbarPresenter.ts'
 
+@Injectable()
 export class SnackbarPresenterImpl extends SnackbarPresenter {
 
   private readonly items: BehaviorSubject<SnackBarItem[]> = new BehaviorSubject<SnackBarItem[]>([])
 
-  constructor(readonly exceptionHandlerService: ExceptionHandlerService) {
+  constructor(
+    @Inject(ExceptionHandlerService) readonly exceptionHandlerService: ExceptionHandlerService
+  ) {
     super()
 
     exceptionHandlerService.observe().subscribe({

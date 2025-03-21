@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import AddIcon from '../../../assets/icons/app/AddIcon.svg'
 import { ComponentSize } from '../../../common/app-ui/ComponentSize.ts'
@@ -9,12 +9,11 @@ import { FloatingActionButtonView } from '../../../common/app-ui/FloatingActionB
 import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
 import { PageHeaderView } from '../../../common/app-ui/PageHeaderView.tsx'
 import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
-import useObservable from '../../../hooks/useObservable.ts'
-import { usePresenter } from '../../../hooks/usePresenter.ts'
-import { getDIValue } from '../../../utils/arch/Injections.ts'
+import { useInject } from '../../../utils/di-core/react/hook/useInject.ts'
+import useObservable from '../../../utils/di-core/react/hook/useObservable.ts'
+import { usePresenter } from '../../../utils/di-core/react/hook/usePresenter.ts'
 import { SimulationPageDialogProvider } from '../domain/router/SimulationPageDialogProvider.ts'
 import { SimulationPagePresenter } from '../domain/SimulationPagePresenter.ts'
-import '../di/SimulationPagePresenterModule.ts'
 import { DialogCreateStrategyView } from './components/DialogCreateStrategyView.tsx'
 import { SimulationListView } from './components/list/SimulationListView.tsx'
 
@@ -31,7 +30,7 @@ const ListContainer = styled.div`
 export const SimulationPageView = () => {
 
   const presenter = usePresenter(SimulationPagePresenter)
-  const dialogProvider = useMemo(() => getDIValue(SimulationPageDialogProvider), [])
+  const dialogProvider = useInject(SimulationPageDialogProvider)
   const listItems = useObservable(presenter.getItems(), [])
   const isLastPage = useObservable(presenter.getIsLastPage(), true)
   const isLoading = useObservable(presenter.getIsLoading(), true)
@@ -52,26 +51,33 @@ export const SimulationPageView = () => {
           dialogId: resultId,
         })
       },
+
       openCreateStrategyDialog() {
         dialogCreateStrategyRef.current?.openDialog()
 
-      }, closeCreateSimulationDialog(): void {
+      },
+
+      closeCreateSimulationDialog(): void {
         dialogCreateStrategyRef.current?.closeDialog()
         presenter.refresh()
-      }, openWarnTooMuchInQueueDialog(): void {
+      },
+
+      openWarnTooMuchInQueueDialog(): void {
         dialogAlertRef.current?.openDialog({
           title: 'Create simulation',
           message: 'The maximum number of simulations in the queue is 3. Wait for them to complete or delete previously created simulations.'
         })
-      }, openWarnTooMuchSimulations(): void {
+      },
+
+      openWarnTooMuchSimulations(): void {
         dialogAlertRef.current?.openDialog({
           title: 'Create simulation',
           message: 'The maximum number of simulations is 10. To create new ones, delete previously created simulations.'
         })
       }
-
     })
-    return () => dialogProvider.destory()
+
+    return () => dialogProvider.destroy()
   }, [presenter, dialogProvider])
 
   useEffect(() => {

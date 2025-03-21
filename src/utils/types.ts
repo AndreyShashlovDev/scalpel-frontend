@@ -10,10 +10,7 @@ export class Pair<K = unknown, V = unknown> {
 
   constructor(public readonly key: K, public readonly value: V) {}
 
-  // Пример метода для работы с парой
   toArray(): [K, V] {
     return [this.key, this.value]
   }
-
-  // Другие методы можно добавить при необходимости
 }

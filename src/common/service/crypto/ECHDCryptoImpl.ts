@@ -1,5 +1,7 @@
+import { Injectable } from '../../../utils/di-core/decorator/decorators.ts'
 import { ECHDCrypto, PublicKeyVector } from './ECHDCrypto.ts'
 
+@Injectable()
 export class ECHDCryptoImpl extends ECHDCrypto {
 
   private static readonly KEY_LIFETIME_MS = 10000

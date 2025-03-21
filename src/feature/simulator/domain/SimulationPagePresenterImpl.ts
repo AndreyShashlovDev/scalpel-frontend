@@ -1,5 +1,6 @@
 import { BehaviorSubject, from, Observable, Subject, Subscription } from 'rxjs'
 import { Pageable } from '../../../common/repository/data/model/Pageable.ts'
+import { Inject, Injectable } from '../../../utils/di-core/decorator/decorators.ts'
 import { SimulationResponse } from '../data/model/SimulationResponse.ts'
 import { SimulationStatus } from '../data/model/SimulationStatus.ts'
 import { SimulationRepository } from '../data/simulation-repository/SimulationRepository.ts'
@@ -11,6 +12,7 @@ import { SimulationListItemClickId } from './router/SimulationListItemClickId.ts
 import { SimulationPageRouter } from './router/SimulationPageRouter.ts'
 import { SimulationPagePresenter } from './SimulationPagePresenter.ts'
 
+@Injectable()
 export class SimulationPagePresenterImpl extends SimulationPagePresenter {
 
   private static readonly PAGE_LIMIT: number = 10
@@ -26,8 +28,8 @@ export class SimulationPagePresenterImpl extends SimulationPagePresenter {
   private prevResponse: Pageable<SimulationResponse> | undefined
 
   constructor(
-    private readonly simulationRepository: SimulationRepository,
-    private readonly router: SimulationPageRouter,
+    @Inject(SimulationRepository) private readonly simulationRepository: SimulationRepository,
+    @Inject(SimulationPageRouter) private readonly router: SimulationPageRouter,
   ) {
     super()
   }

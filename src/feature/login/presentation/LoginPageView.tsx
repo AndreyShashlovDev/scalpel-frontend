@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useMemo, useRef } from 'react'
+import { useCallback, useLayoutEffect, useRef } from 'react'
 import { Trans } from 'react-i18next'
 import styled from 'styled-components'
 import { AppAddressView } from '../../../common/app-ui/AppAddressView.tsx'
@@ -9,9 +9,9 @@ import { ComponentSize } from '../../../common/app-ui/ComponentSize.ts'
 import { DialogAlertCallBack, DialogAlertView } from '../../../common/app-ui/dialog/DialogAlertView.tsx'
 import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
 import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
-import useObservable from '../../../hooks/useObservable.ts'
-import { usePresenter } from '../../../hooks/usePresenter.ts'
-import { getDIValue } from '../../../utils/arch/Injections.ts'
+import useObservable from '../../../utils/di-core/react/hook/useObservable.ts'
+import { useInject } from '../../../utils/di-core/react/hook/useInject.ts'
+import { usePresenter } from '../../../utils/di-core/react/hook/usePresenter.ts'
 import { LoginPagePresenter } from '../domain/LoginPagePresenter.ts'
 import { LoginPageDialogProvider } from '../router/LoginPageDialogProvider.ts'
 
@@ -45,7 +45,7 @@ const AddressWrapper = styled(AppAddressView)`
 
 export const LoginPageView = () => {
   const presenter = usePresenter(LoginPagePresenter)
-  const dialogProvider = useMemo(() => getDIValue(LoginPageDialogProvider), [])
+  const dialogProvider = useInject(LoginPageDialogProvider)
   const walletAddress = useObservable(presenter.walletAddress(), undefined)
   const isConnected = useObservable(presenter.IsWalletConnected(), false)
   const isLoading = useObservable(presenter.getIsLoading(), true)
@@ -66,7 +66,7 @@ export const LoginPageView = () => {
     })
 
     return () => {
-      dialogProvider.destory()
+      dialogProvider.destroy()
     }
   }, [dialogProvider])
 

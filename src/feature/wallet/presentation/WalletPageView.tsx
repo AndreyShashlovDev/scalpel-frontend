@@ -1,17 +1,16 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { ComponentSize } from '../../../common/app-ui/ComponentSize.ts'
 import { DialogQuestionCallBack, DialogQuestionView } from '../../../common/app-ui/dialog/DialogQuestionView.tsx'
 import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
 import { PageHeaderView } from '../../../common/app-ui/PageHeaderView.tsx'
 import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
-import useObservable from '../../../hooks/useObservable.ts'
-import { usePresenter } from '../../../hooks/usePresenter.ts'
-import { getDIValue } from '../../../utils/arch/Injections.ts'
+import useObservable from '../../../utils/di-core/react/hook/useObservable.ts'
+import { useInject } from '../../../utils/di-core/react/hook/useInject.ts'
+import { usePresenter } from '../../../utils/di-core/react/hook/usePresenter.ts'
 import { WalletPagePresenter } from '../domain/WalletPagePresenter.ts'
 import { WalletPageDialogProvider } from '../router/WalletPageDialogProvider.ts'
 import { WalletListView } from './components/wallet-list/WalletListView.tsx'
-import '../di/WalletPagePresenterModule.ts'
 
 const Container = styled(PageLayoutView)`
   overflow: hidden;
@@ -26,7 +25,8 @@ const ListContainer = styled.div`
 const WalletPageView = () => {
 
   const presenter = usePresenter(WalletPagePresenter)
-  const dialogProvider = useMemo(() => getDIValue(WalletPageDialogProvider), [])
+  const dialogProvider = useInject(WalletPageDialogProvider)
+
   const walletItemsList = useObservable(presenter.getWalletItems(), [])
   const isLoading = useObservable(presenter.getIsLoading(), true)
   const isLastPage = useObservable(presenter.getIsLastPage(), true)
@@ -47,7 +47,7 @@ const WalletPageView = () => {
     })
 
     return () => {
-      dialogProvider.destory()
+      dialogProvider.destroy()
     }
   }, [dialogProvider])
 

@@ -1,11 +1,12 @@
-import { BasicDialogProvider } from '../../../../utils/arch/DialogProvider.ts'
-import { SimulationDialogCallBacks } from './SimulationPageDialogProvider.ts'
+import { Inject, Injectable } from '../../../../utils/di-core/decorator/decorators.ts'
+import { SimulationPageDialogProvider } from './SimulationPageDialogProvider.ts'
 import { SimulationPageRouter } from './SimulationPageRouter.ts'
 
+@Injectable()
 export class SimulationPageRouterImpl extends SimulationPageRouter {
 
   constructor(
-    private readonly dialogProvider: BasicDialogProvider<SimulationDialogCallBacks>,
+    @Inject(SimulationPageDialogProvider) private readonly dialogProvider: SimulationPageDialogProvider,
   ) {
     super()
   }
