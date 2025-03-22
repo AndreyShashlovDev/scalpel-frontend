@@ -1,7 +1,7 @@
 import { useLayoutEffect } from 'react'
 import { RouterNavigateOptions, To } from 'react-router-dom'
-import { AppModule } from '../../AppModule.ts'
 import { moduleManager } from '../../utils/di-core/di/Dependency.ts'
+import { RouterModule } from '../di/AppRouterModule.ts'
 import { ApplicationRouter } from './domain/ApplicationRouter.ts'
 import { NavigatorOptions } from './domain/BasicRouter.ts'
 
@@ -13,7 +13,7 @@ export interface RouterInitializerProps {
 }
 
 export const RouterInitializer = ({router}: RouterInitializerProps) => {
-  const adapter = moduleManager.getService<ApplicationRouter>(AppModule, ApplicationRouter)
+  const adapter = moduleManager.getService<ApplicationRouter>(RouterModule, ApplicationRouter)
 
   useLayoutEffect(() => {
     const nav = (routeOrDelta: string | number, options?: NavigatorOptions) => {

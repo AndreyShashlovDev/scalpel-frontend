@@ -29,6 +29,6 @@ import { CreateSimulationPageModule } from './CreateSimulationPageModule.ts'
       useClass: SimulationPagePresenterImpl
     }
   ],
-  exports: [SimulationPagePresenter, CreateStrategyPagePresenter]
+  exports: [SimulationPagePresenter, SimulationPageDialogProvider, CreateStrategyPagePresenter]
 })
 export class SimulationPageModule {}

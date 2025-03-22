@@ -1,8 +1,6 @@
 import { ForwardedRef, forwardRef, useState } from 'react'
 import { BasicDialogView, DialogCallback } from '../../../../common/app-ui/dialog/BasicDialogView.tsx'
 import { PageHeaderView } from '../../../../common/app-ui/PageHeaderView.tsx'
-import { ModuleLoader } from '../../../../utils/di-core/react/provider/ModuleLoader.tsx'
-import { LogsPageModule } from '../../../logs/di/LogsPageModule.ts'
 import { LogsPageView } from '../../../logs/presentation/LogsPageView.tsx'
 
 type CallBackDataType = { strategyHash: string }
@@ -30,13 +28,7 @@ export const DialogLogsView = forwardRef((
         }
       }}
       content={
-        <ModuleLoader
-          module={LogsPageModule}
-          children={<LogsPageView
-            strategyHash={data?.strategyHash}
-          />
-          }
-        />
+        <LogsPageView strategyHash={data?.strategyHash} />
       }
     />
   )

@@ -63,6 +63,6 @@ import { WalletPageRouterImpl } from '../router/WalletPageRouterImpl.ts'
       }
     }
   ],
-  exports: [WalletPagePresenter]
+  exports: [WalletPagePresenter, WalletPageDialogProvider]
 })
 export class WalletPageModule {}

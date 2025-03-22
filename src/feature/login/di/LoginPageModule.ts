@@ -60,6 +60,6 @@ const DialogProvider: ModuleClassProvider = {
       }
     }
   ],
-  exports: [LoginPagePresenter]
+  exports: [LoginPagePresenter, LoginPageDialogProvider]
 })
 export class LoginPageModule {}

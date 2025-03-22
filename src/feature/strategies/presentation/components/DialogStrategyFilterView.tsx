@@ -23,6 +23,8 @@ const FilterStatusItemContainer = styled.div`
 `
 
 const FooterContainer = styled.div`
+  display: flex;
+  justify-content: center;
   margin-top: 8px;
   padding: 16px 8px 8px;
   border-top: 1px solid white;

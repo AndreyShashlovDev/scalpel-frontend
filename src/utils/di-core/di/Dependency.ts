@@ -94,6 +94,25 @@ export class ModuleRef {
     this.parentModule = parentModule
   }
 
+  public validateExports(): void {
+    if (!this.options.exports || !this.initialized) {
+      return
+    }
+
+    for (const exportToken of this.options.exports) {
+      const actualToken = resolveNameProvider(exportToken)
+
+      try {
+        this.resolveToken(actualToken)
+      } catch (error) {
+        debugLog(error)
+        throw new Error(
+          `Module ${this.moduleClass?.name || 'unknown'} exports token ${String(actualToken)} but cannot resolve it`
+        )
+      }
+    }
+  }
+
   public async initialize(): Promise<void> {
     if (this.initialized) {
       return
@@ -491,6 +510,8 @@ export class ModuleManager {
   private async initializeModule(moduleClass: ModuleType, moduleRef: ModuleRef): Promise<void> {
     await moduleRef.initialize()
 
+    moduleRef.validateExports()
+
     this.loadedModules.set(moduleClass.name, moduleRef)
     this.initializedModuleRefs.set(moduleClass.name, moduleRef)
 
@@ -569,6 +590,14 @@ export class ModuleManager {
   public getService<T>(moduleClass: ModuleType, token: TokenType<unknown>): T {
     const moduleRef = this.getModuleRefOrThrow(moduleClass)
     const actualToken = resolveNameProvider(token)
+
+    const isDirectlyExported = moduleRef.options.exports?.some(exp =>
+      String(resolveNameProvider(exp)) === String(actualToken)
+    )
+
+    if (!isDirectlyExported) {
+      throw new Error(`Token ${String(actualToken)} is not directly exported from module ${moduleClass.name}`)
+    }
 
     try {
       return moduleRef.resolveToken<T>(actualToken)
