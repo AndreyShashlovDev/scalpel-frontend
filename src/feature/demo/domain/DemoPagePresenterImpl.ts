@@ -28,16 +28,13 @@ export class DemoPagePresenterImpl extends DemoPagePresenter {
     @Inject(DemoPageRouter) private readonly router: DemoPageRouter,
   ) {
     super()
-    console.log('DEMO CREATE', this.prevResponse)
   }
 
   public ready(): void {
-    console.log('DEMO ready')
     this.onFetchNext()
   }
 
   public destroy(): void {
-    console.log('DEMO destroy')
     this.fetchSubscription?.unsubscribe()
   }
 
