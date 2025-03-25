@@ -1,10 +1,10 @@
-import { motion } from 'framer-motion'
+import { domAnimation, LazyMotion, m } from 'framer-motion'
 import styled from 'styled-components'
 import CloseIcon from '../../../../../assets/icons/app/DeleteIcon.svg'
 import { AppIconButton } from '../../../AppIconButton.tsx'
 import { ComponentSize } from '../../../ComponentSize.ts'
 
-const SnackbarItemContainer = styled(motion.div)`
+const SnackbarItemContainer = styled(m.div)`
   display: flex;
   gap: 8px;
   background: black;
@@ -47,17 +47,19 @@ export const SnackbarItemView = ({
 }: SnackbarItemProps) => {
 
   return (
-    <SnackbarItemContainer
-      layout
-      initial={{x: 300, opacity: 0}}
-      animate={{x: 0, opacity: 1}}
-      exit={{opacity: 0}}
-      transition={{type: 'tween', duration: 0.5}}
-    >
-      <SnackbarItemMessageContainer>{text}</SnackbarItemMessageContainer>
-      <SnackbarItemCloseContainer>
-       {closeButton && <AppIconButton size={ComponentSize.SMALLEST} icon={<CloseIcon />} onClick={onCloseClick} />}
-      </SnackbarItemCloseContainer>
-    </SnackbarItemContainer>
+    <LazyMotion features={domAnimation} strict>
+      <SnackbarItemContainer
+        layout
+        initial={{x: 300, opacity: 0}}
+        animate={{x: 0, opacity: 1}}
+        exit={{opacity: 0}}
+        transition={{type: 'tween', duration: 0.5}}
+      >
+        <SnackbarItemMessageContainer>{text}</SnackbarItemMessageContainer>
+        <SnackbarItemCloseContainer>
+         {closeButton && <AppIconButton size={ComponentSize.SMALLEST} icon={<CloseIcon />} onClick={onCloseClick} />}
+        </SnackbarItemCloseContainer>
+      </SnackbarItemContainer>
+    </LazyMotion>
   )
 }

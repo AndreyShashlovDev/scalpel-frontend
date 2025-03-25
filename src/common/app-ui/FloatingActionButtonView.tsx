@@ -1,8 +1,8 @@
-import { motion } from 'framer-motion'
+import { domAnimation, LazyMotion, m } from 'framer-motion'
 import { MutableRefObject, ReactNode, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
-const ButtonContainer = styled(motion.div)`
+const ButtonContainer = styled(m.div)`
   padding: 8px;
   position: fixed;
   bottom: 64px;
@@ -70,14 +70,16 @@ export const FloatingActionButtonView = ({icon, onClick, scrollView}: FloatButto
   }, [lastScrollY, scrollView])
 
   return (
-    <ButtonContainer
-      whileTap={{scale: 0.95}}
-      onClick={() => onClick()}
-      variants={buttonVariants(64, -64)}
-      initial={'hidden'}
-      animate={isVisible ? 'visible' : 'hidden'}
-    >
-      {icon}
-    </ButtonContainer>
+    <LazyMotion features={domAnimation} strict>
+      <ButtonContainer
+        whileTap={{scale: 0.95}}
+        onClick={() => onClick()}
+        variants={buttonVariants(64, -64)}
+        initial={'hidden'}
+        animate={isVisible ? 'visible' : 'hidden'}
+      >
+        {icon}
+      </ButtonContainer>
+    </LazyMotion>
   )
 }

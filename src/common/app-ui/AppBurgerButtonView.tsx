@@ -1,8 +1,8 @@
-import { motion } from 'framer-motion'
+import { domAnimation, LazyMotion, m } from 'framer-motion'
 import { useMemo } from 'react'
 import styled from 'styled-components'
 
-const ButtonContainer = styled(motion.div)`
+const ButtonContainer = styled(m.div)`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -11,14 +11,14 @@ const ButtonContainer = styled(motion.div)`
   color: ${({theme}) => theme.color.text.primary};
   cursor: pointer;
 `
-const Wrapper = styled(motion.div)`
+const Wrapper = styled(m.div)`
   display: flex;
   justify-content: end;
 `
 
 // @ts-expect-error sadasdas
 const Path = (props) => (
-  <motion.path
+  <m.path
     fill='transparent'
     strokeWidth='3'
     stroke='currentColor'
@@ -64,12 +64,14 @@ export const AppBurgerButtonView = ({isOpened, toggle}: AppBurgerMenuProps) => {
   }, [isOpened, toggle])
 
   return (
-    <Wrapper
-      initial={false}
-      animate={isOpened ? 'open' : 'closed'}
-      custom='100%'
-    >
-      {buttonView}
-    </Wrapper>
+    <LazyMotion features={domAnimation} strict>
+      <Wrapper
+        initial={false}
+        animate={isOpened ? 'open' : 'closed'}
+        custom='100%'
+      >
+        {buttonView}
+      </Wrapper>
+    </LazyMotion>
   )
 }

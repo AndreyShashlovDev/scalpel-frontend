@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { domAnimation, LazyMotion, m } from 'framer-motion'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -15,7 +15,7 @@ const SwitchContainer = styled.div<{ $isOn: boolean }>`
   transition: background-color 0.3s ease;
 `
 
-const Handle = styled(motion.div)`
+const Handle = styled(m.div)`
   width: 18px;
   height: 18px;
   background-color: white;
@@ -35,12 +35,14 @@ const AppSwitchView: React.FC<AppSwitchProps> = ({isOn, onToggle}: AppSwitchProp
       $isOn={isOn}
       onClick={() => {onToggle(!isOn)}}
     >
-      <Handle
-        layout
-        initial={{x: 0}}
-        animate={{x: isOn ? 22 : 0}}
-        transition={{type: 'spring', stiffness: 400, damping: 20}}
-      />
+      <LazyMotion features={domAnimation} strict>
+        <Handle
+          layout
+          initial={{x: 0}}
+          animate={{x: isOn ? 22 : 0}}
+          transition={{type: 'spring', stiffness: 400, damping: 20}}
+        />
+      </LazyMotion>
     </SwitchContainer>
   )
 }

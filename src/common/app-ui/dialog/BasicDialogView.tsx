@@ -1,11 +1,11 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, domAnimation, LazyMotion, m } from 'framer-motion'
 import { ForwardedRef, forwardRef, ReactNode, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import styled from 'styled-components'
 import { AppTitleView } from '../AppTitleView.tsx'
 import { ComponentSize } from '../ComponentSize.ts'
 
-const BackgroundLayer = styled(motion.div)`
+const BackgroundLayer = styled(m.div)`
   position: absolute;
   top: 0;
   left: 0;
@@ -24,7 +24,7 @@ const TitleContainer = styled.div<{ $canClose: boolean }>`
   background: ${({theme}) => theme.color.background};
 `
 
-const CloseButton = styled(motion.div)`
+const CloseButton = styled(m.div)`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -132,35 +132,37 @@ export const BasicDialogView = forwardRef((
 
   return (
     createPortal(
-      <AnimatePresence>
-        {isOpen && (
-          <BackgroundLayer>
-            {
-              isFullScreen
-                ? (
-                  <>
-                  {getTitleView}
-                    <div>
-                    {content}
-                  </div>
-                  </>
-                )
-                : (
-                  <DialogWindowContainer>
-                    <DialogWindowContent>
-                      {getTitleView}
-                      <ContentContainer>
-                        {content}
-                      </ContentContainer>
-                    </DialogWindowContent>
-                  </DialogWindowContainer>
-                )
-            }
+      <LazyMotion features={domAnimation} strict>
+        <AnimatePresence>
+          {isOpen && (
+            <BackgroundLayer>
+              {
+                isFullScreen
+                  ? (
+                    <>
+                    {getTitleView}
+                      <div>
+                      {content}
+                    </div>
+                    </>
+                  )
+                  : (
+                    <DialogWindowContainer>
+                      <DialogWindowContent>
+                        {getTitleView}
+                        <ContentContainer>
+                          {content}
+                        </ContentContainer>
+                      </DialogWindowContent>
+                    </DialogWindowContainer>
+                  )
+              }
 
-          </BackgroundLayer>
-        )}
+            </BackgroundLayer>
+          )}
 
-      </AnimatePresence>
+        </AnimatePresence>
+      </LazyMotion>
       ,
       // @ts-expect-error exist
       document.getElementById('modal-root')

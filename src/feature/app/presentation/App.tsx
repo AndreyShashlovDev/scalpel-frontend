@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, domAnimation, LazyMotion, m } from 'framer-motion'
 import { useCallback, useMemo } from 'react'
 import { RouterProvider } from 'react-router-dom'
 import styled, { createGlobalStyle, ThemeProvider } from 'styled-components'
@@ -7,8 +7,8 @@ import { AppMenuView } from '../../../common/app-ui/AppMenuView.tsx'
 import { SnackbarView } from '../../../common/app-ui/snackbar/presentation/SnackbarView.tsx'
 import { AppRouting } from '../../../common/router/AppRouting.tsx'
 import { RouterInitializer } from '../../../common/router/RouterInitializer.tsx'
-import useObservable from '../../../utils/di-core/react/hook/useObservable.ts'
 import { useAppTheme } from '../../../style/theme/AppThemeProvider.tsx'
+import useObservable from '../../../utils/di-core/react/hook/useObservable.ts'
 import { usePresenter } from '../../../utils/di-core/react/hook/usePresenter.ts'
 import { AppPresenter } from '../domain/AppPresenter.ts'
 
@@ -19,7 +19,7 @@ const GlobalStyle = createGlobalStyle`
   }
 `
 
-const BasicContainer = styled(motion.div)`
+const BasicContainer = styled(m.div)`
   background-color: ${({theme}) => theme.color.background};
   color: ${({theme}) => theme.color.text.primary};
   font-weight: 700;
@@ -47,20 +47,22 @@ export const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
-      <BasicContainer>
-      <RouterProvider router={routing} />
-        <RouterInitializer router={routing} />
-        <AnimatePresence>
-        <AppMenuView
-          selected={selectedMenuItemId}
-          items={menuItems}
-          isOpened={visibilityAppMenu}
-          toggle={handleToggleMenu}
-          key={'app-menu'}
-          onMenuItemClick={handleMenuItemClick}
-        />
-      </AnimatePresence>
-      </BasicContainer>
+      <LazyMotion features={domAnimation} strict>
+        <BasicContainer>
+          <RouterProvider router={routing} />
+          <RouterInitializer router={routing} />
+          <AnimatePresence>
+            <AppMenuView
+              selected={selectedMenuItemId}
+              items={menuItems}
+              isOpened={visibilityAppMenu}
+              toggle={handleToggleMenu}
+              key={'app-menu'}
+              onMenuItemClick={handleMenuItemClick}
+            />
+          </AnimatePresence>
+        </BasicContainer>
+      </LazyMotion>
       <SnackbarView />
     </ThemeProvider>
   )

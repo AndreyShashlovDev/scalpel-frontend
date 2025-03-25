@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { domAnimation, LazyMotion, m } from 'framer-motion'
 import { ForwardedRef, forwardRef } from 'react'
 import styled from 'styled-components'
 import { ListItemHolder } from '../../../../../../common/app-ui/AppInfiniteScrollView.tsx'
@@ -10,7 +10,7 @@ import { SimulationStatus } from '../../../../data/model/SimulationStatus.ts'
 import { DemoListItemClickId } from '../../../../domain/router/DemoListItemClickId.ts'
 import { SimulationListItemModel } from '../../../model/SimulationListItemModel.ts'
 
-const Container = styled(motion.div)`
+const Container = styled(m.div)`
   border: 1px solid #747474;
   padding: 12px 12px 12px;
   border-radius: ${({theme}) => theme.size.borderRadius.small};
@@ -115,130 +115,135 @@ export const SimulationListHolderView = forwardRef((
 ) => {
 
   return (
-    <Container
-      ref={ref}
-      initial={{opacity: 0}}
-      animate={{opacity: 1}}
-      exit={{opacity: 0}}
-      transition={{exit: {duration: 0.1}}}
-    >
-      <ContainerHeader>
-        <ChainIconView chain={item.chain} size={ComponentSize.SMALL} />
+    <LazyMotion features={domAnimation} strict>
+      <Container
+        ref={ref}
+        initial={{opacity: 0}}
+        animate={{opacity: 1}}
+        exit={{opacity: 0}}
+        transition={{exit: {duration: 0.1}}}
+      >
+        <ContainerHeader>
+          <ChainIconView chain={item.chain} size={ComponentSize.SMALL} />
+
+          <ElementContainer>
+            <TokenIconView
+              chain={item.chain}
+              address={item.currencyA.address}
+              symbol={item.currencyA.symbol}
+              size={ComponentSize.SMALL}
+            />
+             <TokenIconView
+               chain={item.chain}
+               address={item.currencyB.address}
+               symbol={item.currencyB.symbol}
+               size={ComponentSize.SMALL}
+             />
+          </ElementContainer>
+
+          <div>
+             <ElementContainer>{item.currencyA.symbol} &#10230; {item.currencyB.symbol}</ElementContainer>
+          </div>
+
+          <div>
+            <ElementContainer>
+              <StableCoinContainer
+                $highlight={(item.totalAmountA > 0) ||
+                  false}
+              >{item.totalAmountA}</StableCoinContainer>
+              &nbsp;/&nbsp;
+              {item.totalAmountB}
+          </ElementContainer>
+          </div>
+
+        </ContainerHeader>
 
         <ElementContainer>
-          <TokenIconView
-            chain={item.chain}
-            address={item.currencyA.address}
-            symbol={item.currencyA.symbol}
-            size={ComponentSize.SMALL}
-          />
-           <TokenIconView
-             chain={item.chain}
-             address={item.currencyB.address}
-             symbol={item.currencyB.symbol}
-             size={ComponentSize.SMALL}
-           />
+          Status:&nbsp; <StatusContainer $status={item.status}>{HumanReadableStatus.get(item.status)}</StatusContainer>
         </ElementContainer>
 
-        <div>
-           <ElementContainer>{item.currencyA.symbol} &#10230; {item.currencyB.symbol}</ElementContainer>
-        </div>
-
-        <div>
-          <ElementContainer>
-            <StableCoinContainer $highlight={(item.totalAmountA > 0) || false}>{item.totalAmountA}</StableCoinContainer>
-            &nbsp;/&nbsp;
-            {item.totalAmountB}
+         <ElementContainer>
+          Initial amount:&nbsp; <StableCoinContainer $highlight={true}>${item.initialAmountA}</StableCoinContainer>
         </ElementContainer>
-        </div>
 
-      </ContainerHeader>
+        <ElementContainer>
+          Unrealized profit:&nbsp; <ProfitValueContainer $value={item.profit}>${item.profit}</ProfitValueContainer>
+        </ElementContainer>
 
-      <ElementContainer>
-        Status:&nbsp; <StatusContainer $status={item.status}>{HumanReadableStatus.get(item.status)}</StatusContainer>
-      </ElementContainer>
+        <ElementContainer>
+          Date range:&nbsp; {item.fromDate} - {item.toDate}
+        </ElementContainer>
 
-       <ElementContainer>
-        Initial amount:&nbsp; <StableCoinContainer $highlight={true}>${item.initialAmountA}</StableCoinContainer>
-      </ElementContainer>
+        <ElementContainer>
+          Exchange count:&nbsp; {item.exchangeCount}
+        </ElementContainer>
 
-      <ElementContainer>
-        Unrealized profit:&nbsp; <ProfitValueContainer $value={item.profit}>${item.profit}</ProfitValueContainer>
-      </ElementContainer>
-
-      <ElementContainer>
-        Date range:&nbsp; {item.fromDate} - {item.toDate}
-      </ElementContainer>
-
-      <ElementContainer>
-        Exchange count:&nbsp; {item.exchangeCount}
-      </ElementContainer>
-
-      <ElementContainer>
-        Take profit:&nbsp; {item.options.growDiffPercentsUp}%
-      </ElementContainer>
-      <ElementContainer>
-        Falling:&nbsp; {item.options.growDiffPercentsDown}%
-      </ElementContainer>
-      <ElementContainer>
-        Stop loss:&nbsp; {item.options.stopLossPercents ? item.options.stopLossPercents + '%' : '-'}
-      </ElementContainer>
-      <ElementContainer>
-        Max price:&nbsp; {
-        item.options.buyMaxPrice
-          ? <StableCoinContainer $highlight={true}>${item.options.buyMaxPrice}</StableCoinContainer>
-          : '-'
-      }
-      </ElementContainer>
+        <ElementContainer>
+          Take profit:&nbsp; {item.options.growDiffPercentsUp}%
+        </ElementContainer>
+        <ElementContainer>
+          Falling:&nbsp; {item.options.growDiffPercentsDown}%
+        </ElementContainer>
+        <ElementContainer>
+          Stop loss:&nbsp; {item.options.stopLossPercents ? item.options.stopLossPercents + '%' : '-'}
+        </ElementContainer>
+        <ElementContainer>
+          Max price:&nbsp; {
+          item.options.buyMaxPrice
+            ? <StableCoinContainer $highlight={true}>${item.options.buyMaxPrice}</StableCoinContainer>
+            : '-'
+        }
+        </ElementContainer>
 
 
-      {item.latestExchanges.length === 0
-        ? undefined
-        : (
-          <SwapsLogsBlock onClick={() => {}}>
-            <div>
-              Latest swaps <TextUnderline
-              onClick={() => onItemClick(
-                item.hash,
-                DemoListItemClickId.BUTTON_SWAP_MORE_ID
-              )}
-            >
-            </TextUnderline>:
-            </div>
-            {item.latestExchanges.map((swap, index) => (
-              <SwapContainer key={index}>
-                <SwapSubItem>
-                  <TokenIconView
-                    chain={item.chain}
-                    address={swap.addressFrom}
-                    symbol={swap.symbolFrom}
-                    size={ComponentSize.SMALLEST}
-                  />
-                  <span>
-                    {swap.amountFrom} {
-                    swap.addressFrom === item.currencyB.address
-                      ? ` ($${swap.exchangeUsdPrice})`
-                      : ''
-                  }
-                  </span>
-                  <span>&#10230;</span>
-                  <TokenIconView
-                    chain={item.chain}
-                    address={swap.addressTo}
-                    symbol={swap.symbolTo}
-                    size={ComponentSize.SMALLEST}
-                  />
-                  <span>
-                    {swap.amountTo}{swap.addressTo === item.currencyB.address ? ` ($${swap.exchangeUsdPrice})` : ''}
-                  </span>
-                </SwapSubItem>
-                <SwapItemDateContainer>{swap.date}</SwapItemDateContainer>
-              </SwapContainer>
-            ))}
-          </SwapsLogsBlock>
-        )
-      }
+        {item.latestExchanges.length === 0
+          ? undefined
+          : (
+            <SwapsLogsBlock onClick={() => {}}>
+              <div>
+                Latest swaps <TextUnderline
+                onClick={() => onItemClick(
+                  item.hash,
+                  DemoListItemClickId.BUTTON_SWAP_MORE_ID
+                )}
+              >
+              </TextUnderline>:
+              </div>
+              {item.latestExchanges.map((swap, index) => (
+                <SwapContainer key={index}>
+                  <SwapSubItem>
+                    <TokenIconView
+                      chain={item.chain}
+                      address={swap.addressFrom}
+                      symbol={swap.symbolFrom}
+                      size={ComponentSize.SMALLEST}
+                    />
+                    <span>
+                      {swap.amountFrom} {
+                      swap.addressFrom === item.currencyB.address
+                        ? ` ($${swap.exchangeUsdPrice})`
+                        : ''
+                    }
+                    </span>
+                    <span>&#10230;</span>
+                    <TokenIconView
+                      chain={item.chain}
+                      address={swap.addressTo}
+                      symbol={swap.symbolTo}
+                      size={ComponentSize.SMALLEST}
+                    />
+                    <span>
+                      {swap.amountTo}{swap.addressTo === item.currencyB.address ? ` ($${swap.exchangeUsdPrice})` : ''}
+                    </span>
+                  </SwapSubItem>
+                  <SwapItemDateContainer>{swap.date}</SwapItemDateContainer>
+                </SwapContainer>
+              ))}
+            </SwapsLogsBlock>
+          )
+        }
 
-    </Container>
+      </Container>
+    </LazyMotion>
   )
 })

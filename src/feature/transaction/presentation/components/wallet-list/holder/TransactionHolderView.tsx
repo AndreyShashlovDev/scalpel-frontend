@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { domAnimation, LazyMotion, m } from 'framer-motion'
 import { ForwardedRef, forwardRef } from 'react'
 import styled from 'styled-components'
 import { AppAddressView } from '../../../../../../common/app-ui/AppAddressView.tsx'
@@ -9,7 +9,7 @@ import { ChainName } from '../../../../../../utils/ChainsData.ts'
 import { TxStatus } from '../../../../data/model/TransactionResponse.ts'
 import { TransactionListItemModel } from '../../../model/TransactionListItemModel.ts'
 
-const Container = styled(motion.div)`
+const Container = styled(m.div)`
   border: 1px solid #747474;
   padding: 12px;
   border-radius: ${({theme}) => theme.size.borderRadius.small};
@@ -65,52 +65,54 @@ export interface WalletListHolderProps {
 
 export const TransactionHolderView = forwardRef(({item}: WalletListHolderProps, ref: ForwardedRef<HTMLDivElement>) => {
   return (
-    <Container
-      initial={{opacity: 0}}
-      animate={{opacity: 1}}
-      exit={{opacity: 0, scaleY: 0}}
-      layout
-      transition={{
-        exit: {duration: 0.1},
-      }}
-      ref={ref}
-    >
-      <LineContainer>Status: <StatusColor $status={item.success}>{item.statusText}</StatusColor></LineContainer>
-      {item.errorReason
-        ? <LineContainer>Error: <TextWrapContainer>{item.errorReason}</TextWrapContainer></LineContainer>
-        : undefined
-      }
-      <LineContainer>Chain: {ChainName.get(item.chain)}</LineContainer>
-      <LineContainer>Wallet:&nbsp;<AppAddressView address={item.address} /></LineContainer>
-      {item.nonce
-        ? <LineContainer>Nonce: {item.nonce}</LineContainer>
-        : undefined
-      }
-      <LineContainer>To:&nbsp;<AppAddressView address={item.recipientAddress} /></LineContainer>
-      <LineContainer>Method: <Capitalize>{item.callData.method}</Capitalize></LineContainer>
-      {item.executedAt
-        ? <LineContainer>Executed at: {item.executedAt}</LineContainer>
-        : undefined
-      }
-      {item.txHash
-        ? <LineContainer>Hash: <AppTxHashView hash={item.txHash} chain={item.chain} /></LineContainer>
-        : undefined
-      }
-      {item.txFee
-        ? (
-          <LineContainer>
-            Fee:&nbsp;
-            <ChainIconView
-              chain={item.chain}
-              size={ComponentSize.SMALLEST}
-            />
-            {item.txFee}
-          </LineContainer>
-        )
-        : undefined
-      }
+    <LazyMotion features={domAnimation} strict>
+      <Container
+        initial={{opacity: 0}}
+        animate={{opacity: 1}}
+        exit={{opacity: 0, scaleY: 0}}
+        layout
+        transition={{
+          exit: {duration: 0.1},
+        }}
+        ref={ref}
+      >
+        <LineContainer>Status: <StatusColor $status={item.success}>{item.statusText}</StatusColor></LineContainer>
+        {item.errorReason
+          ? <LineContainer>Error: <TextWrapContainer>{item.errorReason}</TextWrapContainer></LineContainer>
+          : undefined
+        }
+        <LineContainer>Chain: {ChainName.get(item.chain)}</LineContainer>
+        <LineContainer>Wallet:&nbsp;<AppAddressView address={item.address} /></LineContainer>
+        {item.nonce
+          ? <LineContainer>Nonce: {item.nonce}</LineContainer>
+          : undefined
+        }
+        <LineContainer>To:&nbsp;<AppAddressView address={item.recipientAddress} /></LineContainer>
+        <LineContainer>Method: <Capitalize>{item.callData.method}</Capitalize></LineContainer>
+        {item.executedAt
+          ? <LineContainer>Executed at: {item.executedAt}</LineContainer>
+          : undefined
+        }
+        {item.txHash
+          ? <LineContainer>Hash: <AppTxHashView hash={item.txHash} chain={item.chain} /></LineContainer>
+          : undefined
+        }
+        {item.txFee
+          ? (
+            <LineContainer>
+              Fee:&nbsp;
+              <ChainIconView
+                chain={item.chain}
+                size={ComponentSize.SMALLEST}
+              />
+              {item.txFee}
+            </LineContainer>
+          )
+          : undefined
+        }
 
-      <DateContainer>{item.createdAt}</DateContainer>
-    </Container>
+        <DateContainer>{item.createdAt}</DateContainer>
+      </Container>
+    </LazyMotion>
   )
 })

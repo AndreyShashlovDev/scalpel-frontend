@@ -1,10 +1,10 @@
-import { motion } from 'framer-motion'
+import { LazyMotion, domAnimation, m } from 'framer-motion'
 import { ReactNode } from 'react'
 import styled from 'styled-components'
 import { ComponentSize, ComponentSizeProps } from './ComponentSize.ts'
 import { ComponentVariant, ComponentVariantProps } from './ComponentVariant.ts'
 
-const BasicButton = styled(motion.button)<{
+const BasicButton = styled(m.button)<{
   $disabled: boolean | undefined,
   size?: ComponentSize,
   $variant?: ComponentVariant
@@ -112,18 +112,20 @@ export interface AppButtonProps extends ComponentSizeProps, ComponentVariantProp
 export const AppButton = ({text, onClick, disabled, size, variant, ...props}: AppButtonProps) => {
 
   return (
-    <BasicButton
-      $variant={variant ?? ComponentVariant.STANDARD}
-      size={size ?? ComponentSize.STANDARD}
-      whileTap={disabled ? {} : {scale: 0.95}}
-      // type='button'
-      // value={text}
-      disabled={disabled}
-      onClick={() => !disabled && onClick && onClick()}
-      $disabled={disabled}
-      {...props}
-    >
-      {text}
-    </BasicButton>
+    <LazyMotion features={domAnimation} strict>
+      <BasicButton
+        $variant={variant ?? ComponentVariant.STANDARD}
+        size={size ?? ComponentSize.STANDARD}
+        whileTap={disabled ? {} : {scale: 0.95}}
+        // type='button'
+        // value={text}
+        disabled={disabled}
+        onClick={() => !disabled && onClick && onClick()}
+        $disabled={disabled}
+        {...props}
+      >
+        {text}
+      </BasicButton>
+    </LazyMotion>
   )
 }

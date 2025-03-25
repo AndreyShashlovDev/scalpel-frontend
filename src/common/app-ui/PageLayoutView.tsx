@@ -1,11 +1,11 @@
-import { motion } from 'framer-motion'
+import { domAnimation, LazyMotion, m } from 'framer-motion'
 import { MutableRefObject, ReactNode, useEffect, useRef } from 'react'
 import PullToRefresh from 'react-simple-pull-to-refresh'
 import styled from 'styled-components'
 import { useApp } from '../../AppProvider.tsx'
 import { LoadingView } from './LoadingView.tsx'
 
-const Container = styled(motion.div)`
+const Container = styled(m.div)`
   background-color: ${({theme}) => theme.color.background};
   color: ${({theme}) => theme.color.text.primary};
 `
@@ -61,12 +61,14 @@ export const PageLayoutView = ({children, refresh, fetched, ...props}: PageLayou
       }}
 
     >
-    <Container
-      animate={{scale: visibilityAppMenu ? 0.95 : 1}}
-      {...props}
-    >
-      {children}
-    </Container>
+    <LazyMotion features={domAnimation} strict>
+        <Container
+          animate={{scale: visibilityAppMenu ? 0.95 : 1}}
+          {...props}
+        >
+          {children}
+        </Container>
+    </LazyMotion>
   </PullRefreshWrapper>
   )
 }

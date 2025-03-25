@@ -1,10 +1,10 @@
-import { motion } from 'framer-motion'
+import { domAnimation, LazyMotion, m } from 'framer-motion'
 import styled from 'styled-components'
 
 const Container = styled.div`
 
 `
-const SelectWrapper = styled(motion.select)`
+const SelectWrapper = styled(m.select)`
   padding: 1px 4px;
   font-size: 12px !important;
 `
@@ -26,20 +26,22 @@ export interface AppComboBoxProps {
 export const AppComboBoxView = ({items, onSelect, title, selectedItem}: AppComboBoxProps) => {
 
   return (
-    <Container>
-      <SelectWrapper onChange={e => onSelect(e.target.value)} defaultValue={selectedItem ?? title}>
-        <OptionWrapperItem value={title}>{title}</OptionWrapperItem>
+    <LazyMotion features={domAnimation} strict>
+      <Container>
+        <SelectWrapper onChange={e => onSelect(e.target.value)} defaultValue={selectedItem ?? title}>
+          <OptionWrapperItem value={title}>{title}</OptionWrapperItem>
 
-        {items.map(item => (
-            <OptionWrapperItem
-              value={item}
-              key={item}
-            >
-              {item}
-            </OptionWrapperItem>
-          )
-        )}
-      </SelectWrapper>
-    </Container>
+          {items.map(item => (
+              <OptionWrapperItem
+                value={item}
+                key={item}
+              >
+                {item}
+              </OptionWrapperItem>
+            )
+          )}
+        </SelectWrapper>
+      </Container>
+    </LazyMotion>
   )
 }

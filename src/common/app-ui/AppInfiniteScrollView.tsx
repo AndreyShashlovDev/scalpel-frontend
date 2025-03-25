@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { domAnimation, LazyMotion, m } from 'framer-motion'
 import {
   forwardRef,
   memo,
@@ -13,7 +13,7 @@ import {
 } from 'react'
 import styled from 'styled-components'
 
-const Container = styled(motion.div)`
+const Container = styled(m.div)`
 `
 
 export interface ListItem {
@@ -218,10 +218,12 @@ const InfiniteScrollListView = memo(forwardRef((
   }, [items, getHolderView, getRefSetter])
 
   return (
-    <Container {...props}>
-      {renderedItems}
-      {isEndReached && hasNext && loadingElement}
-    </Container>
+    <LazyMotion features={domAnimation} strict>
+      <Container {...props}>
+        {renderedItems}
+        {isEndReached && hasNext && loadingElement}
+      </Container>
+    </LazyMotion>
   )
 }))
 

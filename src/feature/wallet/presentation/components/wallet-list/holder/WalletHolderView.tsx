@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { domAnimation, LazyMotion, m } from 'framer-motion'
 import { ForwardedRef, forwardRef, memo, useCallback, useState } from 'react'
 import styled from 'styled-components'
 import EditIcon from '../../../../../../assets/icons/app/EditIcon.svg'
@@ -20,7 +20,7 @@ import { Address } from '../../../../../../utils/types.ts'
 import { WalletListItemIds } from '../../../../domain/model/WalletListItemIds.ts'
 import { WalletListItemModel } from '../../../model/WalletListItemModel.ts'
 
-const Container = styled(motion.div)`
+const Container = styled(m.div)`
   border: 1px solid #747474;
   padding: 12px;
   border-radius: ${({theme}) => theme.size.borderRadius.small};
@@ -162,146 +162,148 @@ export const WalletHolderView = memo(forwardRef((
   }, [onItemClick, item.hash])
 
   return (
-    <Container
-      initial={{opacity: 0}}
-      animate={{opacity: 1}}
-      exit={{opacity: 0, scaleY: 0}}
-      layout
-      transition={{
-        exit: {duration: 0.1},
-      }}
-      ref={ref}
-    >
-      <LineContainer>Address:&nbsp;<AppAddressView address={item.address} /></LineContainer>
-      <LineContainer>Name: {isEditName
-        ? <TextInputWrapper value={walletName} max={15} onChange={v => setWalletName(v)} />
-        : walletName
-      }&nbsp;
-        <AppIconButton
-          icon={isEditName ? <SaveIcon /> : <EditIcon />}
-          size={ComponentSize.SMALLEST}
-          onClick={handleEditName}
-        />
-      </LineContainer>
-      <LineContainer>Total orders: {item.totalOrders}</LineContainer>
-      <LineContainer>Active orders: {item.activeOrders}</LineContainer>
-      <LineContainer>Earned profit:
-        <ProfitValueContainer $value={item.totalUsdProfit}>
-          ${NumberShortener(item.totalUsdProfit)}
-        </ProfitValueContainer>
-      </LineContainer>
-      <LineContainer>Realized profit:
-        <ProfitValueContainer $value={item.realizedUsdProfit}>
-          ${NumberShortener(item.realizedUsdProfit)}
-        </ProfitValueContainer>
-      </LineContainer>
-      <ActionsContainer>
-        {item.privateKey
-          ? (
-            <PrivateKeyContainer>
-              <PrivateKeyView pk={item.privateKey} onPKShown={handlePkShown} />
-              {showDeletePrivateKeyButton && (
-                <AppButton
-                  onClick={handleDeletePrivateKey}
-                  variant={ComponentVariant.DANGER}
-                  size={ComponentSize.SMALL}
-                  text={'Delete PK from server'}
-                />
-              )
-              }
-            </PrivateKeyContainer>
-          )
-          : (
-            <AppButton
-              variant={ComponentVariant.DANGER}
-              size={ComponentSize.SMALL}
-              onClick={handleExportWallet}
-              text={'Export private key'}
-            />
-          )
-        }
-      </ActionsContainer>
-      <FeeContainer>
-        <FeeTitleContainer>Total fee:</FeeTitleContainer>
-        {
-          Array.from((item.totalFee.entries()))
-            .map(([chain, fee]) => (
-              <FeeItemContainer key={chain}>
-                <ChainIconView
-                  chain={chain}
-                  size={ComponentSize.SMALLEST}
-                />
-                &nbsp;
-                {NumberShortener(fee.eth, 5)}
-                &nbsp;
-                {fee.usd !== undefined
-                  ? (
-                    <>
-                      (<GreenColor>${NumberShortener(fee.usd)}</GreenColor>)
-                    </>
-                  )
-                  : <LoadingView size={ComponentSize.SMALLEST} />
+    <LazyMotion features={domAnimation} strict>
+      <Container
+        initial={{opacity: 0}}
+        animate={{opacity: 1}}
+        exit={{opacity: 0, scaleY: 0}}
+        layout
+        transition={{
+          exit: {duration: 0.1},
+        }}
+        ref={ref}
+      >
+        <LineContainer>Address:&nbsp;<AppAddressView address={item.address} /></LineContainer>
+        <LineContainer>Name: {isEditName
+          ? <TextInputWrapper value={walletName} max={15} onChange={v => setWalletName(v)} />
+          : walletName
+        }&nbsp;
+          <AppIconButton
+            icon={isEditName ? <SaveIcon /> : <EditIcon />}
+            size={ComponentSize.SMALLEST}
+            onClick={handleEditName}
+          />
+        </LineContainer>
+        <LineContainer>Total orders: {item.totalOrders}</LineContainer>
+        <LineContainer>Active orders: {item.activeOrders}</LineContainer>
+        <LineContainer>Earned profit:
+          <ProfitValueContainer $value={item.totalUsdProfit}>
+            ${NumberShortener(item.totalUsdProfit)}
+          </ProfitValueContainer>
+        </LineContainer>
+        <LineContainer>Realized profit:
+          <ProfitValueContainer $value={item.realizedUsdProfit}>
+            ${NumberShortener(item.realizedUsdProfit)}
+          </ProfitValueContainer>
+        </LineContainer>
+        <ActionsContainer>
+          {item.privateKey
+            ? (
+              <PrivateKeyContainer>
+                <PrivateKeyView pk={item.privateKey} onPKShown={handlePkShown} />
+                {showDeletePrivateKeyButton && (
+                  <AppButton
+                    onClick={handleDeletePrivateKey}
+                    variant={ComponentVariant.DANGER}
+                    size={ComponentSize.SMALL}
+                    text={'Delete PK from server'}
+                  />
+                )
                 }
-              </FeeItemContainer>
-            ))
+              </PrivateKeyContainer>
+            )
+            : (
+              <AppButton
+                variant={ComponentVariant.DANGER}
+                size={ComponentSize.SMALL}
+                onClick={handleExportWallet}
+                text={'Export private key'}
+              />
+            )
+          }
+        </ActionsContainer>
+        <FeeContainer>
+          <FeeTitleContainer>Total fee:</FeeTitleContainer>
+          {
+            Array.from((item.totalFee.entries()))
+              .map(([chain, fee]) => (
+                <FeeItemContainer key={chain}>
+                  <ChainIconView
+                    chain={chain}
+                    size={ComponentSize.SMALLEST}
+                  />
+                  &nbsp;
+                  {NumberShortener(fee.eth, 5)}
+                  &nbsp;
+                  {fee.usd !== undefined
+                    ? (
+                      <>
+                        (<GreenColor>${NumberShortener(fee.usd)}</GreenColor>)
+                      </>
+                    )
+                    : <LoadingView size={ComponentSize.SMALLEST} />
+                  }
+                </FeeItemContainer>
+              ))
+          }
+        </FeeContainer>
+        {
+          Array.from(item.currencies.keys()).map(chain => (
+            <CurrencyContainer key={chain}>
+              <ChainTitleContainer>
+                <ChainIconView showChainName={true} chain={chain} size={ComponentSize.SMALLEST} />
+                (Total in-use / Total Balance)
+              </ChainTitleContainer>
+              {
+                Array.from((item.currencies.get(chain)?.values() ?? []))
+                  .map(({amount, currency, actualBalance}) => (
+                    <CurrencyItemContainer key={currency.address + currency.chain}>
+                      <CurrencyItemAmountContainer>
+                        <TokenIconView
+                          chain={currency.chain}
+                          address={currency.address}
+                          symbol={currency.symbol}
+                          size={ComponentSize.SMALLEST}
+                        />
+                        &nbsp;
+                        {currency.symbol}
+                        &nbsp;
+                        {amount}
+                        &nbsp;/&nbsp;
+                        {actualBalance !== undefined ? actualBalance : <LoadingView size={ComponentSize.SMALLEST} />}
+                        &nbsp;
+                        (<GreenColor>${NumberShortener(currency.price?.toUsdValue() ?? 0)}</GreenColor>)
+                      </CurrencyItemAmountContainer>
+                      {
+                        actualBalance && actualBalance > amount
+                          ? (
+                            <WithdrawButtonWrapper
+                              onClick={handleWithdraw(currency.address)}
+                              size={ComponentSize.SMALL}
+                              text={'Withdraw'}
+                            />
+                          )
+                          : undefined
+                      }
+                    </CurrencyItemContainer>
+                  ))
+              }
+              <CurrencyFooterContainer>
+                <FooterItemContainer>
+                  Orders cost / initial:&nbsp;
+                  <GreenColor>${item.totalValueWalletUsdt.get(chain)}</GreenColor>
+                  &nbsp;/&nbsp;
+                  <GreenColor>${NumberShortener(item.totalInitialUsdValue.get(chain) ?? 0)}</GreenColor>
+                </FooterItemContainer>
+                <FooterItemContainer>
+                  Wallet cost:&nbsp;<GreenColor>${item.totalActualValueWalletUsdt.get(chain) ??
+                  <LoadingView size={ComponentSize.SMALLEST} />}</GreenColor>
+                </FooterItemContainer>
+              </CurrencyFooterContainer>
+            </CurrencyContainer>
+          ))
         }
-      </FeeContainer>
-      {
-        Array.from(item.currencies.keys()).map(chain => (
-          <CurrencyContainer key={chain}>
-            <ChainTitleContainer>
-              <ChainIconView showChainName={true} chain={chain} size={ComponentSize.SMALLEST} />
-              (Total in-use / Total Balance)
-            </ChainTitleContainer>
-            {
-              Array.from((item.currencies.get(chain)?.values() ?? []))
-                .map(({amount, currency, actualBalance}) => (
-                  <CurrencyItemContainer key={currency.address + currency.chain}>
-                    <CurrencyItemAmountContainer>
-                      <TokenIconView
-                        chain={currency.chain}
-                        address={currency.address}
-                        symbol={currency.symbol}
-                        size={ComponentSize.SMALLEST}
-                      />
-                      &nbsp;
-                      {currency.symbol}
-                      &nbsp;
-                      {amount}
-                      &nbsp;/&nbsp;
-                      {actualBalance !== undefined ? actualBalance : <LoadingView size={ComponentSize.SMALLEST} />}
-                      &nbsp;
-                      (<GreenColor>${NumberShortener(currency.price?.toUsdValue() ?? 0)}</GreenColor>)
-                    </CurrencyItemAmountContainer>
-                    {
-                      actualBalance && actualBalance > amount
-                        ? (
-                          <WithdrawButtonWrapper
-                            onClick={handleWithdraw(currency.address)}
-                            size={ComponentSize.SMALL}
-                            text={'Withdraw'}
-                          />
-                        )
-                        : undefined
-                    }
-                  </CurrencyItemContainer>
-                ))
-            }
-            <CurrencyFooterContainer>
-              <FooterItemContainer>
-                Orders cost / initial:&nbsp;
-                <GreenColor>${item.totalValueWalletUsdt.get(chain)}</GreenColor>
-                &nbsp;/&nbsp;
-                <GreenColor>${NumberShortener(item.totalInitialUsdValue.get(chain) ?? 0)}</GreenColor>
-              </FooterItemContainer>
-              <FooterItemContainer>
-                Wallet cost:&nbsp;<GreenColor>${item.totalActualValueWalletUsdt.get(chain) ??
-                <LoadingView size={ComponentSize.SMALLEST} />}</GreenColor>
-              </FooterItemContainer>
-            </CurrencyFooterContainer>
-          </CurrencyContainer>
-        ))
-      }
-    </Container>
+      </Container>
+    </LazyMotion>
   )
 }))
