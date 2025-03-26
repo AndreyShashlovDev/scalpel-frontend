@@ -1,11 +1,27 @@
-import { Singleton } from '../../../utils/di-core/decorator/decorators.ts'
+import { Inject, Singleton } from '../../../utils/di-core/decorator/decorators.ts'
 import { ApplicationRouter, RouterPath } from './ApplicationRouter.ts'
+import { RouteStateManager } from './state-manager/RouteStateManager.ts'
 
 @Singleton()
 export class ApplicationRouterImpl extends ApplicationRouter {
 
-  constructor() {
+  constructor(
+    @Inject(RouteStateManager) private readonly stateManager: RouteStateManager
+  ) {
     super()
+  }
+
+  public saveRouteState<T>(bundle: Readonly<T>): void {
+    const current = this.stack[this.stack.length - 1]
+    const prev = this.stack[this.stack.length - 2]
+
+    if (!current.replace) {
+      return this.stateManager.saveSate(prev.path, bundle)
+    }
+  }
+
+  public restoreRouteState<T>(): Readonly<T> | undefined {
+    return this.stateManager.getAndDelete(this.stack[this.stack.length - 1].path) as Readonly<T>
   }
 
   public openLoginPage(): void {

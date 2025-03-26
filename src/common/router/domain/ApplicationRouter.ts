@@ -50,6 +50,10 @@ export class RouterPath<T extends object> {
 
 export abstract class ApplicationRouter extends BasicRouter {
 
+  public abstract saveRouteState<T>(bundle: Readonly<T>): void
+
+  public abstract restoreRouteState<T>(): Readonly<T> | undefined
+
   public abstract openLoginPage(): void
 
   public abstract openStrategiesPage(): void

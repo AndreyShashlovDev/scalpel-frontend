@@ -11,7 +11,7 @@ export type RouteEvent = { path: string, replace: boolean }
 export abstract class BasicRouter {
 
   private navigate: Navigator | undefined
-  protected stack: string[] = []
+  protected stack: RouteEvent[] = []
   private readonly navigationSubject = new Subject<RouteEvent>()
   private readonly deepLink: string | null
 
@@ -44,7 +44,7 @@ export abstract class BasicRouter {
     return this.deepLink
   }
 
-  public getCurrentPath(): string | undefined {
+  public getCurrentPath(): RouteEvent | undefined {
     return this.stack[this.stack.length - 1]
   }
 
@@ -52,7 +52,7 @@ export abstract class BasicRouter {
     return this.navigationSubject.asObservable()
   }
 
-  public getNavigationPath(): string[] {
+  public getNavigationPath(): RouteEvent[] {
     return Array.from(this.stack)
   }
 
@@ -69,7 +69,7 @@ export abstract class BasicRouter {
       this.stack.pop()
       this.navigate(-1)
 
-      this.navigationSubject.next({path: this.stack[this.stack.length - 1], replace: false})
+      this.navigationSubject.next(this.stack[this.stack.length - 1])
       return true
     }
 
@@ -92,14 +92,14 @@ export abstract class BasicRouter {
 
     if (this.navigate) {
       if (options?.replace && this.stack.length > 0) {
-        this.stack[this.stack.length - 1] = uniqueRoute
+        this.stack[this.stack.length - 1] = {path: uniqueRoute, replace: updatedOptions.replace}
 
         if (this.stack.length > 1) {
           window.history.replaceState({}, '')
         }
 
       } else {
-        this.stack.push(uniqueRoute)
+        this.stack.push({path: uniqueRoute, replace: updatedOptions.replace})
 
         if (this.stack.length > 1) {
           window.history.pushState({}, '')

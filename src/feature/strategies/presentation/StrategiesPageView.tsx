@@ -31,6 +31,7 @@ export const StrategiesPageView = () => {
   const isLastPage = useObservable(presenter.getIsLastPage(), true)
   const isLoading = useObservable(presenter.getIsLoading(), true)
   const isLoadingFinished = useObservable(presenter.getLoadingFinished(), undefined)
+  const listScrollPosition = useObservable(presenter.getListScrollY(), undefined)
 
   const dialogQuestionRef = useRef<DialogQuestionCallBack | null>(null)
   const listScrollContainerRef = useRef<HTMLDivElement | null>(null)
@@ -94,6 +95,30 @@ export const StrategiesPageView = () => {
   const handleChangeFilter = useCallback((filter: StrategiesFilter) => {
     presenter.onChangeFilter(filter)
   }, [presenter])
+
+  useEffect(() => {
+    const abortController = new AbortController()
+    const element = listScrollContainerRef.current
+
+    if (element) {
+      element.addEventListener('scroll', () => {
+        presenter.setListScrollY(Math.round(element.scrollTop))
+      }, {signal: abortController.signal})
+    }
+
+    return () => abortController.abort()
+  }, [listScrollContainerRef, presenter])
+
+  useEffect(() => {
+    const element = listScrollContainerRef.current
+
+    if (element && listScrollPosition && Math.round(element.scrollTop) !== listScrollPosition) {
+      element.scrollTo({
+        top: listScrollPosition,
+        behavior: 'instant'
+      })
+    }
+  }, [listScrollPosition, listScrollContainerRef])
 
   return (
     <div>

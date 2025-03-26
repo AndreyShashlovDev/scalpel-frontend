@@ -17,6 +17,8 @@ export abstract class StrategiesPagePresenter extends BasicPresenter<void> {
 
   public abstract getIsEmpty(): Observable<boolean>
 
+  public abstract getListScrollY(): Observable<number | undefined>
+
   public abstract fetchNextPage(): void
 
   public abstract onListItemClick(
@@ -30,4 +32,6 @@ export abstract class StrategiesPagePresenter extends BasicPresenter<void> {
   public abstract onFilterButtonClick(): void
 
   public abstract onChangeFilter(filter: StrategiesFilter): void
+
+  public abstract setListScrollY(scrollTop: number): void
 }

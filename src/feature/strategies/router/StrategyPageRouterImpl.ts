@@ -2,7 +2,7 @@ import { ApplicationRouter } from '../../../common/router/domain/ApplicationRout
 import { Inject, Injectable } from '../../../utils/di-core/decorator/decorators.ts'
 import StrategiesFilter from '../domain/model/StrategiesFilter.ts'
 import { StrategyPageDialogProvider } from './StrategyPageDialogProvider.ts'
-import { StrategyPageRouter } from './StrategyPageRouter.ts'
+import { StateBundle, StrategyPageRouter } from './StrategyPageRouter.ts'
 
 @Injectable()
 export class StrategyPageRouterImpl extends StrategyPageRouter {
@@ -55,5 +55,13 @@ export class StrategyPageRouterImpl extends StrategyPageRouter {
       strategyHash,
       resultId
     )
+  }
+
+  public saveRouteState(bundle: StateBundle): void {
+    this.appRouter.saveRouteState(bundle)
+  }
+
+  public restoreRouteState(): Readonly<StateBundle> | undefined {
+    return this.appRouter.restoreRouteState()
   }
 }

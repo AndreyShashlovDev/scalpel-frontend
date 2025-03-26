@@ -1,10 +1,8 @@
-import { BehaviorSubject, catchError, EMPTY, from, Observable, Subject, Subscription } from 'rxjs'
-import { Pageable } from '../../../common/repository/data/model/Pageable.ts'
+import { BehaviorSubject, catchError, distinctUntilChanged, EMPTY, from, Observable, Subject, Subscription } from 'rxjs'
 import { StrategyStatusType } from '../../../common/repository/data/model/StrategyResponse.ts'
 import { PreferencesRepository } from '../../../common/repository/data/preferences/PreferencesRepository.ts'
 import { Inject, Injectable } from '../../../utils/di-core/decorator/decorators.ts'
 import { ChangeOptionsRequest } from '../data/model/ChangeOptionsRequest.ts'
-import { CompositeStrategyResponse } from '../data/model/CompositeStrategyResponse.ts'
 import { StrategyRepository } from '../data/strategy-repository/StrategyRepository.ts'
 import { StrategyResponseToStrategyListItem } from '../presentation/mapping/StrategyResponseToStrategyListItem.ts'
 import { StrategyListItem } from '../presentation/model/StrategyListItem.ts'
@@ -26,6 +24,7 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
   private readonly isLoading = new BehaviorSubject<boolean>(true)
   private readonly isLoadingFinished = new Subject<boolean>()
   private readonly isEmpty = new Subject<boolean>()
+  private readonly listScrollPosition = new BehaviorSubject<number | undefined>(undefined)
 
   private readonly filter = new BehaviorSubject<StrategiesFilter>(new StrategiesFilter(
     [
@@ -47,7 +46,7 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
     )
   ))
 
-  private strategiesLatestResult: Pageable<CompositeStrategyResponse> | undefined
+  private currentPage: number | undefined
 
   private listFetchSubscriber: Subscription | undefined
 
@@ -60,6 +59,19 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
   }
 
   public ready() {
+    const restoredState = this.router.restoreRouteState()
+
+    if (restoredState) {
+      this.currentPage = restoredState.currentPage
+      this.isLastPage.next(restoredState.isLastPage)
+      this.strategiesList.next(restoredState.listItems)
+      this.listScrollPosition.next(restoredState.listScrollY)
+      this.isLoadingFinished.next(true)
+      this.isLoading.next(false)
+
+      return
+    }
+
     this.isLoading.next(true)
 
     this.preferencesRepository
@@ -76,12 +88,18 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
   }
 
   public destroy(): void {
+    this.router.saveRouteState({
+      listScrollY: this.listScrollPosition.value,
+      currentPage: this.currentPage,
+      listItems: this.strategiesList.value,
+      isLastPage: this.isLastPage.value,
+    })
     this.listFetchSubscriber?.unsubscribe()
   }
 
   public refresh(): void {
     this.isLastPage.next(true)
-    this.strategiesLatestResult = undefined
+    this.currentPage = undefined
     this.strategiesList.next([])
     this.fetchNextPage()
   }
@@ -106,19 +124,24 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
     return this.isEmpty.asObservable()
   }
 
+  public getListScrollY(): Observable<number | undefined> {
+    return this.listScrollPosition.asObservable()
+      .pipe(distinctUntilChanged())
+  }
+
   public fetchNextPage(): void {
     this.listFetchSubscriber?.unsubscribe()
     this.isLoading.next(this.strategiesList.value.length === 0)
 
     this.listFetchSubscriber = from(this.strategiesRepository.getCompositeStrategies(
       this.filter.value.selectedStatus,
-      (this.strategiesLatestResult?.page ?? 0) + 1,
+      (this.currentPage ?? 0) + 1,
       StrategiesPagePresenterImpl.PAGE_LIMIT
     ))
       .pipe(catchError(() => {return EMPTY}))
       .subscribe({
         next: (result) => {
-          this.strategiesLatestResult = result
+          this.currentPage = result.page
 
           const list = this.strategiesList
             .value
@@ -356,5 +379,9 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
     }).catch(e => console.error(e))
 
     this.refresh()
+  }
+
+  public setListScrollY(scrollTop: number): void {
+    this.listScrollPosition.next(scrollTop)
   }
 }
