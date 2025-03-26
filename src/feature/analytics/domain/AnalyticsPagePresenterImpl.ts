@@ -3,6 +3,7 @@ import { AnalyticsRange } from '../data/analytics-repository/AnalyticsRange.ts'
 import { AnalyticsRepository } from '../data/analytics-repository/AnalyticsRepository.ts'
 import { AnalyticsResponseToSwapPriceUiModel } from '../presentation/mapping/AnalyticsResponseToSwapPriceUiModel.ts'
 import { AnalyticsChartUiModel } from '../presentation/model/AnalyticsChartUiModel.ts'
+import { AnalyticsPageRouter } from '../router/AnalyticsPageRouter.ts'
 import { AnalyticsPagePresenter } from './AnalyticsPagePresenter.ts'
 
 export class AnalyticsPagePresenterImpl extends AnalyticsPagePresenter {
@@ -14,7 +15,10 @@ export class AnalyticsPagePresenterImpl extends AnalyticsPagePresenter {
 
   private chartDateRange = new BehaviorSubject<AnalyticsRange>(AnalyticsRange.DAY)
 
-  constructor(private readonly analyticsRepository: AnalyticsRepository) {
+  constructor(
+    private readonly analyticsRepository: AnalyticsRepository,
+    private readonly router: AnalyticsPageRouter,
+  ) {
     super()
   }
 
@@ -62,5 +66,9 @@ export class AnalyticsPagePresenterImpl extends AnalyticsPagePresenter {
   public onChartRangeChange(range: AnalyticsRange): void {
     this.chartDateRange.next(range)
     this.loadData()
+  }
+
+  public onBackButtonClick(): void {
+    this.router.back()
   }
 }

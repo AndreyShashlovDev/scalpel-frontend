@@ -1,3 +1,4 @@
+import { ApplicationRouter } from '../../../common/router/domain/ApplicationRouter.ts'
 import { Inject, Injectable } from '../../../utils/di-core/decorator/decorators.ts'
 import StrategiesFilter from '../domain/model/StrategiesFilter.ts'
 import { StrategyPageDialogProvider } from './StrategyPageDialogProvider.ts'
@@ -8,16 +9,17 @@ export class StrategyPageRouterImpl extends StrategyPageRouter {
 
   constructor(
     @Inject(StrategyPageDialogProvider) private readonly dialogProvider: StrategyPageDialogProvider,
+    @Inject(ApplicationRouter) private readonly appRouter: ApplicationRouter,
   ) {
     super()
   }
 
   public openSwaps(strategyHash: string): void {
-    this.dialogProvider.getDialogs()?.openSwapsDialog(strategyHash)
+    this.appRouter.openOrderSwaps(strategyHash)
   }
 
   public openLogs(strategyHash: string): void {
-    this.dialogProvider.getDialogs()?.openLogsDialog(strategyHash)
+    this.appRouter.openOrderLogs(strategyHash)
   }
 
   public openArchiveOrder(strategyHash: string, resultId: number): void {
@@ -30,7 +32,7 @@ export class StrategyPageRouterImpl extends StrategyPageRouter {
   }
 
   public openAnalytics(strategyHash: string): void {
-    this.dialogProvider.getDialogs()?.openAnalyticsDialog(strategyHash)
+    this.appRouter.openOrderAnalytics(strategyHash)
   }
 
   public openForceExecute(strategyHash: string, resultId: number): void {

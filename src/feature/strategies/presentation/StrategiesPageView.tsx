@@ -5,16 +5,13 @@ import { DialogQuestionCallBack, DialogQuestionView } from '../../../common/app-
 import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
 import { PageHeaderView } from '../../../common/app-ui/PageHeaderView.tsx'
 import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
-import useObservable from '../../../utils/di-core/react/hook/useObservable.ts'
 import { useInject } from '../../../utils/di-core/react/hook/useInject.ts'
+import useObservable from '../../../utils/di-core/react/hook/useObservable.ts'
 import { usePresenter } from '../../../utils/di-core/react/hook/usePresenter.ts'
 import StrategiesFilter from '../domain/model/StrategiesFilter.ts'
 import { StrategiesPagePresenter } from '../domain/StrategiesPagePresenter.ts'
 import { StrategyPageDialogProvider } from '../router/StrategyPageDialogProvider.ts'
-import { DialogAnalyticsCallBack, DialogAnalyticsView } from './components/DialogAnalyticsView.tsx'
-import { DialogLogsCallBack, DialogLogsView } from './components/DialogLogsView.tsx'
 import { DialogStrategyFilterCallBack, DialogStrategyFilterView } from './components/DialogStrategyFilterView.tsx'
-import { DialogSwapsCallBack, DialogSwapsView } from './components/DialogSwapsView.tsx'
 import { StrategyListView } from './components/strategy-list/StrategyListView.tsx'
 
 const PageLayoutWrapper = styled(PageLayoutView)`
@@ -35,31 +32,20 @@ export const StrategiesPageView = () => {
   const isLoading = useObservable(presenter.getIsLoading(), true)
   const isLoadingFinished = useObservable(presenter.getLoadingFinished(), undefined)
 
-  const dialogSwapsRef = useRef<DialogSwapsCallBack | null>(null)
-  const dialogLogsRef = useRef<DialogLogsCallBack | null>(null)
   const dialogQuestionRef = useRef<DialogQuestionCallBack | null>(null)
-  const dialogAnalyticsRef = useRef<DialogAnalyticsCallBack | null>(null)
   const listScrollContainerRef = useRef<HTMLDivElement | null>(null)
   const dialogStrategiesFilterRef = useRef<DialogStrategyFilterCallBack | null>(null)
   const [pullToRefreshLoading, setPullToRefreshLoading] = useState(false)
 
   useLayoutEffect(() => {
     dialogProvider.setDialogCallback({
-      openSwapsDialog(strategyHash: string): void {
-        dialogSwapsRef.current?.openDialog({strategyHash})
-      },
-      openLogsDialog(strategyHash: string): void {
-        dialogLogsRef.current?.openDialog({strategyHash})
-      }, openQuestionDialog(title: string, message: string, data: unknown, resultId: number): void {
+      openQuestionDialog(title: string, message: string, data: unknown, resultId: number): void {
         dialogQuestionRef.current?.openDialog({
           title,
           message,
           data,
           dialogId: resultId
         })
-      },
-      openAnalyticsDialog(strategyHash: string): void {
-        dialogAnalyticsRef.current?.openDialog({strategyHash})
       },
       openStrategyFilterDialog(filter: StrategiesFilter): void {
         dialogStrategiesFilterRef.current?.openDialog({filter})
@@ -134,9 +120,6 @@ export const StrategiesPageView = () => {
           />
         </ListContainer>
 
-        <DialogSwapsView ref={dialogSwapsRef} />
-        <DialogLogsView ref={dialogLogsRef} />
-        <DialogAnalyticsView ref={dialogAnalyticsRef} />
         <DialogQuestionView
           onOkClick={handleDialogResult}
           ref={dialogQuestionRef}

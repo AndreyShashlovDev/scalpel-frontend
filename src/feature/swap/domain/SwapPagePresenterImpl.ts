@@ -8,6 +8,7 @@ import { StrategyRepository } from '../data/strategy-repository/StrategyReposito
 import { SwapRepository } from '../data/swap-repository/SwapRepository.ts'
 import { SwapResponseToSwapListItem } from '../presentation/mapping/SwapResponseToSwapListItem.ts'
 import { SwapListItemModel } from '../presentation/model/SwapListItemModel.ts'
+import { SwapsPageRouter } from '../router/SwapsPageRouter.ts'
 import { SwapPagePresenter } from './SwapPagePresenter.ts'
 
 @Injectable()
@@ -27,6 +28,7 @@ export class SwapPagePresenterImpl extends SwapPagePresenter {
   constructor(
     @Inject(StrategyRepository) private readonly strategyRepository: StrategyRepository,
     @Inject(SwapRepository) private readonly swapRepository: SwapRepository,
+    @Inject(SwapsPageRouter) private readonly router: SwapsPageRouter,
   ) {
     super()
   }
@@ -110,5 +112,9 @@ export class SwapPagePresenterImpl extends SwapPagePresenter {
     this.isLastPage.next(true)
     this.swapsItems.next([])
     this.onFetchNext()
+  }
+
+  public onBackButtonClick(): void {
+    this.router.back()
   }
 }

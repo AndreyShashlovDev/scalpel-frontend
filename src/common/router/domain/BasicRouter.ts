@@ -60,7 +60,7 @@ export abstract class BasicRouter {
     this.navigate = navigateFunc
   }
 
-  public popBack() {
+  public back() {
     window.history.back()
   }
 
@@ -69,6 +69,7 @@ export abstract class BasicRouter {
       this.stack.pop()
       this.navigate(-1)
 
+      this.navigationSubject.next({path: this.stack[this.stack.length - 1], replace: false})
       return true
     }
 
@@ -76,10 +77,18 @@ export abstract class BasicRouter {
   }
 
   public navigateTo(route: string, options?: NavigatorOptions) {
+    const updatedOptions = {
+      ...options,
+      ...{
+        replace: options?.replace ?? false,
+        preventScrollReset: options?.preventScrollReset ?? true
+      }
+    }
+
     const hasParams = route.indexOf('?') > -1
     const uniqueRoute = route + `${hasParams ? '&' : '?'}timestamp=${Date.now()}`
 
-    this.navigationSubject.next({path: route, replace: options?.replace ?? false})
+    this.navigationSubject.next({path: route, replace: updatedOptions.replace})
 
     if (this.navigate) {
       if (options?.replace && this.stack.length > 0) {
@@ -97,7 +106,7 @@ export abstract class BasicRouter {
         }
       }
 
-      this.navigate(uniqueRoute, options)
+      this.navigate(uniqueRoute, updatedOptions)
     } else {
       console.error('Navigate function not initialized')
     }

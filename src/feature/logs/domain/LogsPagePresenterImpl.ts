@@ -5,6 +5,7 @@ import { Inject, Injectable } from '../../../utils/di-core/decorator/decorators.
 import { LogsRepository } from '../data/logs-repository/LogsRepository.ts'
 import { LogResponseToLogListItem } from '../presentation/mapping/LogResponseToLogListItem.ts'
 import { LogListItemModel } from '../presentation/model/LogListItemModel.ts'
+import { LogsPageRouter } from '../router/LogsPageRouter.ts'
 import { LogsPagePresenter } from './LogsPagePresenter.ts'
 
 @Injectable()
@@ -21,7 +22,8 @@ export class LogsPagePresenterImpl extends LogsPagePresenter {
   private prevResponse: Pageable<LogResponse> | undefined
 
   constructor(
-    @Inject(LogsRepository) private readonly logsRepository: LogsRepository
+    @Inject(LogsRepository) private readonly logsRepository: LogsRepository,
+    @Inject(LogsPageRouter) private readonly router: LogsPageRouter,
   ) {
     super()
   }
@@ -87,5 +89,9 @@ export class LogsPagePresenterImpl extends LogsPagePresenter {
         this.isLoadingFinished.next(true)
       }
     })
+  }
+
+  public onBackButtonClick(): void {
+    this.router.back()
   }
 }

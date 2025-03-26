@@ -1,8 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { ComponentSize } from '../../../common/app-ui/ComponentSize.ts'
 import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
+import { PageHeaderView } from '../../../common/app-ui/PageHeaderView.tsx'
 import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
+import { RouterPath } from '../../../common/router/domain/ApplicationRouter.ts'
 import useObservable from '../../../utils/di-core/react/hook/useObservable.ts'
 import { usePresenter } from '../../../utils/di-core/react/hook/usePresenter.ts'
 import { LogsPagePresenter } from '../domain/LogsPagePresenter.ts'
@@ -18,13 +21,13 @@ const ListContainer = styled.div`
   height: calc(100vh - ${({theme}) => theme.size.header});
 `
 
-export interface LogsPageProps {
-  strategyHash?: string
-}
+const LogsPageView = () => {
 
-export const LogsPageView = ({strategyHash}: LogsPageProps) => {
-
-  const presenter = usePresenter(LogsPagePresenter, {strategyHash})
+  const queryParams = useParams()
+  const presenter = usePresenter(
+    LogsPagePresenter,
+    {strategyHash: queryParams[RouterPath.OrderLogs.params.strategyHash] ?? ''}
+  )
   const logItemsList = useObservable(presenter.getLogItems(), [])
   const isLastPage = useObservable(presenter.getIsLastPage(), true)
   const isLoading = useObservable(presenter.getIsLoading(), true)
@@ -37,30 +40,39 @@ export const LogsPageView = ({strategyHash}: LogsPageProps) => {
     }
   }, [isLoadingFinished])
 
+  const onBackButtonHandler = useCallback(() => {
+    presenter.onBackButtonClick()
+  }, [presenter])
+
   return (
-    <Container
-      fetched={!isLoading}
-      refresh={() => {
-        setPullToRefreshLoading(true)
-        presenter.refresh()
-      }}
-    >
-      {
-        (isLoading && !pullToRefreshLoading) ? <LoadingView size={ComponentSize.STANDARD} /> : undefined
-      }
-      {
-        (!isLoading && logItemsList.length === 0)
-          ? <div>List is empty</div>
-          : (
-            <ListContainer>
-              <LogsListView
-                items={logItemsList}
-                onNextFetch={() => presenter.onFetchNext()}
-                hasNext={!isLastPage}
-              />
-            </ListContainer>
-          )
-      }
-    </Container>
+    <>
+      <PageHeaderView text={'Logs'} hasMainMenu={false} hasBackButton={true} onBackButtonClick={onBackButtonHandler} />
+      <Container
+        fetched={!isLoading}
+        refresh={() => {
+          setPullToRefreshLoading(true)
+          presenter.refresh()
+        }}
+      >
+        {
+          (isLoading && !pullToRefreshLoading) ? <LoadingView size={ComponentSize.STANDARD} /> : undefined
+        }
+        {
+          (!isLoading && logItemsList.length === 0)
+            ? <div>List is empty</div>
+            : (
+              <ListContainer>
+                <LogsListView
+                  items={logItemsList}
+                  onNextFetch={() => presenter.onFetchNext()}
+                  hasNext={!isLastPage}
+                />
+              </ListContainer>
+            )
+        }
+      </Container>
+  </>
   )
 }
+
+export default LogsPageView

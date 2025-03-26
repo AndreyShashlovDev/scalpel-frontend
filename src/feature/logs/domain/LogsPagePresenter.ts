@@ -19,4 +19,6 @@ export abstract class LogsPagePresenter extends BasicPresenter<LogsPageArgs> {
   public abstract onFetchNext(): void
 
   public abstract refresh(): void
+
+  public abstract onBackButtonClick(): void
 }

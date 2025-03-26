@@ -19,4 +19,6 @@ export abstract class SwapPagePresenter extends BasicPresenter<SwapPageArgs> {
   public abstract onFetchNext(): void
 
   public abstract refresh(): void
+
+  public abstract onBackButtonClick(): void
 }

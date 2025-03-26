@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs'
-import { BasicPresenter } from '../../../../utils/arch/BasicPresenter.ts'
+import { BasicPresenter } from '../../../utils/arch/BasicPresenter.ts'
 import { AnalyticsRange } from '../data/analytics-repository/AnalyticsRange.ts'
 import { AnalyticsChartUiModel } from '../presentation/model/AnalyticsChartUiModel.ts'
 
@@ -18,4 +18,6 @@ export abstract class AnalyticsPagePresenter extends BasicPresenter<AnalyticsPag
   public abstract refresh(): void
 
   public abstract onChartRangeChange(range: AnalyticsRange): void
+
+  public abstract onBackButtonClick(): void
 }

@@ -1,5 +1,5 @@
 import { Singleton } from '../../../utils/di-core/decorator/decorators.ts'
-import { ApplicationRouter } from './ApplicationRouter.ts'
+import { ApplicationRouter, RouterPath } from './ApplicationRouter.ts'
 
 @Singleton()
 export class ApplicationRouterImpl extends ApplicationRouter {
@@ -9,30 +9,42 @@ export class ApplicationRouterImpl extends ApplicationRouter {
   }
 
   public openLoginPage(): void {
-    this.navigateTo('/login', {replace: true})
+    this.navigateTo(RouterPath.Login.buildPath(), {replace: true})
   }
 
   public openStrategiesPage(): void {
-    this.navigateTo('/strategies', {replace: true})
+    this.navigateTo(RouterPath.Orders.buildPath(), {replace: true})
   }
 
   public openCreateStrategyPage(): void {
-    this.navigateTo('/create-strategy', {replace: true})
+    this.navigateTo(RouterPath.CreateOrder.buildPath(), {replace: true})
   }
 
   public openWalletsPage(): void {
-    this.navigateTo('/wallets', {replace: true})
+    this.navigateTo(RouterPath.Wallets.buildPath(), {replace: true})
   }
 
   public openTransactionsPage(): void {
-    this.navigateTo('/transactions', {replace: true})
+    this.navigateTo(RouterPath.Transactions.buildPath(), {replace: true})
   }
 
   public openSimulationPage(): void {
-    this.navigateTo('/simulation', {replace: true})
+    this.navigateTo(RouterPath.Simulation.buildPath(), {replace: true})
   }
 
   public openDemoPage(): void {
-    this.navigateTo('/demo', {replace: true})
+    this.navigateTo(RouterPath.Demo.buildPath(), {replace: true})
+  }
+
+  public openOrderAnalytics(strategyHash: string): void {
+    this.navigateTo(RouterPath.OrderAnalytics.buildPath({strategyHash}), {replace: false})
+  }
+
+  public openOrderLogs(strategyHash: string): void {
+    this.navigateTo(RouterPath.OrderLogs.buildPath({strategyHash}), {replace: false})
+  }
+
+  public openOrderSwaps(strategyHash: string): void {
+    this.navigateTo(RouterPath.OrderSwaps.buildPath({strategyHash}), {replace: false})
   }
 }

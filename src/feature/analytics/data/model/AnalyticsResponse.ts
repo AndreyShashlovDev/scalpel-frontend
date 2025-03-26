@@ -1,9 +1,8 @@
-import { JsonObject } from '../../../../../utils/types.ts'
-import { SimpleHistoryResponse } from '../../../data/model/SimpleHistoryResponse.ts'
+import { SimpleHistoryResponse } from '../../../strategies/data/model/SimpleHistoryResponse.ts'
 
 export class AnalyticsResponse {
 
-  public static valueOfJson(json: JsonObject<AnalyticsResponse>): AnalyticsResponse {
+  public static valueOfJson(json: Readonly<AnalyticsResponse>): AnalyticsResponse {
     return new AnalyticsResponse(
       json.swapsCurrencyA.map(SimpleHistoryResponse.valueOfJson),
       json.swapsCurrencyB.map(SimpleHistoryResponse.valueOfJson),

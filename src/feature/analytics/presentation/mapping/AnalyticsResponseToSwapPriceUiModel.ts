@@ -1,4 +1,4 @@
-import { DateUtils } from '../../../../../utils/DateUtils.ts'
+import { DateUtils } from '../../../../utils/DateUtils.ts'
 import { AnalyticsRange } from '../../data/analytics-repository/AnalyticsRange.ts'
 import { AnalyticsResponse } from '../../data/model/AnalyticsResponse.ts'
 import { AnalyticsChartUiModel } from '../model/AnalyticsChartUiModel.ts'
