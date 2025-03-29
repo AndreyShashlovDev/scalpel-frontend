@@ -46,7 +46,7 @@ export class PushNotificationServiceImpl extends PushNotificationService {
           if (canUse) {
             this.statusSubject.next(new ReadyStatus())
 
-            this.requestPermission()
+            this.checkNotificationPermission()
               .then(granted => {
                 if (!granted) {
                   this.unsubscribe(/* only current */ true).catch(e => console.error(e))

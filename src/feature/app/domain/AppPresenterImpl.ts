@@ -5,6 +5,7 @@ import { UnauthorizedException } from '../../../common/repository/data/source/ex
 import { RouterPath } from '../../../common/router/domain/ApplicationRouter.ts'
 import { AppAuthService } from '../../../common/service/auth/AppAuthService.ts'
 import { ExceptionHandlerService } from '../../../common/service/exception-handler/ExceptionHandlerService.ts'
+import { PushNotificationService } from '../../../common/service/notification/PushNotificationService.ts'
 import { Inject, Injectable } from '../../../utils/di-core/decorator/decorators.ts'
 import { AppRouter } from '../router/AppRouter.ts'
 import { AppMainMenuIds } from './AppMainMenuIds.ts'
@@ -37,6 +38,7 @@ export class AppPresenterImpl extends AppPresenter {
     @Inject(ExceptionHandlerService) private readonly exceptionNotifierService: ExceptionHandlerService,
     @Inject(AppAuthService) private readonly authService: AppAuthService,
     @Inject(AppRouter) private readonly router: AppRouter,
+    @Inject(PushNotificationService) private readonly pushNotificationService: PushNotificationService,
   ) {
     super()
   }
@@ -103,7 +105,8 @@ export class AppPresenterImpl extends AppPresenter {
       this.router.openSimulationPage()
 
     } else if (id === AppMainMenuIds.LOGOUT) {
-      this.authService.clearData()
+      this.pushNotificationService.unsubscribe(/* only current device */ true)
+        .then(() => this.authService.clearData())
         .then(() => {
           this.router.openLoginPage()
           this.selectedMenuItem.next(AppMainMenuIds.ORDERS_MENU_ID)
