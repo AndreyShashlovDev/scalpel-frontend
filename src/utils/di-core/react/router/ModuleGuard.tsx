@@ -35,7 +35,7 @@ export const ModuleGuard = ({
         setIsLoaded(false)
 
         if (isMounted) {
-          console.error('Error loading module:', err)
+          console.error('Error loading module:', module.name, err)
           setError(err instanceof Error ? err : new Error(String(err)))
         }
       })

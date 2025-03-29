@@ -16,15 +16,13 @@ export function usePresenter<T extends BasicPresenter<A>, A>(
   const presenter = useMemo(() => {
     try {
       // Пытаемся получить презентер из текущего модуля
-      return  moduleManager.getService<T>(moduleClass, presenterToken)
+      return moduleManager.getService<T>(moduleClass, presenterToken)
     } catch (error) {
-      console.warn(`Could not resolve presenter ${String(presenterToken)} from module ${moduleClass.name}, trying root container...`, error)
-      try {
-        return moduleManager.getServiceFromRoot<T>(presenterToken)
-      } catch (rootError) {
-        console.error(`Error resolving presenter ${String(presenterToken)} from root container:`, rootError)
-        throw rootError
-      }
+      console.warn(
+        `Could not resolve presenter ${String(presenterToken)} from module ${moduleClass.name}, trying root container...`,
+        error
+      )
+      throw error
     }
   }, [moduleClass, presenterToken])
 
