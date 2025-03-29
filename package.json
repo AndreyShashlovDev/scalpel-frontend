@@ -34,14 +34,14 @@
     "recharts": "=2.15.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "tsyringe": "^4.8.0",
-    "vite-plugin-pwa": "^0.21.1"
+    "tsyringe": "^4.8.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
     "@lhci/cli": "^0.14.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "@types/serviceworker": "^0.0.127",
     "@typescript-eslint/eslint-plugin": "^7.1.1",
     "@typescript-eslint/parser": "^7.1.1",
     "@vitejs/plugin-react": "^4.3.4",
@@ -56,8 +56,10 @@
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.11.0",
     "vite": "^6.2.2",
+    "vite-plugin-pwa": "^0.21.2",
     "vite-plugin-svgr": "^4.3.0",
-    "workbox-core": "^7.0.0",
-    "workbox-precaching": "^7.0.0"
+    "workbox-core": "^7.3.0",
+    "workbox-precaching": "^7.3.0",
+    "workbox-window": "^7.3.0"
   }
 }

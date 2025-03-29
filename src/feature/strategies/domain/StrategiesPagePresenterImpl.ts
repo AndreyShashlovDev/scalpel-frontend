@@ -1,6 +1,18 @@
-import { BehaviorSubject, catchError, distinctUntilChanged, EMPTY, from, Observable, Subject, Subscription } from 'rxjs'
+import {
+  BehaviorSubject,
+  catchError,
+  distinctUntilChanged,
+  EMPTY,
+  filter,
+  from,
+  Observable,
+  Subject,
+  Subscription,
+  takeUntil
+} from 'rxjs'
 import { StrategyStatusType } from '../../../common/repository/data/model/StrategyResponse.ts'
 import { PreferencesRepository } from '../../../common/repository/data/preferences/PreferencesRepository.ts'
+import { PushNotificationService, ReadyStatus } from '../../../common/service/notification/PushNotificationService.ts'
 import { Inject, Injectable } from '../../../utils/di-core/decorator/decorators.ts'
 import { ChangeOptionsRequest } from '../data/model/ChangeOptionsRequest.ts'
 import { StrategyRepository } from '../data/strategy-repository/StrategyRepository.ts'
@@ -19,6 +31,7 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
   private static readonly FORCE_EXEUE_ORDER_RESULT_ID = 2
   private static readonly DELETE_ORDER_RESULT_ID = 3
 
+  private readonly destroySubject: Subject<void> = new Subject()
   private readonly strategiesList = new BehaviorSubject<StrategyListItem<unknown>[]>([])
   private readonly isLastPage = new BehaviorSubject<boolean>(true)
   private readonly isLoading = new BehaviorSubject<boolean>(true)
@@ -54,6 +67,7 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
     @Inject(StrategyRepository) private readonly strategiesRepository: StrategyRepository,
     @Inject(StrategyPageRouter) private readonly router: StrategyPageRouter,
     @Inject(PreferencesRepository) private readonly preferencesRepository: PreferencesRepository,
+    @Inject(PushNotificationService) private readonly pushNotificationService: PushNotificationService,
   ) {
     super()
   }
@@ -85,6 +99,17 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
         }
       }).catch(e => console.error(e))
       .finally(() => this.fetchNextPage())
+
+    this.pushNotificationService.status()
+      .pipe(
+        takeUntil(this.destroySubject),
+        filter(status => status instanceof ReadyStatus),
+        distinctUntilChanged()
+      ).subscribe({
+      next: () => {
+        this.pushNotificationService.subscribe().catch(e => console.error(e))
+      }
+    })
   }
 
   public destroy(): void {
@@ -95,6 +120,9 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
       isLastPage: this.isLastPage.value,
     })
     this.listFetchSubscriber?.unsubscribe()
+
+    this.destroySubject.next()
+    this.destroySubject.complete()
   }
 
   public refresh(): void {

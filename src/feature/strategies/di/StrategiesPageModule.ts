@@ -1,3 +1,4 @@
+import { NotificationModule } from '../../../common/di/NotificationModule.ts'
 import { Module } from '../../../utils/di-core/di/Dependency.ts'
 import { StrategyRepository } from '../data/strategy-repository/StrategyRepository.ts'
 import { StrategyRepositoryImpl } from '../data/strategy-repository/StrategyRepositoryImpl.ts'
@@ -8,7 +9,7 @@ import { StrategyPageRouter } from '../router/StrategyPageRouter.ts'
 import { StrategyPageRouterImpl } from '../router/StrategyPageRouterImpl.ts'
 
 @Module({
-  imports: [],
+  imports: [NotificationModule],
   providers: [
     {
       provide: StrategyPageDialogProvider,
