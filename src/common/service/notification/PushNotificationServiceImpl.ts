@@ -46,7 +46,7 @@ export class PushNotificationServiceImpl extends PushNotificationService {
           if (canUse) {
             this.statusSubject.next(new ReadyStatus())
 
-            this.checkNotificationPermission()
+            this.getNotificationPermission()
               .then(granted => {
                 if (!granted) {
                   this.unsubscribe(/* only current */ true).catch(e => console.error(e))
@@ -94,8 +94,19 @@ export class PushNotificationServiceImpl extends PushNotificationService {
     return this.actionSubject.asObservable()
   }
 
-  public async checkNotificationPermission(): Promise<PermissionStatus> {
+  public async getNotificationPermission(): Promise<PermissionStatus> {
     return Notification.permission
+  }
+
+  public async hasSubscription(): Promise<boolean> {
+    if (!this.swService.isInitialized()) {
+      return false
+    }
+
+    const registration = await this.swService.getRegistration()
+    const pushSubscription = await this.getCurrentSubscription(registration)
+
+    return !!pushSubscription
   }
 
   public async requestPermission(): Promise<boolean> {
@@ -151,7 +162,7 @@ export class PushNotificationServiceImpl extends PushNotificationService {
     const publicKey = await this.notificationRepository.getPublicKey()
 
     try {
-      const permission = await this.checkNotificationPermission()
+      const permission = await this.getNotificationPermission()
 
       if (permission !== 'granted') {
         const permissionGranted = await this.requestPermission()

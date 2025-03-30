@@ -1,5 +1,5 @@
 import { AnimatePresence, domAnimation, LazyMotion, m } from 'framer-motion'
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { RouterProvider } from 'react-router-dom'
 import styled, { createGlobalStyle, ThemeProvider } from 'styled-components'
 import { useApp } from '../../../AppProvider.tsx'
@@ -32,7 +32,7 @@ export const App = () => {
   const presenter = usePresenter(AppPresenter)
   const menuItems = useObservable(presenter.getMainMenuItems(), [])
   const selectedMenuItemId = useObservable(presenter.getSelectedMenuItemId(), undefined)
-  const routing = useMemo(() => AppRouting, [])
+  const routing = AppRouting
   const {theme} = useAppTheme()
   const {seVisibilityAppMenu, visibilityAppMenu} = useApp()
 

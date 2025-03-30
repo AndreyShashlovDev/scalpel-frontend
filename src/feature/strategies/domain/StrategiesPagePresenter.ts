@@ -34,4 +34,6 @@ export abstract class StrategiesPagePresenter extends BasicPresenter<void> {
   public abstract onChangeFilter(filter: StrategiesFilter): void
 
   public abstract setListScrollY(scrollTop: number): void
+
+  public abstract onNotificationClick(): void
 }

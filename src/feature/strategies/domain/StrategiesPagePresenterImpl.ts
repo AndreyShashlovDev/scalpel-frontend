@@ -1,18 +1,9 @@
-import {
-  BehaviorSubject,
-  catchError,
-  distinctUntilChanged,
-  EMPTY,
-  filter,
-  from,
-  Observable,
-  Subject,
-  Subscription,
-  takeUntil
-} from 'rxjs'
+import { BehaviorSubject, catchError, distinctUntilChanged, EMPTY, from, Observable, Subject, Subscription } from 'rxjs'
 import { StrategyStatusType } from '../../../common/repository/data/model/StrategyResponse.ts'
 import { PreferencesRepository } from '../../../common/repository/data/preferences/PreferencesRepository.ts'
-import { PushNotificationService, ReadyStatus } from '../../../common/service/notification/PushNotificationService.ts'
+import { UnknownException } from '../../../common/repository/data/source/exception/UnknownException.ts'
+import { ExceptionNotifierService } from '../../../common/service/exception-handler/ExceptionNotifierService.ts'
+import { PushNotificationService } from '../../../common/service/notification/PushNotificationService.ts'
 import { Inject, Injectable } from '../../../utils/di-core/decorator/decorators.ts'
 import { ChangeOptionsRequest } from '../data/model/ChangeOptionsRequest.ts'
 import { StrategyRepository } from '../data/strategy-repository/StrategyRepository.ts'
@@ -30,6 +21,7 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
   private static readonly ARCHIVE_ORDER_RESULT_ID = 1
   private static readonly FORCE_EXEUE_ORDER_RESULT_ID = 2
   private static readonly DELETE_ORDER_RESULT_ID = 3
+  private static readonly CHANGE_NOTIFICATION_STATE_RESULT_ID = 4
 
   private readonly destroySubject: Subject<void> = new Subject()
   private readonly strategiesList = new BehaviorSubject<StrategyListItem<unknown>[]>([])
@@ -68,6 +60,7 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
     @Inject(StrategyPageRouter) private readonly router: StrategyPageRouter,
     @Inject(PreferencesRepository) private readonly preferencesRepository: PreferencesRepository,
     @Inject(PushNotificationService) private readonly pushNotificationService: PushNotificationService,
+    @Inject(ExceptionNotifierService) private readonly exceptionNotifierService: ExceptionNotifierService,
   ) {
     super()
   }
@@ -99,17 +92,6 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
         }
       }).catch(e => console.error(e))
       .finally(() => this.fetchNextPage())
-
-    this.pushNotificationService.status()
-      .pipe(
-        takeUntil(this.destroySubject),
-        filter(status => status instanceof ReadyStatus),
-        distinctUntilChanged()
-      ).subscribe({
-      next: () => {
-        this.pushNotificationService.subscribe().catch(e => console.error(e))
-      }
-    })
   }
 
   public destroy(): void {
@@ -202,6 +184,12 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
   }
 
   public onActionResultCallback(data: unknown, resultId: number | string): void {
+    if (resultId === StrategiesPagePresenterImpl.CHANGE_NOTIFICATION_STATE_RESULT_ID) {
+      this.changeNotificationSubscription()
+        .then(() => {})
+        .catch(e => console.error(e))
+    }
+
     if (typeof data !== 'string') {
       return
     }
@@ -220,6 +208,7 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
       this.deleteOrder(data)
         .then(() => {})
         .catch(e => console.error(e))
+
     }
   }
 
@@ -411,5 +400,68 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
 
   public setListScrollY(scrollTop: number): void {
     this.listScrollPosition.next(scrollTop)
+  }
+
+  public onNotificationClick() {
+    this.showDialogChangeNotificationSubscription()
+      .catch(e => console.warn(e))
+  }
+
+  private async showDialogChangeNotificationSubscription(): Promise<void> {
+
+    if (this.pushNotificationService.isReady()) {
+      const status = await this.pushNotificationService.getNotificationPermission()
+      const hasSubs = await this.pushNotificationService.hasSubscription()
+
+      const text = `Permission status: ${status} \n\n ${
+        (hasSubs)
+          ? 'Do you want to unsubscribe?'
+          : 'Do you want to subscribe?'
+      }`
+      this.router.openChangeNotificationState(text, StrategiesPagePresenterImpl.CHANGE_NOTIFICATION_STATE_RESULT_ID)
+
+    } else {
+      this.exceptionNotifierService.notify(
+        UnknownException.create('Notification subscription no supported or something went wrong')
+      )
+    }
+  }
+
+  private async changeNotificationSubscription(): Promise<void> {
+    if (!this.pushNotificationService.isReady()) {
+      this.exceptionNotifierService.notify(
+        UnknownException.create('Notification subscription no supported or something went wrong')
+      )
+    }
+
+    try {
+      const hasSubs = await this.pushNotificationService.hasSubscription()
+
+      if (hasSubs) {
+        await this.pushNotificationService.unsubscribe()
+          .then(granted => {
+            this.exceptionNotifierService.notify(
+              UnknownException.create(
+                granted
+                  ? 'Unsubscription success'
+                  : 'Unsubscription error =( Something went wrong!')
+            )
+          })
+
+      } else {
+        await this.pushNotificationService.subscribe()
+          .then(granted => {
+            this.exceptionNotifierService.notify(
+              UnknownException.create(
+                granted
+                  ? 'Subscription was created success'
+                  : 'Notification subscription not created =( Something went wrong!')
+            )
+          })
+      }
+    } catch (e: unknown) {
+      // @ts-ignore
+      this.exceptionNotifierService.notify(UnknownException.create(e.message))
+    }
   }
 }

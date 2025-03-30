@@ -21,6 +21,7 @@ const DescContainer = styled.div`
   font-size: ${({theme}) => theme.size.fontSize.medium};
   text-align: center;
   margin-top: 12px;
+  white-space: pre-wrap;
 `
 
 const ButtonsContainer = styled.div`

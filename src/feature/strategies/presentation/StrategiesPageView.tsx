@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import FilterIcon from '../../../assets/icons/app/FilterIcon.svg'
+import NotificationIcon from '../../../assets/icons/app/NotificationIcon.svg'
 import { DialogQuestionCallBack, DialogQuestionView } from '../../../common/app-ui/dialog/DialogQuestionView.tsx'
 import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
 import { PageHeaderView } from '../../../common/app-ui/PageHeaderView.tsx'
@@ -83,9 +84,13 @@ export const StrategiesPageView = () => {
 
   const headerButtons = useMemo(() => [
     {
+      icon: <NotificationIcon />,
+      onClick: () => presenter.onNotificationClick()
+    },
+    {
       icon: <FilterIcon />,
       onClick: () => presenter.onFilterButtonClick()
-    }
+    },
   ], [presenter])
 
   const handleDialogResult = useCallback((data: unknown, dialogId: string | number) => {

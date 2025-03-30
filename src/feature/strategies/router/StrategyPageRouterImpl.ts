@@ -64,4 +64,13 @@ export class StrategyPageRouterImpl extends StrategyPageRouter {
   public restoreRouteState(): Readonly<StateBundle> | undefined {
     return this.appRouter.restoreRouteState()
   }
+
+  public openChangeNotificationState(text: string, resultId: number): void {
+    this.dialogProvider.getDialogs()?.openQuestionDialog(
+      'Notifications',
+      text,
+      undefined,
+      resultId
+    )
+  }
 }

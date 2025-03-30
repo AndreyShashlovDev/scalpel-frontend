@@ -101,7 +101,9 @@ export abstract class PushNotificationService {
 
   public abstract onReceiveNotificationAction(): Observable<ButtonActionEvent>
 
-  public abstract checkNotificationPermission(): Promise<PermissionStatus>
+  public abstract getNotificationPermission(): Promise<PermissionStatus>
+
+  public abstract hasSubscription(): Promise<boolean>
 
   public abstract requestPermission(): Promise<boolean>
 
