@@ -7,9 +7,10 @@ import { initReactI18next } from 'react-i18next'
 import { AppModule } from './AppModule.ts'
 import { AppProvider } from './AppProvider.tsx'
 import GTagAnalytics from './common/service/analytics/google/GTagAnalytics.tsx'
+import { AppPageModule } from './feature/app/di/AppPageModule.ts'
 import { App } from './feature/app/presentation/App.tsx'
 import { AppThemeProvider } from './style/theme/AppThemeProvider.tsx'
-import { RootModuleLoader } from './utils/di-core/react/provider/ModuleLoader.tsx'
+import { ModuleLoader, RootModuleLoader } from './utils/di-core/react/provider/ModuleLoader.tsx'
 
 const res: InitOptions = {
   // the translations
@@ -34,7 +35,7 @@ createRoot(document.getElementById('root')!).render(
       <GTagAnalytics />
       <AppProvider>
         <AppThemeProvider>
-          <App />
+          <ModuleLoader module={AppPageModule} children={<App />} />
         </AppThemeProvider>
       </AppProvider>
     </RootModuleLoader>
