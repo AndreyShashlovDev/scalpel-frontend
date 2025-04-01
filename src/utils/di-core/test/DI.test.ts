@@ -491,7 +491,7 @@ describe('Module System', () => {
   })
 
   describe('Lifecycle management', () => {
-    test('Unloading module without dependencies', async () => {
+    test('Unloading module without dependencies (root module is never unloaded)', async () => {
       @Injectable()
       class TestService {
         public getValue(): string {
@@ -517,16 +517,50 @@ describe('Module System', () => {
       // Load root module and test module
       await preloadModule(RootModule, true)
 
-      // Check that module is loaded
+      // Check that modules are loaded
       expect(moduleManager.isModuleLoaded(TestModule)).toBe(true)
       expect(moduleManager.isModuleLoaded(RootModule)).toBe(true)
 
-      // Unload module
+      // Try to unload root module
       moduleManager.unloadModule(RootModule)
 
-      // Module should be unloaded after calling unloadModule
-      expect(moduleManager.isModuleLoaded(TestModule)).toBe(false)
-      expect(moduleManager.isModuleLoaded(RootModule)).toBe(false)
+      // Root module should not be unloaded since it's the root module
+      expect(moduleManager.isModuleLoaded(RootModule)).toBe(true)
+
+      // Since root module is not unloaded, its dependencies (TestModule) should remain loaded
+      expect(moduleManager.isModuleLoaded(TestModule)).toBe(true)
+
+      // Now let's try unloading the non-root module directly
+      moduleManager.unloadModule(TestModule)
+
+      // TestModule cannot be unloaded because RootModule depends on it
+      expect(moduleManager.isModuleLoaded(TestModule)).toBe(true)
+
+      // Let's create another module without dependencies for testing unloading
+      @Injectable()
+      class IndependentService {
+        public getValue(): string {
+          return 'independent value'
+        }
+      }
+
+      @Module({
+        providers: [
+          {provide: IndependentService, useClass: IndependentService}
+        ],
+        exports: [IndependentService]
+      })
+      class IndependentModule {}
+
+      // Load independent module
+      await preloadModule(IndependentModule, false)
+      expect(moduleManager.isModuleLoaded(IndependentModule)).toBe(true)
+
+      // Unload independent module
+      moduleManager.unloadModule(IndependentModule)
+
+      // Independent module should be unloaded since no other modules depend on it
+      expect(moduleManager.isModuleLoaded(IndependentModule)).toBe(false)
     })
 
     test('Cannot unload module that other modules depend on', async () => {
@@ -572,7 +606,7 @@ describe('Module System', () => {
       expect(moduleManager.isModuleLoaded(DependentModule)).toBe(true)
 
       // Spy on console.warn using Vitest's spyOn
-      // @ts-ignore
+      // @ts-expect-error isOk
       const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation()
 
       // Try to unload shared module
@@ -607,7 +641,7 @@ describe('Module System', () => {
     test('Error when initializing module with missing dependencies', async () => {
       @Injectable()
       class ServiceWithMissingDependency {
-        // @ts-ignore
+        // @ts-expect-error isOk
         constructor(@Inject('MissingDependency') private readonly dependency: any) {}
       }
 

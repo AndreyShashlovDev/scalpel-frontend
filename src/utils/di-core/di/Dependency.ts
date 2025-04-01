@@ -638,7 +638,7 @@ export class ModuleManager {
 
     // Don't unload root module
     if (moduleRef === this.rootModuleRef) {
-      // console.warn('Cannot unload root module')
+      console.warn('Cannot unload root module')
       return
     }
 
