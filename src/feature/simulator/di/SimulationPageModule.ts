@@ -1,4 +1,4 @@
-import { Module } from '../../../utils/di-core/di/Dependency.ts'
+import { Module } from '@di-core/decorator/decorators.ts'
 import { CreateStrategyPagePresenter } from '../../create-strategy/domain/CreateStrategyPagePresenter.ts'
 import { SimulationRepository } from '../data/simulation-repository/SimulationRepository.ts'
 import { SimulationRepositoryImpl } from '../data/simulation-repository/SimulationRepositoryImpl.ts'
@@ -12,10 +12,6 @@ import { CreateSimulationPageModule } from './CreateSimulationPageModule.ts'
 @Module({
   imports: [CreateSimulationPageModule],
   providers: [
-    {
-      provide: SimulationPageDialogProvider,
-      useClass: SimulationPageDialogProvider,
-    },
     {
       provide: SimulationPageRouter,
       useClass: SimulationPageRouterImpl

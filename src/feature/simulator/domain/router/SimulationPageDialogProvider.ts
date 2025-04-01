@@ -1,5 +1,5 @@
+import { Injectable } from '@di-core/decorator/decorators.ts'
 import { DialogProvider, DialogRouter } from '../../../../utils/arch/DialogProvider.ts'
-import { Singleton } from '../../../../utils/di-core/decorator/decorators.ts'
 
 export interface SimulationDialogCallBacks extends DialogRouter {
 
@@ -14,6 +14,6 @@ export interface SimulationDialogCallBacks extends DialogRouter {
   openWarnTooMuchSimulations(): void
 }
 
-@Singleton()
+@Injectable()
 export class SimulationPageDialogProvider extends DialogProvider<SimulationDialogCallBacks> {
 }

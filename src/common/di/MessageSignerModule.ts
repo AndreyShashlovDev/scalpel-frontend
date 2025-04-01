@@ -1,4 +1,4 @@
-import { Module } from '../../utils/di-core/di/Dependency.ts'
+import { Module } from '@di-core/decorator/decorators.ts'
 import { MessageSigner } from '../service/message-signer/MessageSigner.ts'
 import { WalletConnect } from '../service/wallet-connect/WalletConnect.ts'
 import { WalletProvider } from '../service/wallet-connect/WalletProvider.ts'
@@ -19,6 +19,5 @@ import { WalletConnectModule } from './WalletConnectModule.ts'
     }
   ],
   exports: [MessageSigner],
-  global: true,
 })
 export class MessageSignerModule {}

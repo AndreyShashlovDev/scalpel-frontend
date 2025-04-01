@@ -1,4 +1,4 @@
-import { Module } from '../../../utils/di-core/di/Dependency.ts'
+import { Module } from '../../../utils/di-core/decorator/decorators.ts'
 import { TransactionRepository } from '../data/transaction-repository/TransactionRepository.ts'
 import { TransactionRepositoryImpl } from '../data/transaction-repository/TransactionRepositoryImpl.ts'
 import { TransactionPagePresenter } from '../domain/TransactionPagePresenter.ts'

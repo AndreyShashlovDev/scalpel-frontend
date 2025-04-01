@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '../../../../utils/di-core/decorator/decorators.ts'
+import { Inject, Injectable } from '@di-core/decorator/decorators.ts'
 import { Address } from '../../../../utils/types.ts'
 import { ExportWalletResponse } from '../model/ExportWalletResponse.ts'
 import { Pageable } from '../model/Pageable.ts'

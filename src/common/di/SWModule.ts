@@ -1,4 +1,4 @@
-import { Module } from '../../utils/di-core/di/Dependency.ts'
+import { Module } from '@di-core/decorator/decorators.ts'
 import { SWService } from '../service/sw/SWService.ts'
 
 @Module({

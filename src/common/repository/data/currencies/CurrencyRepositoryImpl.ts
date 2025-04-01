@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '../../../../utils/di-core/decorator/decorators.ts'
+import { Inject, Injectable } from '@di-core/decorator/decorators.ts'
 import { ChainType } from '../model/ChainType.ts'
 import { CurrencyResponse } from '../model/CurrencyResponse.ts'
 import { AppSourceService } from '../source/AppSourceService.ts'

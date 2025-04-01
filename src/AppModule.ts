@@ -1,3 +1,4 @@
+import { Module } from '@di-core/decorator/decorators.ts'
 import { RouterModule } from './common/di/AppRouterModule.ts'
 import { AuthModule } from './common/di/AuthModule.ts'
 import { ExceptionModule } from './common/di/ExceptionModule.ts'
@@ -13,7 +14,6 @@ import { AppAuthService } from './common/service/auth/AppAuthService.ts'
 import { ExceptionHandlerService } from './common/service/exception-handler/ExceptionHandlerService.ts'
 import { ExceptionNotifierService } from './common/service/exception-handler/ExceptionNotifierService.ts'
 import { PushNotificationService } from './common/service/notification/PushNotificationService.ts'
-import { Module } from './utils/di-core/di/Dependency.ts'
 
 export const SCALPEL_ENDPOINT = window.location.origin
 export const REOWN_PROJECT_ID = '882d3398012401b6a598b7a245adff21'

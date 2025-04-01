@@ -1,8 +1,30 @@
-import { inject, injectable, singleton } from 'tsyringe'
-import { resolveNameProvider, TokenType } from '../di/Dependency.ts'
+import {
+  INJECT_METADATA_KEY,
+  INJECTABLE_METADATA_KEY,
+  MODULE_METADATA_KEY,
+  ModuleOptions,
+  Scope,
+  SCOPE_METADATA_KEY,
+  TokenType
+} from '../di/Dependency.ts'
 
-export const Inject = <T>(token: TokenType<T>) => inject(resolveNameProvider(token))
+export function Module(options: ModuleOptions): ClassDecorator {
+  return (target: Function) => {
+    Reflect.defineMetadata(MODULE_METADATA_KEY, options, target)
+  }
+}
 
-export const Injectable = injectable
+export function Injectable(scope: Scope = Scope.SINGLETON): ClassDecorator {
+  return (target: Function) => {
+    Reflect.defineMetadata(INJECTABLE_METADATA_KEY, true, target)
+    Reflect.defineMetadata(SCOPE_METADATA_KEY, scope, target)
+  }
+}
 
-export const Singleton = singleton
+export function Inject(token: TokenType<unknown>): ParameterDecorator {
+  return (target: Object, _: string | symbol | undefined, parameterIndex: number) => {
+    const existingTokens = Reflect.getMetadata(INJECT_METADATA_KEY, target) || {}
+    existingTokens[parameterIndex] = token
+    Reflect.defineMetadata(INJECT_METADATA_KEY, existingTokens, target)
+  }
+}

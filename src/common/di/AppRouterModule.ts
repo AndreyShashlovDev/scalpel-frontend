@@ -1,4 +1,4 @@
-import { Module } from '../../utils/di-core/di/Dependency.ts'
+import { Module } from '@di-core/decorator/decorators.ts'
 import { ApplicationRouter } from '../router/domain/ApplicationRouter.ts'
 import { ApplicationRouterImpl } from '../router/domain/ApplicationRouterImpl.ts'
 import { MemoryRouteStateManagerImpl } from '../router/domain/state-manager/MemoryRouteStateManagerImpl.ts'

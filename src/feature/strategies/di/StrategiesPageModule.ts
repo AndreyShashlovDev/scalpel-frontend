@@ -1,4 +1,4 @@
-import { Module } from '../../../utils/di-core/di/Dependency.ts'
+import { Module } from '@di-core/decorator/decorators.ts'
 import { StrategyRepository } from '../data/strategy-repository/StrategyRepository.ts'
 import { StrategyRepositoryImpl } from '../data/strategy-repository/StrategyRepositoryImpl.ts'
 import { StrategiesPagePresenter } from '../domain/StrategiesPagePresenter.ts'

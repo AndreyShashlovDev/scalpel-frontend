@@ -1,4 +1,4 @@
-import { Module } from '../../utils/di-core/di/Dependency.ts'
+import { Module } from '@di-core/decorator/decorators.ts'
 import { CurrencyRepository } from '../repository/data/currencies/CurrencyRepository.ts'
 import { CurrencyRepositoryImpl } from '../repository/data/currencies/CurrencyRepositoryImpl.ts'
 import { PreferencesRepository } from '../repository/data/preferences/PreferencesRepository.ts'

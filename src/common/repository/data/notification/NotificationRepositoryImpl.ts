@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '../../../../utils/di-core/decorator/decorators.ts'
+import { Inject, Injectable } from '@di-core/decorator/decorators.ts'
 import { PushDataRequest, PushProvider, PushSubscriptionRequest } from '../model/PushSubscriptionRequest.ts'
 import { AppSourceService } from '../source/AppSourceService.ts'
 import { UnknownException } from '../source/exception/UnknownException.ts'

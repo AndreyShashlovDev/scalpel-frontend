@@ -1,5 +1,5 @@
+import { Module } from '@di-core/decorator/decorators.ts'
 import { SCALPEL_ENDPOINT } from '../../AppModule.ts'
-import { Module } from '../../utils/di-core/di/Dependency'
 import { AuthRepositoryImpl } from '../repository/data/auth-repository/AuthRepositoryImpl.ts'
 import { AppAuthHttpsService } from '../repository/data/source/AppAuthHttpsService.ts'
 import { AppSourceService } from '../repository/data/source/AppSourceService.ts'

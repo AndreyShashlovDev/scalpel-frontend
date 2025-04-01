@@ -1,5 +1,5 @@
 import { BehaviorSubject, filter, Observable, Subject } from 'rxjs'
-import { Inject, Singleton } from '../../../utils/di-core/decorator/decorators.ts'
+import { Inject, Injectable } from '../../../utils/di-core/decorator/decorators.ts'
 import { Retry } from '../../../utils/Retry.ts'
 import { NotificationRepository } from '../../repository/data/notification/NotificationRepository.ts'
 import { SWEvent, SWService } from '../sw/SWService.ts'
@@ -14,7 +14,7 @@ import {
   ReadyStatus
 } from './PushNotificationService.ts'
 
-@Singleton()
+@Injectable()
 export class PushNotificationServiceImpl extends PushNotificationService {
 
   public static readonly SUBSCRIPTION_KEY = 'scalpel.web.push.key'

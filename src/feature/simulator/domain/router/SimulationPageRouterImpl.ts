@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '../../../../utils/di-core/decorator/decorators.ts'
+import { Inject, Injectable } from '@di-core/decorator/decorators.ts'
 import { SimulationPageDialogProvider } from './SimulationPageDialogProvider.ts'
 import { SimulationPageRouter } from './SimulationPageRouter.ts'
 

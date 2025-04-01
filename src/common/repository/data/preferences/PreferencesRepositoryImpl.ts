@@ -1,5 +1,5 @@
+import { Injectable } from '@di-core/decorator/decorators.ts'
 import { Observable, Subject } from 'rxjs'
-import { Injectable } from '../../../../utils/di-core/decorator/decorators.ts'
 import { Preference } from '../model/Preference.ts'
 import { PreferencesRepository } from './PreferencesRepository.ts'
 

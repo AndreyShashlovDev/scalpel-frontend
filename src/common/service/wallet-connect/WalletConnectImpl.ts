@@ -42,7 +42,6 @@ export class WalletConnectImpl extends WalletConnect<WalletProvider> {
         analytics: false, // Optional - defaults to your Cloud configuration
         socials: [],
         collapseWallets: true,
-        emailShowWallets: true,
         email: false,
       }
     })

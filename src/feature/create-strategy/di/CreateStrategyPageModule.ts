@@ -1,7 +1,7 @@
+import { Module } from '@di-core/decorator/decorators.ts'
 import { CurrencyRepository } from '../../../common/repository/data/currencies/CurrencyRepository.ts'
 import { WalletRepository } from '../../../common/repository/data/wallet/WalletRepository.ts'
 import { ApplicationRouter } from '../../../common/router/domain/ApplicationRouter.ts'
-import { Module } from '../../../utils/di-core/di/Dependency.ts'
 import { StrategyRepository } from '../data/strategy-repository/StrategyRepository.ts'
 import { StrategyRepositoryImpl } from '../data/strategy-repository/StrategyRepositoryImpl.ts'
 import { CreateStrategyPagePresenter } from '../domain/CreateStrategyPagePresenter.ts'

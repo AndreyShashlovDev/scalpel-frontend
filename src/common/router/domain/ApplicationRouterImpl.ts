@@ -1,8 +1,8 @@
-import { Inject, Singleton } from '../../../utils/di-core/decorator/decorators.ts'
+import { Inject, Injectable } from '@di-core/decorator/decorators.ts'
 import { ApplicationRouter, RouterPath } from './ApplicationRouter.ts'
 import { RouteStateManager } from './state-manager/RouteStateManager.ts'
 
-@Singleton()
+@Injectable()
 export class ApplicationRouterImpl extends ApplicationRouter {
 
   constructor(

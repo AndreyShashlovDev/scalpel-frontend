@@ -1,5 +1,5 @@
+import { Module } from '@di-core/decorator/decorators.ts'
 import { REOWN_PROJECT_ID } from '../../AppModule.ts'
-import { Module } from '../../utils/di-core/di/Dependency.ts'
 import { ExceptionNotifierService } from '../service/exception-handler/ExceptionNotifierService.ts'
 import { WalletConnect } from '../service/wallet-connect/WalletConnect.ts'
 import { ExceptionModule } from './ExceptionModule.ts'
@@ -21,6 +21,5 @@ import { ExceptionModule } from './ExceptionModule.ts'
     }
   ],
   exports: [WalletConnect],
-  global: true
 })
 export class WalletConnectModule {}

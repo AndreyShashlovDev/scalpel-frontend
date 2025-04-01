@@ -1,5 +1,6 @@
 import react from '@vitejs/plugin-react'
 import fs from 'fs'
+import { resolve } from 'path'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -100,6 +101,11 @@ export default defineConfig(({command, mode}) => {
   }
 
   return {
+    resolve: {
+      alias: {
+        '@di-core': resolve(__dirname, './src/utils/di-core'),
+      }
+    },
     build: {
       rollupOptions: {
         output: {

@@ -1,7 +1,7 @@
+import { Injectable } from '@di-core/decorator/decorators.ts'
 import { Observable, Subject } from 'rxjs'
 // @ts-expect-error is exported
 import { registerSW } from 'virtual:pwa-register'
-import { Singleton } from '../../../utils/di-core/decorator/decorators.ts'
 
 export enum SWEvent {
   HAS_UPDATE = 'HAS_UPDATE',
@@ -11,7 +11,7 @@ export enum SWEvent {
   NOT_SUPPORTED = 'NOT_SUPPORTED'
 }
 
-@Singleton()
+@Injectable()
 export class SWService {
 
   private readonly events: Subject<SWEvent> = new Subject()

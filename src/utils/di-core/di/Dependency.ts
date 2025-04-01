@@ -1,25 +1,55 @@
-import { container, DependencyContainer, InjectionToken } from 'tsyringe'
 import 'reflect-metadata'
-import { constructor } from 'tsyringe/dist/typings/types'
 
-const MODULE_METADATA_KEY = Symbol('moduleMetadata')
+export const INJECT_METADATA_KEY = Symbol('INJECT_METADATA_KEY')
+export const INJECTABLE_METADATA_KEY = Symbol('INJECTABLE_METADATA_KEY')
+export const MODULE_METADATA_KEY = Symbol('MODULE_METADATA_KEY')
+export const SCOPE_METADATA_KEY = Symbol('SCOPE_METADATA_KEY')
 
-const debugLog = (...args: unknown[]) => {
-  // console.debug(...args)
-  if (args) {
-    //ssdsd
+function getModuleOptions(moduleClass: ModuleType): ModuleOptions {
+  const options = Reflect.getMetadata(MODULE_METADATA_KEY, moduleClass)
+  if (!options) {
+    throw new Error(`${moduleClass.name} is not a valid module`)
+  }
+  return options
+}
+
+function getClassScope(targetClass: constructor): Scope | null {
+  return Reflect.getMetadata(SCOPE_METADATA_KEY, targetClass) || null
+}
+
+function getInjectionTokens(targetClass: constructor): any[] {
+  try {
+    const injectMetadata = Reflect.getMetadata(INJECT_METADATA_KEY, targetClass) || {}
+
+    const maxParamIndex = Object.keys(injectMetadata).length > 0
+      ? Math.max(...Object.keys(injectMetadata).map(Number))
+      : -1
+    const paramsCount = maxParamIndex + 1
+
+    const params = new Array(paramsCount).fill(null)
+
+    for (const [index, token] of Object.entries(injectMetadata)) {
+      params[Number(index)] = token
+    }
+
+    return params
+  } catch (error) {
+    console.warn(`Failed to get tokens for ${targetClass?.name}`)
+    return []
   }
 }
 
-export interface Abstract<T> {
-  prototype: T;
-}
+export type InjectionToken<T = any> = string | symbol | Abstract<T>;
 
-export type TokenType<T> = Abstract<T> | InjectionToken<T>
+export interface Abstract<T> {prototype: T;}
+
+export type TokenType<T> = Abstract<T> | InjectionToken<T>;
+export type constructor<T = any> = new (...args: any[]) => T;
 
 export interface ModuleClassProvider<T = unknown> {
   provide: TokenType<T>;
   useClass: constructor<T>;
+  scope?: Scope;
 }
 
 export interface ModuleValueProvider<T = unknown> {
@@ -29,7 +59,6 @@ export interface ModuleValueProvider<T = unknown> {
 
 export interface ModuleFactoryProvider<T = unknown> {
   provide: TokenType<T>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   useFactory: (...args: any[]) => T | Promise<T>;
   deps?: TokenType<unknown>[];
 }
@@ -43,77 +72,182 @@ export interface ModuleOptions {
   imports?: ModuleType[];
   providers?: ProviderOptions[];
   exports?: TokenType<unknown>[];
-  global?: boolean;
 }
 
 export type ProviderOptions =
   | ModuleClassProvider
   | ModuleValueProvider
   | ModuleFactoryProvider
-  | ModuleTokenProvider
+  | ModuleTokenProvider;
 
 export interface ModuleType {
   new(...args: unknown[]): unknown;
 }
 
-export const resolveNameProvider = (token: TokenType<unknown>): InjectionToken => {
-  // @ts-expect-error isOk
-  if (typeof token === 'function' || ('prototype' in token)) {
-    const actualToken = typeof token === 'function'
-      ? token.name
-      : (token as Abstract<unknown>).constructor.name
+export enum Scope {
+  SINGLETON = 'SINGLETON',
+  TRANSIENT = 'TRANSIENT',
+}
 
-    debugLog(`Resolving token by name: ${actualToken}`)
-    return actualToken
+export const getTokenName = (token: TokenType<unknown>): string | symbol | Abstract<any> => {
+  if (typeof token === 'string' || typeof token === 'symbol') {
+    return token
+  }
+  if (typeof token === 'function') {
+    return token
   }
 
-  return token
+  return String(token)
+}
+
+export class ProviderRef {
+  public instance: any = null
+  public factory: ((...args: any[]) => any | Promise<any>) | null = null
+  public dependencies: (string | symbol | Abstract<any>)[] = []
+  public scope: Scope = Scope.SINGLETON
+  public sourceModule: string = ''
+
+  constructor(
+    public readonly token: string | symbol | Abstract<any>,
+    public type: 'class' | 'value' | 'factory' | 'token',
+    public readonly moduleRef: ModuleRef
+  ) {}
+
+  public async resolve(): Promise<any> {
+    if (this.scope === Scope.SINGLETON && this.instance !== null) {
+      return this.instance
+    }
+
+    if (!this.factory) {
+      throw new Error(`Cannot resolve provider ${String(this.token)}`)
+    }
+
+    // Resolving dependencies
+    const deps = await Promise.all(this.dependencies.map(async dep => {
+      try {
+
+        return await this.moduleRef.resolveProvider(dep)
+
+      } catch (error) {
+        if (this.moduleRef.rootModule && this.moduleRef !== this.moduleRef.rootModule) {
+          try {
+
+            return await this.moduleRef.rootModule.resolveProvider(dep)
+
+          } catch {
+            return undefined
+          }
+        }
+        return undefined
+      }
+    }))
+
+    const missingDeps = this.dependencies.filter((_, index) => deps[index] === undefined)
+    if (missingDeps.length > 0) {
+      throw new Error(`Cannot resolve dependencies for ${String(this.token)}: missing ${missingDeps.join(', ')}`)
+    }
+
+    try {
+      // Universal handling of both synchronous and asynchronous factories
+      const result = this.factory(...deps)
+      const instance = result instanceof Promise ? await result : result
+
+      // Caching singletons
+      if (this.scope === Scope.SINGLETON) {
+        this.instance = instance
+      }
+
+      return instance
+    } catch (error) {
+      throw error
+    }
+  }
+
+  public dispose(): void {
+    this.instance = null
+  }
 }
 
 export class ModuleRef {
-  options: ModuleOptions
-  imports: ModuleRef[] = []
-  container: DependencyContainer
-  initialized = false
-  initializing = false
-  public providerCache = new Map<string | symbol, unknown>()
-  public exportCache = new Set<string | symbol>()
-  public parentModule?: ModuleRef
-  public moduleClass?: ModuleType
+  public providers = new Map<string | symbol | Abstract<any>, ProviderRef>()
+  public imports: ModuleRef[] = []
+  public exports = new Set<string | symbol | Abstract<any>>()
+  public initialized = false
+  public initializing = false
+  public rootModule: ModuleRef | null = null
+  public instanceCache = new Map<string | symbol | Abstract<any>, any>()
 
-  constructor(options: ModuleOptions, parentContainer?: DependencyContainer) {
-    this.options = options
-    this.container = parentContainer?.createChildContainer() || container.createChildContainer()
+  constructor(
+    public readonly options: ModuleOptions,
+    public readonly moduleClass: ModuleType
+  ) {}
+
+  public get name(): string {
+    return this.moduleClass.name
   }
 
-  public isGlobal(): boolean {
-    return !!this.options.global
+  public isExported(token: TokenType<unknown>): boolean {
+    const tokenName = getTokenName(token)
+    return this.exports.has(tokenName)
   }
 
-  public setParentModule(parentModule: ModuleRef): void {
-    this.parentModule = parentModule
+  public getLocalProvider(token: TokenType<unknown>): ProviderRef | null {
+    const tokenName = getTokenName(token)
+    return this.providers.get(tokenName) || null
   }
 
-  public validateExports(): void {
-    if (!this.options.exports || !this.initialized) {
-      return
+  // Asynchronous provider retrieval
+  public async resolveProvider(token: TokenType<unknown>): Promise<any> {
+    const tokenName = getTokenName(token)
+
+    const provider = this.getLocalProvider(tokenName)
+
+    // For Transient scope, don't use cache, always resolve anew
+    if (provider && provider.scope === Scope.TRANSIENT) {
+      return await provider.resolve()
     }
 
-    for (const exportToken of this.options.exports) {
-      const actualToken = resolveNameProvider(exportToken)
+    if (this.instanceCache.has(tokenName)) {
+      return this.instanceCache.get(tokenName)
+    }
 
-      try {
-        this.resolveToken(actualToken)
-      } catch (error) {
-        debugLog(error)
-        throw new Error(
-          `Module ${this.moduleClass?.name || 'unknown'} exports token ${String(actualToken)} but cannot resolve it`
-        )
+    if (provider) {
+      const instance = await provider.resolve()
+      if (provider.scope === Scope.SINGLETON) {
+        this.instanceCache.set(tokenName, instance)
+      }
+      return instance
+    }
+
+    for (const importedModule of this.imports) {
+      if (importedModule.isExported(tokenName)) {
+        try {
+          return await importedModule.resolveProvider(tokenName)
+        } catch {}
       }
     }
+
+    if (this.rootModule && this !== this.rootModule) {
+      try {
+        return await this.rootModule.resolveProvider(tokenName)
+      } catch {}
+    }
+
+    const parentModules = moduleManager.findParentModules(this.moduleClass)
+
+    for (const parentModule of parentModules) {
+      const parentModuleRef = moduleManager.getLoadedModule(parentModule)
+      if (parentModuleRef) {
+        try {
+          return await parentModuleRef.resolveProvider(tokenName)
+        } catch {}
+      }
+    }
+
+    throw new Error(`Provider ${String(tokenName)} not found in module ${this.name}`)
   }
 
-  public async initialize(): Promise<void> {
+  public async initialize(rootModule: ModuleRef | null = null): Promise<void> {
     if (this.initialized) {
       return
     }
@@ -133,36 +267,89 @@ export class ModuleRef {
     this.initializing = true
 
     try {
+      this.rootModule = rootModule || this
+
+      // Initialize imported modules
       if (this.options.imports?.length) {
-        await Promise.all(
-          this.options.imports.map(async importedModule => {
-            debugLog(`Module ${importedModule.name} being imported in init`)
-            const existingModuleRef = moduleManager.getLoadedModuleRef(importedModule)
+        for (const importClass of this.options.imports) {
+          let importedModule = moduleManager.getLoadedModule(importClass)
 
-            if (existingModuleRef && existingModuleRef.initialized) {
-              debugLog(`Module ${importedModule.name} already initialized, reusing`)
-              this.imports.push(existingModuleRef)
+          if (!importedModule) {
+            importedModule = new ModuleRef(
+              getModuleOptions(importClass),
+              importClass
+            )
 
-              await this.importExportedTokens(existingModuleRef, importedModule)
+            await importedModule.initialize(this.rootModule)
+            moduleManager.registerModule(importClass, importedModule)
+          }
 
-            } else {
-              await moduleManager.loadModule(importedModule)
-              const moduleRef = moduleManager.getLoadedModuleRef(importedModule)
+          this.imports.push(importedModule)
 
-              if (moduleRef) {
-                this.imports.push(moduleRef)
-                await this.importExportedTokens(moduleRef, importedModule)
+          // Process exports of the imported module
+          if (this.options.exports) {
+            for (const exportToken of this.options.exports) {
+              const exportTokenName = getTokenName(exportToken)
+
+              if (importedModule.isExported(exportTokenName) && !this.providers.has(exportTokenName)) {
+                // Create provider for re-export
+                const reexportRef = new ProviderRef(exportTokenName, 'token', this)
+                reexportRef.sourceModule = importedModule.name
+                reexportRef.factory = () => this.instanceCache.get(exportTokenName)
+                reexportRef.scope = Scope.SINGLETON
+
+                this.providers.set(exportTokenName, reexportRef)
+
+                // Pre-load for synchronous access
+                this.instanceCache.set(exportTokenName, await importedModule.resolveProvider(exportTokenName))
               }
             }
-          })
-        )
-      }
-
-      if (this.options.providers?.length) {
-        for (const provider of this.options.providers) {
-          await this.registerProvider(provider)
+          }
         }
       }
+
+      // Register providers
+      if (this.options.providers?.length) {
+        for (const providerOptions of this.options.providers) {
+          await this.registerProvider(providerOptions)
+        }
+      }
+
+      // Register exports
+      if (this.options.exports?.length) {
+        for (const exportToken of this.options.exports) {
+          const tokenName = getTokenName(exportToken)
+          this.exports.add(tokenName)
+
+          // If the exported token is not registered locally
+          if (!this.providers.has(tokenName)) {
+            let found = false
+
+            for (const importedModule of this.imports) {
+              if (importedModule.isExported(tokenName)) {
+                found = true
+
+                // Register re-exported provider
+                const reexportRef = new ProviderRef(tokenName, 'token', this)
+                reexportRef.sourceModule = importedModule.name
+                reexportRef.factory = () => this.instanceCache.get(tokenName)
+                reexportRef.scope = Scope.SINGLETON
+
+                this.providers.set(tokenName, reexportRef)
+
+                this.instanceCache.set(tokenName, await importedModule.resolveProvider(tokenName))
+                break
+              }
+            }
+
+            if (!found) {
+              console.warn(`Module ${this.name} exports token ${String(tokenName)} not found`)
+            }
+          }
+        }
+      }
+
+      await this.preInitializeExports()
 
       this.initialized = true
     } finally {
@@ -170,524 +357,323 @@ export class ModuleRef {
     }
   }
 
-  private async importExportedTokens(sourceModuleRef: ModuleRef, sourceModule: ModuleType): Promise<void> {
-    debugLog(`Importing tokens from ${sourceModule.name}`)
+  private async preInitializeExports(): Promise<void> {
+    for (const exportToken of this.exports) {
 
-    if (sourceModuleRef.options.exports?.length) {
-      for (const token of sourceModuleRef.options.exports) {
-        const actualToken = resolveNameProvider(token)
-
-        debugLog(`Checking export token: ${String(actualToken)}`)
-
+      if (!this.instanceCache.has(exportToken)) {
         try {
-          const instance = sourceModuleRef.resolveToken(actualToken)
-          debugLog(`Resolved exported token ${String(actualToken)} from module ${sourceModule.name}`)
+          const provider = this.providers.get(exportToken)
+          if (provider) {
+            const instance = await provider.resolve()
+            this.instanceCache.set(exportToken, instance)
+          }
 
-          this.container.register(actualToken, {useValue: instance})
         } catch (error) {
-          debugLog(error)
-          console.warn(`Failed to resolve exported token ${String(actualToken)} from module ${sourceModule.name}`)
+          console.error(`Failed to pre-initialize export ${String(exportToken)}`)
         }
       }
     }
+  }
 
-    if (sourceModuleRef.options.exports) {
-      for (const exportedItem of sourceModuleRef.options.exports) {
-        const exportedModule = moduleManager.getModuleClassByName(String(exportedItem))
+  private async registerProvider(providerOptions: ProviderOptions): Promise<void> {
+    const tokenName = getTokenName(providerOptions.provide)
 
-        if (exportedModule) {
-          debugLog(`Importing nested module: ${exportedModule.name} from ${sourceModule.name}`)
-          const nestedModuleRef = moduleManager.getLoadedModuleRef(exportedModule)
+    if (this.providers.has(tokenName)) {
+      return
+    }
 
-          if (nestedModuleRef) {
-            await this.importExportedTokens(nestedModuleRef, exportedModule)
-          } else {
-            console.warn(`Module ${exportedModule.name} is exported but not loaded`)
+    const providerRef = new ProviderRef(tokenName, 'class', this)
+    providerRef.sourceModule = this.name
+
+    if ('useClass' in providerOptions) {
+      const classProvider = providerOptions as ModuleClassProvider
+      const targetClass = classProvider.useClass
+
+      providerRef.scope = classProvider.scope || getClassScope(targetClass) || Scope.SINGLETON
+
+      const injectionTokens = getInjectionTokens(targetClass)
+      providerRef.dependencies = injectionTokens.map(token => getTokenName(token))
+
+      const missingDependencies: (string | symbol | Abstract<any>)[] = []
+
+      for (const token of providerRef.dependencies) {
+        const isLocallyAvailable = this.providers.has(token)
+        let isAvailableThroughImports = false
+
+        for (const importedModule of this.imports) {
+          if (importedModule.isExported(token)) {
+            isAvailableThroughImports = true
+            break
           }
         }
-      }
-    }
-  }
 
-  public resolveToken<T>(token: InjectionToken): T {
-    const tokenKey = typeof token === 'string' || typeof token === 'symbol'
-      ? token
-      : String(token)
+        // Check availability in root module
+        const isAvailableInRoot = this.rootModule !== this &&
+          this.rootModule !== null &&
+          this.rootModule.providers.has(token)
 
-    if (this.providerCache.has(tokenKey)) {
-      return this.providerCache.get(tokenKey) as T
-    }
-
-    try {
-      const instance = this.container.resolve<T>(token)
-      this.providerCache.set(tokenKey, instance)
-
-      return instance
-
-    } catch (error) {
-      if (this.parentModule) {
-        try {
-          return this.parentModule.resolveToken<T>(token)
-        } catch (e) {
-          debugLog(e)
+        if (!isLocallyAvailable && !isAvailableThroughImports && !isAvailableInRoot) {
+          missingDependencies.push(token)
         }
       }
 
-      throw error
+      if (missingDependencies.length > 0) {
+        const missingTokensStr = missingDependencies
+          .map(token => typeof token === 'function' ? token.name : String(token))
+          .join(', ')
+
+        throw new Error(
+          `Cannot register provider ${String(tokenName)} (${targetClass.name}) in module ${this.name}: ` +
+          `missing dependencies [${missingTokensStr}]. ` +
+          `Make sure all dependencies are available through the module's providers, imports, or root module.`
+        )
+      }
+
+      providerRef.factory = (...deps: any[]) => new targetClass(...deps)
+    } else if ('useValue' in providerOptions) {
+      const valueProvider = providerOptions as ModuleValueProvider
+
+      providerRef.type = 'value'
+      providerRef.scope = Scope.SINGLETON
+      providerRef.instance = valueProvider.useValue
+
+    } else if ('useFactory' in providerOptions) {
+      const factoryProvider = providerOptions as ModuleFactoryProvider
+
+      providerRef.type = 'factory'
+      providerRef.scope = Scope.SINGLETON
+
+      if (factoryProvider.deps) {
+        providerRef.dependencies = factoryProvider.deps.map(token => getTokenName(token))
+      }
+
+      providerRef.factory = (...deps: any[]) => factoryProvider.useFactory(...deps)
+
+    } else if ('useToken' in providerOptions) {
+      const tokenProvider = providerOptions as ModuleTokenProvider
+
+      providerRef.type = 'token'
+      providerRef.scope = Scope.SINGLETON
+      providerRef.dependencies = [getTokenName(tokenProvider.useToken)]
+      providerRef.factory = (dep: any) => dep
     }
-  }
 
-  private async registerProvider(provider: ProviderOptions): Promise<void> {
-    const provide = provider.provide
-    const provideKey = resolveNameProvider(provide)
-    const tokenKey = typeof provideKey === 'string' || typeof provideKey === 'symbol'
-      ? provideKey
-      : String(provideKey)
+    this.providers.set(tokenName, providerRef)
 
-    debugLog(`Registering provider: ${String(provideKey)}`)
-
-    if (this.providerCache.has(tokenKey)) {
-      debugLog(`Provider ${String(provideKey)} found in module cache, reusing instance`)
-      this.container.register(provideKey, {useValue: this.providerCache.get(tokenKey)})
-      return
-    }
-
-    if (this.container.isRegistered(provideKey, false)) {
+    // Pre-load exported providers
+    if (this.options.exports?.some(exp => getTokenName(exp) === tokenName)) {
       try {
-        const existing = this.container.resolve(provideKey)
-        debugLog(`Provider ${String(provideKey)} already registered in container, reusing instance`)
-        this.providerCache.set(tokenKey, existing)
-        return
+        const instance = await providerRef.resolve()
+        this.instanceCache.set(tokenName, instance)
       } catch (error) {
-        debugLog(error)
-        debugLog(`Provider ${String(provideKey)} registered but failed to resolve, re-registering...`)
+        console.error(`Failed to pre-initialize provider ${String(tokenName)}`)
       }
-    } else {
-      debugLog(`Provider ${String(provideKey)} not found, registering...`)
-    }
-
-    let instance: unknown
-
-    if ('useValue' in provider) {
-      instance = provider.useValue
-      this.container.register(provideKey, {useValue: provider.useValue})
-
-    } else if ('useClass' in provider) {
-      try {
-        instance = container.resolve(provider.useClass)
-        debugLog(`Found singleton instance of ${provider.useClass.name} in root container`)
-        this.container.register(provideKey, {useValue: instance})
-
-      } catch {
-        this.container.register(provideKey, {useClass: provider.useClass})
-        instance = this.container.resolve(provideKey)
-      }
-
-    } else if ('useToken' in provider) {
-      const tokenKey = resolveNameProvider(provider.useToken)
-
-      try {
-        const tokenInstance = this.resolveToken(tokenKey)
-        this.container.register(provideKey, {useValue: tokenInstance})
-        instance = tokenInstance
-      } catch (e) {
-        debugLog(e)
-        this.container.register(provideKey, {useToken: provider.useToken})
-        instance = this.container.resolve(provideKey)
-      }
-
-    } else if ('useFactory' in provider) {
-      const deps = provider.deps || []
-      const resolvedDeps = deps.map(dep => {
-        const depKey = resolveNameProvider(dep)
-        debugLog(`get dep: ${String(depKey)}`)
-
-        try {
-          return this.resolveToken(depKey)
-        } catch (error) {
-          console.error(`Error resolving dependency ${String(dep)} for factory provider ${String(provideKey)}:`, error)
-          throw error
-        }
-      })
-
-      const result = provider.useFactory(...resolvedDeps)
-
-      if (result instanceof Promise) {
-        instance = await result
-        this.container.register(provideKey, {useValue: instance})
-      } else {
-        instance = result
-        this.container.register(provideKey, {useValue: result})
-      }
-    }
-
-    if (instance !== undefined) {
-      this.providerCache.set(tokenKey, instance)
-
-      if (this.options.exports?.some(exp => {
-        const exportToken = resolveNameProvider(exp)
-        return String(exportToken) === String(provideKey)
-      })) {
-        this.exportCache.add(tokenKey)
-      }
-
-      return
-    }
-
-    try {
-      const resolvedInstance = this.container.resolve(provideKey)
-      debugLog(`Successfully registered ${String(provideKey)}, instance type: ${resolvedInstance.constructor.name}`)
-    } catch (error) {
-      console.error(`Failed to verify registration of ${String(provideKey)}:`, error)
     }
   }
 
-  isTokenExported(token: InjectionToken): boolean {
-    const tokenKey = typeof token === 'string' || typeof token === 'symbol'
-      ? token
-      : String(token)
-
-    return this.exportCache.has(tokenKey) ||
-      (this.options.exports?.some(exp => String(resolveNameProvider(exp)) === tokenKey) ?? false)
-  }
-
-  dispose(): void {
-    this.initialized = false
-
-    for (const importedModule of this.imports) {
-      if (!importedModule.isGlobal()) {
-        importedModule.dispose()
-      }
+  public dispose(): void {
+    for (const provider of this.providers.values()) {
+      provider.dispose()
     }
 
+    this.providers.clear()
+    this.exports.clear()
     this.imports = []
-    this.providerCache.clear()
-    this.exportCache.clear()
+    this.initialized = false
+    this.rootModule = null
+    this.instanceCache.clear()
   }
-}
-
-export function Module(options: ModuleOptions): ClassDecorator {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-  return <TFunction extends Function>(target: TFunction): void => {
-    const moduleRef = new ModuleRef(options)
-    moduleRef.moduleClass = target as unknown as ModuleType
-    Reflect.defineMetadata(MODULE_METADATA_KEY, moduleRef, target)
-  }
-}
-
-export function getModuleRef(moduleClass: ModuleType): ModuleRef | undefined {
-  return Reflect.getMetadata(MODULE_METADATA_KEY, moduleClass)
 }
 
 export class ModuleManager {
-  public loadedModules = new Map<string, ModuleRef>()
-  private initializedModuleRefs = new Map<string, ModuleRef>()
+  private moduleRefs = new Map<string, ModuleRef>()
+  private rootModuleRef: ModuleRef | null = null
+  private moduleImports = new Map<string, Set<string>>()
   private initializationPromises = new Map<string, Promise<void>>()
-  private rootContainer: DependencyContainer | null = null
-  private rootModuleClass: ModuleType | null = null
-  private moduleClasses = new Map<string, ModuleType>()
 
-  constructor() {
-    this.rootContainer = container.createChildContainer()
-  }
+  public registerModule(moduleClass: ModuleType, moduleRef: ModuleRef): void {
+    this.moduleRefs.set(moduleClass.name, moduleRef)
 
-  public getServiceFromRoot<T>(token: TokenType<unknown>): T {
-    if (!this.rootContainer) {
-      throw new Error('Root container is not initialized')
-    }
-
-    const actualToken = resolveNameProvider(token)
-
-    try {
-      return this.rootContainer.resolve<T>(actualToken as InjectionToken<T>)
-
-    } catch (e) {
-      for (const moduleRef of this.loadedModules.values()) {
-        if (moduleRef.isGlobal()) {
-          try {
-            return moduleRef.resolveToken<T>(actualToken)
-          } catch {
-            // ignore error and looking next for...
-          }
-        }
-      }
-
-      throw e
-    }
-  }
-
-  public async loadRootModule<T>(moduleClass: ModuleType): Promise<T> {
-    debugLog('Loading root module:', moduleClass.name)
-    this.rootModuleClass = moduleClass
-    this.registerModuleClass(moduleClass)
-
-    const moduleRef = getModuleRef(moduleClass)
-    if (!moduleRef) {
-      throw new Error(`Module ${moduleClass.name} is not decorated with @Module`)
-    }
-    moduleRef.container = this.rootContainer!
-
-    return this.loadModule(moduleClass)
-  }
-
-  public async loadModule<T>(moduleClass: ModuleType): Promise<T> {
-    debugLog('load module', moduleClass.name)
-
-    this.registerModuleClass(moduleClass)
-
-    if (this.isModuleLoaded(moduleClass)) {
-      debugLog(`Module ${moduleClass.name} already loaded`)
-      return new moduleClass() as T
-    }
-
-    const existingPromise = this.initializationPromises.get(moduleClass.name)
-
-    if (existingPromise) {
-      debugLog(`Module ${moduleClass.name} is already being initialized, waiting...`)
-      await existingPromise
-      return new moduleClass() as T
-    }
-
-    const moduleRef = getModuleRef(moduleClass)
-    if (!moduleRef) {
-      throw new Error(`Module ${moduleClass.name} is not decorated with @Module`)
-    }
-
-    // check parent module
-    const importingModules = this.findImportingModules(moduleClass)
-
-    if (importingModules.length > 0) {
-      const importingModuleRef = this.getLoadedModuleRef(importingModules[0])
-
-      if (importingModuleRef) {
-        moduleRef.container = importingModuleRef.container.createChildContainer()
-        // setup parent module
-        moduleRef.setParentModule(importingModuleRef)
-        debugLog(`Module ${moduleClass.name} is imported by ${importingModules[0].name}, using parent container`)
-      }
-    } else if (
-      moduleClass !== this.rootModuleClass &&
-      this.rootModuleClass &&
-      this.isModuleLoaded(this.rootModuleClass) &&
-      this.rootContainer
-    ) {
-      moduleRef.container = this.rootContainer.createChildContainer()
-
-      // setup root module as parent
-      const rootModuleRef = this.getLoadedModuleRef(this.rootModuleClass)
-      if (rootModuleRef) {
-        moduleRef.setParentModule(rootModuleRef)
-      }
-    }
-
-    const initPromise = this.initializeModule(moduleClass, moduleRef)
-    this.initializationPromises.set(moduleClass.name, initPromise)
-
-    try {
-      await initPromise
-      return new moduleClass() as T
-    } finally {
-      this.initializationPromises.delete(moduleClass.name)
-    }
-  }
-
-  private registerModuleClass(moduleClass: ModuleType): void {
-    this.moduleClasses.set(moduleClass.name, moduleClass)
-
-    const moduleRef = getModuleRef(moduleClass)
-
-    if (moduleRef && moduleRef.options.imports) {
+    // Update imports graph
+    if (moduleRef.options.imports) {
       for (const importedModule of moduleRef.options.imports) {
-        this.registerModuleClass(importedModule)
-      }
-    }
-  }
-
-  public getModuleClassByName(name: string): ModuleType | undefined {
-    return this.moduleClasses.get(name)
-  }
-
-  private async initializeModule(moduleClass: ModuleType, moduleRef: ModuleRef): Promise<void> {
-    await moduleRef.initialize()
-
-    moduleRef.validateExports()
-
-    this.loadedModules.set(moduleClass.name, moduleRef)
-    this.initializedModuleRefs.set(moduleClass.name, moduleRef)
-
-    if (moduleRef.isGlobal() && this.rootContainer) {
-      await this.registerGlobalProviders(moduleRef)
-    }
-  }
-
-  private async registerGlobalProviders(moduleRef: ModuleRef): Promise<void> {
-    debugLog(
-      `Registering global providers from module with exports: ${
-        moduleRef.options.exports?.map(e => String(e)).join(', ')
-      }`
-    )
-
-    if (!moduleRef.options.exports || !this.rootContainer) {
-      return
-    }
-
-    for (const token of moduleRef.options.exports) {
-      const actualToken = resolveNameProvider(token)
-
-      const exportedModule = this.moduleClasses.get(String(token))
-
-      if (exportedModule) {
-        debugLog(`Found exported module: ${exportedModule.name}`)
-        const exportedModuleRef = this.getLoadedModuleRef(exportedModule)
-
-        if (exportedModuleRef && exportedModuleRef.options.exports) {
-          debugLog(`Registering exported tokens from module ${exportedModule.name}`)
-
-          for (const nestedToken of exportedModuleRef.options.exports) {
-            try {
-              const nestedActualToken = resolveNameProvider(nestedToken)
-              const nestedInstance = exportedModuleRef.resolveToken(nestedActualToken)
-
-              debugLog(`Registering nested token: ${String(nestedActualToken)}`)
-
-              try {
-                this.rootContainer.resolve(nestedActualToken)
-                debugLog(`Token ${String(nestedActualToken)} already in root container`)
-              } catch {
-                this.rootContainer.register(nestedActualToken, {useValue: nestedInstance})
-                debugLog(`Registered ${String(nestedActualToken)} in root container`)
-              }
-            } catch (error) {
-              debugLog(error)
-              console.warn(`Failed to register nested token: ${String(nestedToken)}`)
-            }
-          }
+        if (!this.moduleImports.has(importedModule.name)) {
+          this.moduleImports.set(importedModule.name, new Set<string>())
         }
-        continue
-      }
-
-      try {
-        const instance = moduleRef.resolveToken(actualToken)
-
-        try {
-          this.rootContainer.resolve(actualToken)
-          debugLog(`Token ${String(actualToken)} already in root container`)
-        } catch {
-          this.rootContainer.register(actualToken, {useValue: instance})
-          debugLog(`Registered token ${String(actualToken)} in root container`)
-        }
-      } catch (error) {
-        debugLog(error)
-        console.warn(`Failed to register token: ${String(actualToken)}`)
+        this.moduleImports.get(importedModule.name)!.add(moduleClass.name)
       }
     }
   }
 
-  public getLoadedModuleRef(moduleClass: ModuleType): ModuleRef | undefined {
-    return this.loadedModules.get(moduleClass.name)
+  public isRootModule(moduleClass: ModuleType): boolean {
+    return this.rootModuleRef?.moduleClass === moduleClass
   }
 
-  public getService<T>(moduleClass: ModuleType, token: TokenType<unknown>): T {
-    const moduleRef = this.getModuleRefOrThrow(moduleClass)
-    const actualToken = resolveNameProvider(token)
-
-    const isDirectlyExported = moduleRef.options.exports?.some(exp =>
-      String(resolveNameProvider(exp)) === String(actualToken)
-    )
-
-    if (!isDirectlyExported) {
-      throw new Error(`Token ${String(actualToken)} is not directly exported from module ${moduleClass.name}`)
-    }
-
-    try {
-      return moduleRef.resolveToken<T>(actualToken)
-    } catch (error) {
-
-      for (const globalModuleRef of this.loadedModules.values()) {
-        if (globalModuleRef.isGlobal() && globalModuleRef !== moduleRef) {
-          try {
-            const instance = globalModuleRef.resolveToken<T>(actualToken)
-
-            if (globalModuleRef.isTokenExported(actualToken)) {
-              return instance
-            }
-          } catch {
-            // ignore error looking next
-          }
-        }
-      }
-
-      if (this.rootContainer) {
-        try {
-          return this.rootContainer.resolve<T>(actualToken)
-        } catch {
-          // ignore error
-        }
-      }
-
-      console.error(`Could not resolve token ${String(actualToken)} in module ${moduleClass.name} or any global modules`)
-      throw error
-    }
-  }
-
-  public isModuleLoaded(moduleClass: ModuleType): boolean {
-    return this.loadedModules.has(moduleClass.name) &&
-      this.loadedModules.get(moduleClass.name)!.initialized
-  }
-
-  public isGlobalModule(moduleClass: ModuleType): boolean {
-    const moduleRef = this.getLoadedModuleRef(moduleClass)
-    return moduleRef ? moduleRef.isGlobal() : false
-  }
-
-  public unloadModule(moduleClass: ModuleType): void {
-    debugLog(`Unloading module: ${moduleClass.name}`)
-
-    const moduleRef = this.loadedModules.get(moduleClass.name)
-    if (!moduleRef) {
-      debugLog(`Cannot unload module ${moduleClass.name}: not found in loaded modules`)
-      return
-    }
-
-    if (moduleRef.isGlobal()) {
-      debugLog(`Skipping unload of global module: ${moduleClass.name}`)
-      return
-    }
-
-    moduleRef.dispose()
-
-    moduleRef.container.clearInstances()
-    moduleRef.container.reset()
-    moduleRef.container.dispose()
-
-    this.loadedModules.delete(moduleClass.name)
-    this.initializedModuleRefs.delete(moduleClass.name)
-
-    debugLog(`Module ${moduleClass.name} unloaded successfully`)
-  }
-
-  private findImportingModules(moduleClass: ModuleType): ModuleType[] {
+  // Find modules that import this module
+  public findParentModules(moduleClass: ModuleType): ModuleType[] {
+    const parentModuleNames = this.moduleImports.get(moduleClass.name) || new Set<string>()
     const result: ModuleType[] = []
 
-    for (const [name, moduleRef] of this.loadedModules.entries()) {
-      if (moduleRef.options.imports?.some(imp => imp.name === moduleClass.name)) {
-        const importingClass = this.moduleClasses.get(name)
-
-        if (importingClass) {
-          result.push(importingClass)
-        }
+    for (const parentName of parentModuleNames) {
+      const parentRef = this.moduleRefs.get(parentName)
+      if (parentRef?.moduleClass) {
+        result.push(parentRef.moduleClass)
       }
     }
 
     return result
   }
 
-  private getModuleRefOrThrow(moduleClass: ModuleType): ModuleRef {
-    const moduleRef = this.loadedModules.get(moduleClass.name)
+  public getLoadedModule(moduleClass: ModuleType): ModuleRef | null {
+    return this.moduleRefs.get(moduleClass.name) || null
+  }
+
+  public isModuleLoaded(moduleClass: ModuleType): boolean {
+    const moduleRef = this.getLoadedModule(moduleClass)
+    return !!moduleRef && moduleRef.initialized
+  }
+
+  public async loadRootModule<T>(moduleClass: ModuleType): Promise<T> {
+    if (this.isModuleLoaded(moduleClass)) {
+      return new moduleClass() as T
+    }
+
+    const options = getModuleOptions(moduleClass)
+    const moduleRef = new ModuleRef(options, moduleClass)
+
+    this.rootModuleRef = moduleRef
+    await moduleRef.initialize(moduleRef)
+
+    this.registerModule(moduleClass, moduleRef)
+
+    return new moduleClass() as T
+  }
+
+  public async loadModule<T>(moduleClass: ModuleType): Promise<T> {
+    if (this.isModuleLoaded(moduleClass)) {
+      return new moduleClass() as T
+    }
+
+    // Check if module is already being initialized
+    const existingPromise = this.initializationPromises.get(moduleClass.name)
+    if (existingPromise) {
+      await existingPromise
+      return new moduleClass() as T
+    }
+
+    const options = getModuleOptions(moduleClass)
+    const moduleRef = new ModuleRef(options, moduleClass)
+
+    const initPromise = moduleRef.initialize(this.rootModuleRef)
+    this.initializationPromises.set(moduleClass.name, initPromise)
+
+    try {
+      await initPromise
+      this.registerModule(moduleClass, moduleRef)
+      return new moduleClass() as T
+    } finally {
+      this.initializationPromises.delete(moduleClass.name)
+    }
+  }
+
+  public registerModuleHierarchy(moduleClass: ModuleType): void {
+    try {
+      const options = getModuleOptions(moduleClass)
+
+      // If module has imports, register them recursively
+      if (options.imports?.length) {
+        for (const importClass of options.imports) {
+          this.registerModuleHierarchy(importClass)
+        }
+      }
+    } catch (error) {
+      console.warn(`Failed to register module hierarchy for ${moduleClass.name}:`, error)
+    }
+  }
+
+  // Get service from module (synchronous method)
+  public getService<T>(moduleClass: ModuleType, token: TokenType<unknown>): T {
+    const moduleRef = this.getLoadedModule(moduleClass)
+
     if (!moduleRef) {
       throw new Error(`Module ${moduleClass.name} not loaded`)
     }
-    return moduleRef
+
+    const tokenName = getTokenName(token)
+
+    // Check export
+    if (!moduleRef.isExported(tokenName)) {
+      // Check in root module
+      if (this.rootModuleRef?.instanceCache.has(tokenName)) {
+        return this.rootModuleRef.instanceCache.get(tokenName)
+      }
+      throw new Error(`Token ${String(tokenName)} not exported from module ${moduleClass.name}`)
+    }
+
+    // Get from cache
+    if (moduleRef.instanceCache.has(tokenName)) {
+      return moduleRef.instanceCache.get(tokenName)
+    }
+
+    // Check in root module
+    if (this.rootModuleRef?.instanceCache.has(tokenName)) {
+      return this.rootModuleRef.instanceCache.get(tokenName)
+    }
+
+    throw new Error(`Provider ${String(tokenName)} not pre-initialized in module ${moduleClass.name}`)
+  }
+
+  public unloadModule(moduleClass: ModuleType): void {
+    const moduleRef = this.getLoadedModule(moduleClass)
+
+    if (!moduleRef) {
+      return
+    }
+
+    // Don't unload root module
+    // if (moduleRef === this.rootModuleRef) {
+    //   console.warn('Cannot unload root module')
+    //   return
+    // }
+
+    // Check dependent modules by imports
+    const dependentModules = this.findDependentModules(moduleClass)
+    if (dependentModules.length > 0) {
+      console.warn(`Cannot unload module ${moduleClass.name}, still imported by: ${dependentModules.join(', ')}`)
+      return
+    }
+
+    // First unload the module itself
+    moduleRef.dispose()
+    this.moduleRefs.delete(moduleClass.name)
+
+    // Remove from imports graph
+    this.moduleImports.delete(moduleClass.name)
+    for (const imports of this.moduleImports.values()) {
+      imports.delete(moduleClass.name)
+    }
+
+    // Then try to unload modules that this module imported,
+    // if there are no other dependencies on them now
+    if (moduleRef.options.imports) {
+      for (const importedClass of moduleRef.options.imports) {
+        if (this.findDependentModules(importedClass).length === 0) {
+          this.unloadModule(importedClass)
+        }
+      }
+    }
+  }
+
+  private findDependentModules(moduleClass: ModuleType): string[] {
+    const dependentModules: string[] = []
+
+    for (const [name, otherModuleRef] of this.moduleRefs.entries()) {
+      if (otherModuleRef.imports.some(importedRef => importedRef.moduleClass.name === moduleClass.name)) {
+        dependentModules.push(name)
+      }
+    }
+
+    return dependentModules
   }
 }
 

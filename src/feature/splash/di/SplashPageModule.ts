@@ -1,5 +1,5 @@
 import { ApplicationRouter } from '../../../common/router/domain/ApplicationRouter.ts'
-import { Module } from '../../../utils/di-core/di/Dependency.ts'
+import { Module } from '../../../utils/di-core/decorator/decorators.ts'
 import { SplashPageRouter } from '../domain/router/SplashPageRouter.ts'
 import { SplashPagePresenter } from '../domain/SplashPagePresenter.ts'
 import { SplashPagePresenterImpl } from '../domain/SplashPagePresenterImpl.ts'

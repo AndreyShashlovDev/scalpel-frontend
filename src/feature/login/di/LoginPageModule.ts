@@ -1,3 +1,5 @@
+import { Module } from '@di-core/decorator/decorators.ts'
+import { ModuleClassProvider } from '@di-core/di/Dependency.ts'
 import { MessageSignerModule } from '../../../common/di/MessageSignerModule.ts'
 import { WalletConnectModule } from '../../../common/di/WalletConnectModule.ts'
 import { AppSourceService } from '../../../common/repository/data/source/AppSourceService.ts'
@@ -5,7 +7,6 @@ import { ApplicationRouter } from '../../../common/router/domain/ApplicationRout
 import { AppAuthService } from '../../../common/service/auth/AppAuthService.ts'
 import { MessageSigner } from '../../../common/service/message-signer/MessageSigner.ts'
 import { Wallet, WalletConnect } from '../../../common/service/wallet-connect/WalletConnect.ts'
-import { Module, ModuleClassProvider } from '../../../utils/di-core/di/Dependency.ts'
 import { AuthRepositoryImpl } from '../data/auth-repository/AuthRepositoryImpl.ts'
 import { LoginInteractor } from '../domain/interactor/LoginInteractor.ts'
 import { RegistrationInteractor } from '../domain/interactor/RegistrationInteractor.ts'

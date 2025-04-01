@@ -1,4 +1,4 @@
-import { Module } from '../../utils/di-core/di/Dependency.ts'
+import { Module } from '@di-core/decorator/decorators.ts'
 import { ChainType } from '../repository/data/model/ChainType.ts'
 import { EthereumServiceStrategy } from '../service/ethereum-service/EthereumServiceStrategy.ts'
 
@@ -34,6 +34,5 @@ import { EthereumServiceStrategy } from '../service/ethereum-service/EthereumSer
     }
   ],
   exports: [EthereumServiceStrategy],
-  global: true
 })
 export class EthereumServiceStrategyModule {}

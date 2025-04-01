@@ -1,5 +1,5 @@
+import { Module } from '@di-core/decorator/decorators.ts'
 import { ApplicationRouter } from '../../../common/router/domain/ApplicationRouter.ts'
-import { Module } from '../../../utils/di-core/di/Dependency.ts'
 import { AnalyticsRepository } from '../data/analytics-repository/AnalyticsRepository.ts'
 import { AnalyticsRepositoryImpl } from '../data/analytics-repository/AnalyticsRepositoryImpl.ts'
 import { AnalyticsPagePresenter } from '../domain/AnalyticsPagePresenter.ts'
