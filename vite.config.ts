@@ -54,6 +54,7 @@ const pwaConfig = () => {
       ],
     },
     workbox: {
+      navigateFallbackDenylist: [/^wss?:\/\//],
       runtimeCaching: [
         {
           urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
