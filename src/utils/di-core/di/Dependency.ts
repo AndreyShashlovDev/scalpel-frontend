@@ -89,7 +89,7 @@ export enum Scope {
   TRANSIENT = 'TRANSIENT',
 }
 
-export const getTokenDebugName = (token: TokenType<unknown>): string  => {
+export const getTokenDebugName = (token: TokenType<unknown>): string => {
   if (typeof token === 'string' || typeof token === 'symbol') {
     return String(token)
   }
@@ -545,29 +545,14 @@ export class ModuleManager {
     return !!moduleRef && moduleRef.initialized
   }
 
-  public async loadRootModule<T>(moduleClass: ModuleType): Promise<T> {
-    if (this.isModuleLoaded(moduleClass)) {
-      return new moduleClass() as T
-    }
-
-    const options = getModuleOptions(moduleClass)
-    const moduleRef = new ModuleRef(options, moduleClass)
-
-    this.rootModuleRef = moduleRef
-    await moduleRef.initialize(moduleRef)
-
-    this.registerModule(moduleClass, moduleRef)
-
-    return new moduleClass() as T
-  }
-
-  public async loadModule<T>(moduleClass: ModuleType): Promise<T> {
+  public async loadModule<T>(moduleClass: ModuleType, isRootModule: boolean = false): Promise<T> {
     if (this.isModuleLoaded(moduleClass)) {
       return new moduleClass() as T
     }
 
     // Check if module is already being initialized
     const existingPromise = this.initializationPromises.get(moduleClass.name)
+
     if (existingPromise) {
       await existingPromise
       return new moduleClass() as T
@@ -576,7 +561,16 @@ export class ModuleManager {
     const options = getModuleOptions(moduleClass)
     const moduleRef = new ModuleRef(options, moduleClass)
 
-    const initPromise = moduleRef.initialize(this.rootModuleRef)
+    let initPromise: Promise<void>
+
+    if (isRootModule) {
+      this.rootModuleRef = moduleRef
+      initPromise = moduleRef.initialize(moduleRef)
+
+    } else {
+      initPromise = moduleRef.initialize(this.rootModuleRef)
+    }
+
     this.initializationPromises.set(moduleClass.name, initPromise)
 
     try {
@@ -643,10 +637,10 @@ export class ModuleManager {
     }
 
     // Don't unload root module
-    // if (moduleRef === this.rootModuleRef) {
-    //   console.warn('Cannot unload root module')
-    //   return
-    // }
+    if (moduleRef === this.rootModuleRef) {
+      // console.warn('Cannot unload root module')
+      return
+    }
 
     // Check dependent modules by imports
     const dependentModules = this.findDependentModules(moduleClass)
