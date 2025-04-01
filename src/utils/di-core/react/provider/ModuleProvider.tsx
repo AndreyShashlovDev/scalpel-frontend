@@ -13,7 +13,6 @@ export const ModuleProvider = ({module, children}: ModuleProviderProps) => {
 
     const loadModuleAsync = async () => {
       try {
-
         if (!moduleManager.isModuleLoaded(module)) {
           await moduleManager.loadModule(module)
         }

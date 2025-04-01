@@ -4,6 +4,7 @@ export const INJECT_METADATA_KEY = Symbol('INJECT_METADATA_KEY')
 export const INJECTABLE_METADATA_KEY = Symbol('INJECTABLE_METADATA_KEY')
 export const MODULE_METADATA_KEY = Symbol('MODULE_METADATA_KEY')
 export const SCOPE_METADATA_KEY = Symbol('SCOPE_METADATA_KEY')
+export const SINGLETON_MODULE_METADATA_KEY = Symbol('SINGLETON_MODULE_METADATA_KEY')
 
 function getModuleOptions(moduleClass: ModuleType): ModuleOptions {
   const options = Reflect.getMetadata(MODULE_METADATA_KEY, moduleClass)
@@ -13,11 +14,11 @@ function getModuleOptions(moduleClass: ModuleType): ModuleOptions {
   return options
 }
 
-function getClassScope(targetClass: constructor): Scope | null {
+function getClassScope(targetClass: ModuleType): Scope | null {
   return Reflect.getMetadata(SCOPE_METADATA_KEY, targetClass) || null
 }
 
-function getInjectionTokens(targetClass: constructor): any[] {
+function getInjectionTokens(targetClass: ModuleType): any[] {
   try {
     const injectMetadata = Reflect.getMetadata(INJECT_METADATA_KEY, targetClass) || {}
 
@@ -37,6 +38,10 @@ function getInjectionTokens(targetClass: constructor): any[] {
     console.warn(`Failed to get tokens for ${targetClass?.name}`)
     return []
   }
+}
+
+function isSingletonModule(targetClass: ModuleType): boolean {
+  return Reflect.getMetadata(SINGLETON_MODULE_METADATA_KEY, targetClass) === true
 }
 
 export type InjectionToken<T = any> = string | symbol | Abstract<T>;
@@ -176,6 +181,10 @@ export class ProviderRef {
   }
 
   public dispose(): void {
+    if (this.instance?.onDisposeInstance) {
+      this.instance.onDisposeInstance()
+    }
+
     this.instance = null
   }
 }
@@ -191,7 +200,8 @@ export class ModuleRef {
 
   constructor(
     public readonly options: ModuleOptions,
-    public readonly moduleClass: ModuleType
+    public readonly moduleClass: ModuleType,
+    public readonly isSingleton: boolean,
   ) {}
 
   public get name(): string {
@@ -287,9 +297,12 @@ export class ModuleRef {
           let importedModule = moduleManager.getLoadedModule(importClass)
 
           if (!importedModule) {
+            const isSingleton = isSingletonModule(importClass)
+
             importedModule = new ModuleRef(
               getModuleOptions(importClass),
-              importClass
+              importClass,
+              isSingleton
             )
 
             await importedModule.initialize(this.rootModule)
@@ -499,12 +512,18 @@ export class ModuleRef {
 
 export class ModuleManager {
   private moduleRefs = new Map<string, ModuleRef>()
+  private singletonModuleRefs = new Map<string, ModuleRef>()
   private rootModuleRef: ModuleRef | null = null
   private moduleImports = new Map<string, Set<string>>()
   private initializationPromises = new Map<string, Promise<void>>()
 
   public registerModule(moduleClass: ModuleType, moduleRef: ModuleRef): void {
-    this.moduleRefs.set(moduleClass.name, moduleRef)
+    if (!moduleRef.isSingleton) {
+      this.moduleRefs.set(moduleClass.name, moduleRef)
+
+    } else if (!this.singletonModuleRefs.has(moduleClass.name)) {
+      this.singletonModuleRefs.set(moduleClass.name, moduleRef)
+    }
 
     // Update imports graph
     if (moduleRef.options.imports) {
@@ -537,7 +556,7 @@ export class ModuleManager {
   }
 
   public getLoadedModule(moduleClass: ModuleType): ModuleRef | null {
-    return this.moduleRefs.get(moduleClass.name) || null
+    return this.moduleRefs.get(moduleClass.name) ?? this.singletonModuleRefs.get(moduleClass.name) ?? null
   }
 
   public isModuleLoaded(moduleClass: ModuleType): boolean {
@@ -558,8 +577,9 @@ export class ModuleManager {
       return new moduleClass() as T
     }
 
+    const isSingleton = isSingletonModule(moduleClass)
     const options = getModuleOptions(moduleClass)
-    const moduleRef = new ModuleRef(options, moduleClass)
+    const moduleRef = new ModuleRef(options, moduleClass, isSingleton)
 
     let initPromise: Promise<void>
 
@@ -579,21 +599,6 @@ export class ModuleManager {
       return new moduleClass() as T
     } finally {
       this.initializationPromises.delete(moduleClass.name)
-    }
-  }
-
-  public registerModuleHierarchy(moduleClass: ModuleType): void {
-    try {
-      const options = getModuleOptions(moduleClass)
-
-      // If module has imports, register them recursively
-      if (options.imports?.length) {
-        for (const importClass of options.imports) {
-          this.registerModuleHierarchy(importClass)
-        }
-      }
-    } catch (error) {
-      console.warn(`Failed to register module hierarchy for ${moduleClass.name}:`, error)
     }
   }
 
@@ -632,7 +637,7 @@ export class ModuleManager {
   public unloadModule(moduleClass: ModuleType): void {
     const moduleRef = this.getLoadedModule(moduleClass)
 
-    if (!moduleRef) {
+    if (!moduleRef || moduleRef.isSingleton) {
       return
     }
 
