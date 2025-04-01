@@ -5,12 +5,5 @@ import { useCurrentModule } from './useCurrentModule.ts'
 export function useInject<T>(token: TokenType<T>): T {
   const moduleClass = useCurrentModule()
 
-  return useMemo(() => {
-    try {
-      return moduleManager.getService<T>(moduleClass, token)
-    } catch (error) {
-      console.error(`Error resolving dependency ${String(token)} from module ${moduleClass.name}:`, error)
-      throw error
-    }
-  }, [moduleClass, token])
+  return useMemo(() => moduleManager.getService<T>(moduleClass, token), [moduleClass, token])
 }

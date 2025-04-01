@@ -89,6 +89,18 @@ export enum Scope {
   TRANSIENT = 'TRANSIENT',
 }
 
+export const getTokenDebugName = (token: TokenType<unknown>): string  => {
+  if (typeof token === 'string' || typeof token === 'symbol') {
+    return String(token)
+  }
+
+  if (typeof token === 'function') {
+    return token.name
+  }
+
+  return String(token)
+}
+
 export const getTokenName = (token: TokenType<unknown>): string | symbol | Abstract<any> => {
   if (typeof token === 'string' || typeof token === 'symbol') {
     return token
@@ -119,7 +131,7 @@ export class ProviderRef {
     }
 
     if (!this.factory) {
-      throw new Error(`Cannot resolve provider ${String(this.token)}`)
+      throw new Error(`Cannot resolve provider ${getTokenDebugName(this.token)}`)
     }
 
     // Resolving dependencies
@@ -144,7 +156,7 @@ export class ProviderRef {
 
     const missingDeps = this.dependencies.filter((_, index) => deps[index] === undefined)
     if (missingDeps.length > 0) {
-      throw new Error(`Cannot resolve dependencies for ${String(this.token)}: missing ${missingDeps.join(', ')}`)
+      throw new Error(`Cannot resolve dependencies for ${getTokenDebugName(this.token)}: missing ${missingDeps.join(', ')}`)
     }
 
     try {
@@ -244,7 +256,7 @@ export class ModuleRef {
       }
     }
 
-    throw new Error(`Provider ${String(tokenName)} not found in module ${this.name}`)
+    throw new Error(`Provider ${getTokenDebugName(tokenName)} not found in module ${this.name}`)
   }
 
   public async initialize(rootModule: ModuleRef | null = null): Promise<void> {
@@ -343,7 +355,7 @@ export class ModuleRef {
             }
 
             if (!found) {
-              console.warn(`Module ${this.name} exports token ${String(tokenName)} not found`)
+              console.warn(`Module ${this.name} exports token ${getTokenDebugName(tokenName)} not found`)
             }
           }
         }
@@ -369,7 +381,7 @@ export class ModuleRef {
           }
 
         } catch (error) {
-          console.error(`Failed to pre-initialize export ${String(exportToken)}`)
+          console.error(`Failed to pre-initialize export ${getTokenDebugName(exportToken)}`)
         }
       }
     }
@@ -423,7 +435,7 @@ export class ModuleRef {
           .join(', ')
 
         throw new Error(
-          `Cannot register provider ${String(tokenName)} (${targetClass.name}) in module ${this.name}: ` +
+          `Cannot register provider ${getTokenDebugName(tokenName)} (${targetClass.name}) in module ${this.name}: ` +
           `missing dependencies [${missingTokensStr}]. ` +
           `Make sure all dependencies are available through the module's providers, imports, or root module.`
         )
@@ -466,7 +478,7 @@ export class ModuleRef {
         const instance = await providerRef.resolve()
         this.instanceCache.set(tokenName, instance)
       } catch (error) {
-        console.error(`Failed to pre-initialize provider ${String(tokenName)}`)
+        console.error(`Failed to pre-initialize provider ${getTokenDebugName(tokenName)}`)
       }
     }
   }
@@ -607,7 +619,7 @@ export class ModuleManager {
       if (this.rootModuleRef?.instanceCache.has(tokenName)) {
         return this.rootModuleRef.instanceCache.get(tokenName)
       }
-      throw new Error(`Token ${String(tokenName)} not exported from module ${moduleClass.name}`)
+      throw new Error(`Token ${getTokenDebugName(tokenName)} not exported from module ${moduleClass.name}`)
     }
 
     // Get from cache
@@ -620,7 +632,7 @@ export class ModuleManager {
       return this.rootModuleRef.instanceCache.get(tokenName)
     }
 
-    throw new Error(`Provider ${String(tokenName)} not pre-initialized in module ${moduleClass.name}`)
+    throw new Error(`Provider ${getTokenDebugName(tokenName)} not pre-initialized in module ${moduleClass.name}`)
   }
 
   public unloadModule(moduleClass: ModuleType): void {
