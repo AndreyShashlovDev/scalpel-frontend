@@ -1,8 +1,6 @@
 import { Module } from '@di-core/decorator/decorators.ts'
 import { CurrencyRepository } from '../../../common/repository/data/currencies/CurrencyRepository.ts'
 import { WalletRepository } from '../../../common/repository/data/wallet/WalletRepository.ts'
-import { StrategyRepository } from '../../create-strategy/data/strategy-repository/StrategyRepository.ts'
-import { StrategyRepositoryImpl } from '../../create-strategy/data/strategy-repository/StrategyRepositoryImpl.ts'
 import { CreateStrategyPagePresenter } from '../../create-strategy/domain/CreateStrategyPagePresenter.ts'
 import { CreateStrategyPagePresenterImpl } from '../../create-strategy/domain/CreateStrategyPagePresenterImpl.ts'
 import { SimulationRepository } from '../data/simulation-repository/SimulationRepository.ts'
@@ -27,10 +25,6 @@ import { SimulationPageRouterImpl } from '../domain/router/SimulationPageRouterI
       useClass: SimulationRepositoryImpl,
     },
     {
-      provide: StrategyRepository,
-      useClass: StrategyRepositoryImpl
-    },
-    {
       provide: CreateStrategyPagePresenter,
       deps: [CurrencyRepository, WalletRepository, SimulationRepository, SimulationPageRouter],
       useFactory: (
@@ -49,6 +43,6 @@ import { SimulationPageRouterImpl } from '../domain/router/SimulationPageRouterI
       }
     }
   ],
-  exports: [CreateStrategyPagePresenter, SimulationPageDialogProvider]
+  exports: [CreateStrategyPagePresenter, SimulationPageDialogProvider, SimulationRepository, SimulationPageRouter]
 })
 export class CreateSimulationPageModule {}
