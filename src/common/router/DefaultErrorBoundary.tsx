@@ -1,9 +1,5 @@
+import { ErrorBoundaryProps } from 'flexdi/react'
 import { Component, ErrorInfo, ReactNode } from 'react'
-
-interface ErrorBoundaryProps {
-  children: ReactNode
-  fallback?: ReactNode
-}
 
 interface ErrorBoundaryState {
   hasError: boolean
@@ -25,12 +21,12 @@ class DefaultErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     console.error('Error boundary: ', error, errorInfo)
   }
 
-  render() {
+  render(): ReactNode {
     if (this.state.hasError) {
-      return this.props.fallback || <h2>Something went wrong.</h2>
+      return this.props.fallback as ReactNode || <h2>Something went wrong.</h2>
     }
 
-    return this.props.children
+    return this.props.children as ReactNode
   }
 }
 

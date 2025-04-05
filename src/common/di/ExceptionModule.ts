@@ -1,4 +1,4 @@
-import { Module } from '@di-core/decorator/decorators.ts'
+import { Module } from 'flexdi'
 import { AppExceptionHandlerService } from '../service/exception-handler/AppExceptionHandlerService.ts'
 import { ExceptionHandlerService } from '../service/exception-handler/ExceptionHandlerService.ts'
 import { ExceptionNotifierService } from '../service/exception-handler/ExceptionNotifierService.ts'

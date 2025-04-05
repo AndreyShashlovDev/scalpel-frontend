@@ -1,4 +1,4 @@
-import { Module } from '@di-core/decorator/decorators.ts'
+import { Module } from 'flexdi'
 import { SCALPEL_ENDPOINT } from '../../AppModule.ts'
 import { AuthRepositoryImpl } from '../repository/data/auth-repository/AuthRepositoryImpl.ts'
 import { AppAuthHttpsService } from '../repository/data/source/AppAuthHttpsService.ts'

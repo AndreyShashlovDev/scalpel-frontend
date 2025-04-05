@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@di-core/decorator/decorators.ts'
+import { Inject, Injectable } from 'flexdi'
 import { Pageable } from '../../../../common/repository/data/model/Pageable.ts'
 import { SortOrder } from '../../../../common/repository/data/model/SortOrder.ts'
 import { AppSourceService } from '../../../../common/repository/data/source/AppSourceService.ts'

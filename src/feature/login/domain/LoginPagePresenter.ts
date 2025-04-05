@@ -1,5 +1,5 @@
+import { BasicPresenter } from 'flexdi'
 import { Observable } from 'rxjs'
-import { BasicPresenter } from '../../../utils/arch/BasicPresenter.ts'
 
 export abstract class LoginPagePresenter extends BasicPresenter<void> {
 

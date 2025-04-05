@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs'
-import { BasicPresenter } from '../../../utils/arch/BasicPresenter.ts'
+import { BasicPresenter } from 'flexdi'
 import { LogListItemModel } from '../presentation/model/LogListItemModel.ts'
 
 export interface LogsPageArgs {

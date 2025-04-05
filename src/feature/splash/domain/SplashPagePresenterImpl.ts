@@ -1,6 +1,6 @@
+import { Inject, Injectable } from 'flexdi'
 import { AppAuthService } from '../../../common/service/auth/AppAuthService.ts'
 import { Delay } from '../../../utils/Delay.ts'
-import { Inject, Injectable } from '../../../utils/di-core/decorator/decorators.ts'
 import { SplashPageRouter } from './router/SplashPageRouter.ts'
 import { SplashPagePresenter } from './SplashPagePresenter.ts'
 

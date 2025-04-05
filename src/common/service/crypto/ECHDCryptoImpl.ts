@@ -1,4 +1,4 @@
-import { Injectable } from '@di-core/decorator/decorators.ts'
+import { Injectable } from 'flexdi'
 import { ECHDCrypto, PublicKeyVector } from './ECHDCrypto.ts'
 
 @Injectable()

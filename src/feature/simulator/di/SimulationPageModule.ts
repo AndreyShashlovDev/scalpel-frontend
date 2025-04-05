@@ -1,4 +1,4 @@
-import { Module } from '@di-core/decorator/decorators.ts'
+import { Module } from 'flexdi'
 import { CreateStrategyPagePresenter } from '../../create-strategy/domain/CreateStrategyPagePresenter.ts'
 import { SimulationPageDialogProvider } from '../domain/router/SimulationPageDialogProvider.ts'
 import { SimulationPagePresenter } from '../domain/SimulationPagePresenter.ts'

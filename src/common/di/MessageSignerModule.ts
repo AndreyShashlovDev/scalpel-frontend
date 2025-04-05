@@ -1,4 +1,4 @@
-import { Module } from '@di-core/decorator/decorators.ts'
+import { Module } from 'flexdi'
 import { MessageSigner } from '../service/message-signer/MessageSigner.ts'
 import { WalletConnect } from '../service/wallet-connect/WalletConnect.ts'
 import { WalletProvider } from '../service/wallet-connect/WalletProvider.ts'

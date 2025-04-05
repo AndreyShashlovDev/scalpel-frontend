@@ -1,4 +1,6 @@
-import { lazy } from 'react'
+import { ModuleType } from 'flexdi'
+import { createModuleRoute } from 'flexdi/react'
+import { ComponentType, lazy, LazyExoticComponent } from 'react'
 import { createMemoryRouter } from 'react-router-dom'
 import { AnalyticsPageModule } from '../../feature/analytics/di/AnalyticsPageModule.ts'
 import { CreateStrategyPageModule } from '../../feature/create-strategy/di/CreateStrategyPageModule.ts'
@@ -11,7 +13,8 @@ import { StrategiesPageModule } from '../../feature/strategies/di/StrategiesPage
 import { SwapPageModule } from '../../feature/swap/di/SwapPageModule.ts'
 import { TransactionsPageModule } from '../../feature/transaction/di/TransactionsPageModule.ts'
 import { WalletPageModule } from '../../feature/wallet/di/WalletPageModule.ts'
-import { createModuleRoute } from '../../utils/di-core/react/router/ModuleRouter.tsx'
+import DefaultErrorBoundary from './DefaultErrorBoundary.tsx'
+import { DefaultError } from './DefaultErrorView.tsx'
 import { RouterPath } from './domain/ApplicationRouter.ts'
 import { EntrypointView } from './EntrypointView.tsx'
 import { PageNotLoadedView } from './PageNotLoadedView.tsx'
@@ -28,6 +31,21 @@ const TransactionsPageView = lazy(() => import('../../feature/transaction/presen
 const SimulationPageView = lazy(() => import('../../feature/simulator/presentation/SimulationPageView.tsx'))
 const DemoPageView = lazy(() => import('../../feature/demo/presentation/DemoPageView.tsx'))
 
+const createAppRoute = (
+  {
+    route,
+    feature,
+    module
+  }: { route: RouterPath<object>, feature: LazyExoticComponent<ComponentType<unknown>>, module: ModuleType }
+) => createModuleRoute({
+  path: route.path,
+  module: module,
+  Component: feature,
+  ErrorBoundary: DefaultErrorBoundary,
+  LoadingComponent: EntrypointView,
+  ErrorComponent: DefaultError,
+})
+
 export const AppRouting = createMemoryRouter(
   [
     {
@@ -35,81 +53,70 @@ export const AppRouting = createMemoryRouter(
       element: <PageNotLoadedView />
     },
 
-    createModuleRoute({
-      path: RouterPath.Root.path,
+    createAppRoute({
+      route: RouterPath.Root,
       module: SplashPageModule,
-      component: SplashPageView,
-      LoadingComponent: EntrypointView
+      feature: SplashPageView,
     }),
 
-    createModuleRoute({
-      path: RouterPath.Login.path,
+    createAppRoute({
+      route: RouterPath.Login,
       module: LoginPageModule,
-      component: LoginPageView,
-      LoadingComponent: EntrypointView
+      feature: LoginPageView,
     }),
 
-    createModuleRoute({
-      path: RouterPath.Orders.path,
+    createAppRoute({
+      route: RouterPath.Orders,
       module: StrategiesPageModule,
-      component: StrategiesPageView,
-      LoadingComponent: EntrypointView
+      feature: StrategiesPageView,
     }),
 
-    createModuleRoute({
-      path: RouterPath.OrderAnalytics.path,
+    createAppRoute({
+      route: RouterPath.OrderAnalytics,
       module: AnalyticsPageModule,
-      component: AnalyticsPageView,
-      LoadingComponent: EntrypointView
+      feature: AnalyticsPageView,
     }),
 
-    createModuleRoute({
-      path: RouterPath.OrderSwaps.path,
+    createAppRoute({
+      route: RouterPath.OrderSwaps,
       module: SwapPageModule,
-      component: SwapsPageView,
-      LoadingComponent: EntrypointView
+      feature: SwapsPageView,
     }),
 
-    createModuleRoute({
-      path: RouterPath.OrderLogs.path,
+    createAppRoute({
+      route: RouterPath.OrderLogs,
       module: LogsPageModule,
-      component: LogsPageView,
-      LoadingComponent: EntrypointView
+      feature: LogsPageView,
     }),
 
-    createModuleRoute({
-      path: RouterPath.CreateOrder.path,
+    createAppRoute({
+      route: RouterPath.CreateOrder,
       module: CreateStrategyPageModule,
-      component: CreateStrategyPageView,
-      LoadingComponent: EntrypointView
+      feature: CreateStrategyPageView,
     }),
 
-    createModuleRoute({
-      path: RouterPath.Wallets.path,
+    createAppRoute({
+      route: RouterPath.Wallets,
       module: WalletPageModule,
-      component: WalletsPageView,
-      LoadingComponent: EntrypointView
+      feature: WalletsPageView,
     }),
 
-    createModuleRoute({
-      path: RouterPath.Transactions.path,
+    createAppRoute({
+      route: RouterPath.Transactions,
       module: TransactionsPageModule,
-      component: TransactionsPageView,
-      LoadingComponent: EntrypointView
+      feature: TransactionsPageView,
     }),
 
-    createModuleRoute({
-      path: RouterPath.Simulation.path,
+    createAppRoute({
+      route: RouterPath.Simulation,
       module: SimulationPageModule,
-      component: SimulationPageView,
-      LoadingComponent: EntrypointView
+      feature: SimulationPageView,
     }),
 
-    createModuleRoute({
-      path: RouterPath.Demo.path,
+    createAppRoute({
+      route: RouterPath.Demo,
       module: DemoPageModule,
-      component: DemoPageView,
-      LoadingComponent: EntrypointView
+      feature: DemoPageView,
     }),
   ],
 )

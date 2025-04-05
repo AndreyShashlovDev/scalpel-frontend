@@ -1,4 +1,4 @@
-import { Singleton, Module } from '@di-core/decorator/decorators.ts'
+import { Module, Singleton } from 'flexdi'
 import { REOWN_PROJECT_ID } from '../../AppModule.ts'
 import { ExceptionNotifierService } from '../service/exception-handler/ExceptionNotifierService.ts'
 import { WalletConnect } from '../service/wallet-connect/WalletConnect.ts'

@@ -1,3 +1,4 @@
+import { useObservable, usePresenter } from 'flexdi/react'
 import { useCallback } from 'react'
 import styled from 'styled-components'
 import PlayIcon from '../../../assets/icons/app/PlayIcon.svg'
@@ -10,8 +11,6 @@ import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
 import { PageHeaderView } from '../../../common/app-ui/PageHeaderView.tsx'
 import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
 import { StrategyType } from '../../../common/repository/data/model/StrategyType.ts'
-import useObservable from '../../../utils/di-core/react/hook/useObservable.ts'
-import { usePresenter } from '../../../utils/di-core/react/hook/usePresenter.ts'
 import { CreateStrategyPagePresenter, State } from '../domain/CreateStrategyPagePresenter.ts'
 import { ClassicScalpelOptionsView } from './components/strategy-options/ClassicScalpelOptionsView.tsx'
 

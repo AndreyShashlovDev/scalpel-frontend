@@ -1,5 +1,5 @@
+import { Inject, Injectable } from 'flexdi'
 import { BehaviorSubject, filter, Observable, Subject } from 'rxjs'
-import { Inject, Injectable } from '../../../utils/di-core/decorator/decorators.ts'
 import { Retry } from '../../../utils/Retry.ts'
 import { NotificationRepository } from '../../repository/data/notification/NotificationRepository.ts'
 import { SWEvent, SWService } from '../sw/SWService.ts'

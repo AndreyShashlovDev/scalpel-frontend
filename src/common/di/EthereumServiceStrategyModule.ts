@@ -1,4 +1,4 @@
-import { Module } from '@di-core/decorator/decorators.ts'
+import { Module } from 'flexdi'
 import { ChainType } from '../repository/data/model/ChainType.ts'
 import { EthereumServiceStrategy } from '../service/ethereum-service/EthereumServiceStrategy.ts'
 

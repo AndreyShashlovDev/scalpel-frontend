@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@di-core/decorator/decorators.ts'
+import { Inject, Injectable } from 'flexdi'
 import { BehaviorSubject, Observable } from 'rxjs'
 import { ExceptionHandlerService } from '../../../service/exception-handler/ExceptionHandlerService.ts'
 import { SnackBarItem, SnackbarPresenter } from './SnackbarPresenter.ts'

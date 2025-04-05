@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs'
-import { BasicPresenter } from '../../../utils/arch/BasicPresenter.ts'
+import { BasicPresenter } from 'flexdi'
 import { SwapListItemModel } from '../presentation/model/SwapListItemModel.ts'
 
 export interface SwapPageArgs {

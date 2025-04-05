@@ -1,3 +1,4 @@
+import { useObservable, usePresenter } from 'flexdi/react'
 import { useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
@@ -6,8 +7,6 @@ import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
 import { PageHeaderView } from '../../../common/app-ui/PageHeaderView.tsx'
 import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
 import { RouterPath } from '../../../common/router/domain/ApplicationRouter.ts'
-import useObservable from '../../../utils/di-core/react/hook/useObservable.ts'
-import { usePresenter } from '../../../utils/di-core/react/hook/usePresenter.ts'
 import { AnalyticsRange } from '../data/analytics-repository/AnalyticsRange.ts'
 import { AnalyticsPagePresenter } from '../domain/AnalyticsPagePresenter.ts'
 import { SwapPriceChartView } from './components/SwapPriceChartView.tsx'
@@ -65,7 +64,12 @@ export const AnalyticsPageView = () => {
 
   return (
     <>
-      <PageHeaderView text={'Analytics'} hasMainMenu={false} hasBackButton={true} onBackButtonClick={onBackButtonHandler} />
+      <PageHeaderView
+        text={'Analytics'}
+        hasMainMenu={false}
+        hasBackButton={true}
+        onBackButtonClick={onBackButtonHandler}
+      />
       <Container
         refresh={() => presenter.refresh()}
         fetched={!isLoading}

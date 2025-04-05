@@ -2,7 +2,7 @@ import { Observable } from 'rxjs'
 import { ChainType } from '../../../common/repository/data/model/ChainType.ts'
 import { CurrencyResponse } from '../../../common/repository/data/model/CurrencyResponse.ts'
 import { StrategyType } from '../../../common/repository/data/model/StrategyType.ts'
-import { BasicPresenter } from '../../../utils/arch/BasicPresenter.ts'
+import { BasicPresenter } from 'flexdi'
 import { StrategyOptionsData } from '../presentation/components/strategy-options/StrategyOptionsProps.ts'
 
 export enum State {

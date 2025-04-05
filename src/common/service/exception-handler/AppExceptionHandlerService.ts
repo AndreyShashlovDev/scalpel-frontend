@@ -1,4 +1,4 @@
-import { Injectable } from '@di-core/decorator/decorators.ts'
+import { Injectable } from 'flexdi'
 import { Observable, Subject } from 'rxjs'
 import { AppException } from '../../repository/data/source/exception/AppException.ts'
 import { ExceptionHandlerService } from './ExceptionHandlerService.ts'

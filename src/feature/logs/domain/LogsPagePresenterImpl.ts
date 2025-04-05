@@ -1,7 +1,7 @@
+import { Inject, Injectable } from 'flexdi'
 import { BehaviorSubject, from, Observable, Subject, Subscription } from 'rxjs'
 import { LogResponse } from '../../../common/repository/data/model/LogResponse.ts'
 import { Pageable } from '../../../common/repository/data/model/Pageable.ts'
-import { Inject, Injectable } from '../../../utils/di-core/decorator/decorators.ts'
 import { LogsRepository } from '../data/logs-repository/LogsRepository.ts'
 import { LogResponseToLogListItem } from '../presentation/mapping/LogResponseToLogListItem.ts'
 import { LogListItemModel } from '../presentation/model/LogListItemModel.ts'

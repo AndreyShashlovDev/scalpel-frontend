@@ -1,11 +1,10 @@
+import { useObservable, usePresenter } from 'flexdi/react'
 import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { ComponentSize } from '../../../common/app-ui/ComponentSize.ts'
 import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
 import { PageHeaderView } from '../../../common/app-ui/PageHeaderView.tsx'
 import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
-import useObservable from '../../../utils/di-core/react/hook/useObservable.ts'
-import { usePresenter } from '../../../utils/di-core/react/hook/usePresenter.ts'
 import { DemoPagePresenter } from '../domain/DemoPagePresenter.ts'
 import { SimulationListView } from './components/list/SimulationListView.tsx'
 

@@ -1,5 +1,5 @@
+import { Inject, Injectable } from 'flexdi'
 import { ApplicationRouter } from '../../../common/router/domain/ApplicationRouter.ts'
-import { Inject, Injectable } from '../../../utils/di-core/decorator/decorators.ts'
 import StrategiesFilter from '../domain/model/StrategiesFilter.ts'
 import { StrategyPageDialogProvider } from './StrategyPageDialogProvider.ts'
 import { StateBundle, StrategyPageRouter } from './StrategyPageRouter.ts'

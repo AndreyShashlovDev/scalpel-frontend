@@ -28,10 +28,6 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
-    "paths": {
-      "@di-core/*": ["./src/utils/di-core/*"]
-    }
   },
   "include": [
     "src",

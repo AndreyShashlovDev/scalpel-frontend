@@ -1,4 +1,3 @@
-import { resolve } from 'path'
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -15,13 +14,5 @@ export default defineConfig({
         }
       }
     },
-    alias: {
-      '@di-core': resolve(__dirname, './src/utils/di-core'),
-    },
   },
-  resolve: {
-    alias: {
-      '@di-core': resolve(__dirname, './src/utils/di-core'),
-    }
-  }
 })

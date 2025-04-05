@@ -1,3 +1,4 @@
+import { useObservable, usePresenter } from 'flexdi/react'
 import { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
@@ -6,8 +7,6 @@ import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
 import { PageHeaderView } from '../../../common/app-ui/PageHeaderView.tsx'
 import { PageLayoutView } from '../../../common/app-ui/PageLayoutView.tsx'
 import { RouterPath } from '../../../common/router/domain/ApplicationRouter.ts'
-import useObservable from '../../../utils/di-core/react/hook/useObservable.ts'
-import { usePresenter } from '../../../utils/di-core/react/hook/usePresenter.ts'
 import { SwapPagePresenter } from '../domain/SwapPagePresenter.ts'
 import { StrategyListView } from './components/swap-list/SwapListView.tsx'
 

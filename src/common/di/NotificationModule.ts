@@ -1,4 +1,4 @@
-import { Module } from '@di-core/decorator/decorators.ts'
+import { Module } from 'flexdi'
 import { NotificationRepository } from '../repository/data/notification/NotificationRepository.ts'
 import { NotificationRepositoryImpl } from '../repository/data/notification/NotificationRepositoryImpl.ts'
 import { PushNotificationService } from '../service/notification/PushNotificationService.ts'

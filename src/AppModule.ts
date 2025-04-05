@@ -1,4 +1,4 @@
-import { Module } from '@di-core/decorator/decorators.ts'
+import { Module } from 'flexdi'
 import { RouterModule } from './common/di/AppRouterModule.ts'
 import { AuthModule } from './common/di/AuthModule.ts'
 import { ExceptionModule } from './common/di/ExceptionModule.ts'

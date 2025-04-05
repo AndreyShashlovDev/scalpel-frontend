@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs'
-import { BasicPresenter } from '../../../utils/arch/BasicPresenter.ts'
+import { BasicPresenter } from 'flexdi'
 import { TransactionListItemModel } from '../presentation/model/TransactionListItemModel.ts'
 
 export abstract class TransactionPagePresenter extends BasicPresenter<void> {

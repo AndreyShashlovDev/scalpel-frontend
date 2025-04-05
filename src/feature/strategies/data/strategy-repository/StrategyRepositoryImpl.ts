@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@di-core/decorator/decorators.ts'
+import { Inject, Injectable } from 'flexdi'
 import { LogResponse } from '../../../../common/repository/data/model/LogResponse.ts'
 import { Pageable } from '../../../../common/repository/data/model/Pageable.ts'
 import { StrategyResponse, StrategyStatusType } from '../../../../common/repository/data/model/StrategyResponse.ts'

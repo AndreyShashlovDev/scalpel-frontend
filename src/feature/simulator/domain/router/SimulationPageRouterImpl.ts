@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@di-core/decorator/decorators.ts'
+import { Inject, Injectable } from 'flexdi'
 import { SimulationPageDialogProvider } from './SimulationPageDialogProvider.ts'
 import { SimulationPageRouter } from './SimulationPageRouter.ts'
 

@@ -1,4 +1,5 @@
 import 'reflect-metadata'
+import { ModuleLoader, RootModuleLoader } from 'flexdi/react'
 import i18n, { InitOptions } from 'i18next'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
@@ -6,11 +7,13 @@ import './style/index.css'
 import { initReactI18next } from 'react-i18next'
 import { AppModule } from './AppModule.ts'
 import { AppProvider } from './AppProvider.tsx'
+import DefaultErrorBoundary from './common/router/DefaultErrorBoundary.tsx'
+import { DefaultError } from './common/router/DefaultErrorView.tsx'
+import { EntrypointView } from './common/router/EntrypointView.tsx'
 import GTagAnalytics from './common/service/analytics/google/GTagAnalytics.tsx'
 import { AppPageModule } from './feature/app/di/AppPageModule.ts'
 import { App } from './feature/app/presentation/App.tsx'
 import { AppThemeProvider } from './style/theme/AppThemeProvider.tsx'
-import { ModuleLoader, RootModuleLoader } from './utils/di-core/react/provider/ModuleLoader.tsx'
 
 const res: InitOptions = {
   // the translations
@@ -31,13 +34,25 @@ i18n
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-   <RootModuleLoader module={AppModule}>
-      <GTagAnalytics />
-      <AppProvider>
-        <AppThemeProvider>
-          <ModuleLoader module={AppPageModule} children={<App />} />
-        </AppThemeProvider>
-      </AppProvider>
-    </RootModuleLoader>
+    <GTagAnalytics />
+    <AppThemeProvider>
+      <RootModuleLoader
+        module={AppModule}
+        ErrorBoundary={DefaultErrorBoundary}
+        LoadingComponent={DefaultError}
+        ErrorComponent={DefaultError}
+        enableStrictMode={process.env.NODE_ENV !== 'production'}
+      >
+        <AppProvider>
+          <ModuleLoader
+            module={AppPageModule}
+            children={<App />}
+            ErrorBoundary={DefaultErrorBoundary}
+            LoadingComponent={EntrypointView}
+            ErrorComponent={DefaultError}
+          />
+        </AppProvider>
+      </RootModuleLoader>
+    </AppThemeProvider>
   </StrictMode>,
 )

@@ -1,4 +1,4 @@
-import { Injectable } from '@di-core/decorator/decorators.ts'
+import { Injectable } from 'flexdi'
 import { DialogProvider, DialogRouter } from '../../../../utils/arch/DialogProvider.ts'
 
 export interface SimulationDialogCallBacks extends DialogRouter {

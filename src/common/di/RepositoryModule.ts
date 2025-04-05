@@ -1,4 +1,4 @@
-import { Module } from '@di-core/decorator/decorators.ts'
+import { Module } from 'flexdi'
 import { CurrencyRepository } from '../repository/data/currencies/CurrencyRepository.ts'
 import { CurrencyRepositoryImpl } from '../repository/data/currencies/CurrencyRepositoryImpl.ts'
 import { PreferencesRepository } from '../repository/data/preferences/PreferencesRepository.ts'

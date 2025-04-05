@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs'
-import { BasicPresenter } from '../../../utils/arch/BasicPresenter.ts'
+import { BasicPresenter } from 'flexdi'
 import { StrategyListItem } from '../presentation/model/StrategyListItem.ts'
 import StrategiesFilter from './model/StrategiesFilter.ts'
 

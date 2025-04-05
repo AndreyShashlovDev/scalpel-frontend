@@ -1,4 +1,4 @@
-import { BasicPresenter } from '../../../utils/arch/BasicPresenter.ts'
+import { BasicPresenter } from 'flexdi'
 
 export abstract class SplashPagePresenter extends BasicPresenter<void> {
 }

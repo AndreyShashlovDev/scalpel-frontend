@@ -1,4 +1,4 @@
-import { Module } from '@di-core/decorator/decorators.ts'
+import { Module } from 'flexdi'
 import { ECHDCryptoModule } from '../../../common/di/ECHDCryptoModule.ts'
 import { EthereumServiceStrategyModule } from '../../../common/di/EthereumServiceStrategyModule.ts'
 import { MessageSignerModule } from '../../../common/di/MessageSignerModule.ts'

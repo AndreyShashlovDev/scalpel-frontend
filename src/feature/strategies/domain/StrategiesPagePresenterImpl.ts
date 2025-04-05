@@ -1,10 +1,10 @@
+import { Inject, Injectable } from 'flexdi'
 import { BehaviorSubject, catchError, distinctUntilChanged, EMPTY, from, Observable, Subject, Subscription } from 'rxjs'
 import { StrategyStatusType } from '../../../common/repository/data/model/StrategyResponse.ts'
 import { PreferencesRepository } from '../../../common/repository/data/preferences/PreferencesRepository.ts'
 import { UnknownException } from '../../../common/repository/data/source/exception/UnknownException.ts'
 import { ExceptionNotifierService } from '../../../common/service/exception-handler/ExceptionNotifierService.ts'
 import { PushNotificationService } from '../../../common/service/notification/PushNotificationService.ts'
-import { Inject, Injectable } from '../../../utils/di-core/decorator/decorators.ts'
 import { ChangeOptionsRequest } from '../data/model/ChangeOptionsRequest.ts'
 import { StrategyRepository } from '../data/strategy-repository/StrategyRepository.ts'
 import { StrategyResponseToStrategyListItem } from '../presentation/mapping/StrategyResponseToStrategyListItem.ts'
@@ -460,7 +460,7 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
           })
       }
     } catch (e: unknown) {
-      // @ts-ignore
+      // @ts-expect-error isOk
       this.exceptionNotifierService.notify(UnknownException.create(e.message))
     }
   }

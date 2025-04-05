@@ -1,8 +1,7 @@
+import { useObservable, usePresenter } from 'flexdi/react'
 import { AnimatePresence } from 'framer-motion'
 import { createPortal } from 'react-dom'
 import styled from 'styled-components'
-import useObservable from '../../../../utils/di-core/react/hook/useObservable.ts'
-import { usePresenter } from '../../../../utils/di-core/react/hook/usePresenter.ts'
 import { SnackbarPresenter } from '../domain/SnackbarPresenter.ts'
 import { SnackbarItemView } from './components/SnackbarItemView.tsx'
 

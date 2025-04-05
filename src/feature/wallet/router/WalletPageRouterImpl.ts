@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '../../../utils/di-core/decorator/decorators.ts'
+import { Inject, Injectable } from 'flexdi'
 import { WalletPageDialogProvider } from './WalletPageDialogProvider.ts'
 import { WalletPageRouter } from './WalletPageRouter.ts'
 

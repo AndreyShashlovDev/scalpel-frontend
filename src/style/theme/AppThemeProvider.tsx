@@ -1,25 +1,8 @@
-import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react'
-import { DefaultTheme } from 'styled-components'
+import { ReactNode, useCallback, useMemo, useState } from 'react'
+import { ThemeProvider } from 'styled-components'
+import { AppThemeContext, ThemeColorType } from './AppThemeContext.ts'
 import { CommonDarkTheme } from './CommonDarkTheme.ts'
 import { CommonLightTheme } from './CommonLightTheme.ts'
-
-export type ThemeColorType = 'light' | 'dark'
-
-export interface AppContextInterface {
-  changeThemeColor: (color: ThemeColorType) => void
-  currentThemeColor: ThemeColorType
-  theme: DefaultTheme
-}
-
-const AppThemeContext = createContext<AppContextInterface>({
-  changeThemeColor: () => {},
-  currentThemeColor: 'dark',
-  theme: new CommonDarkTheme()
-})
-
-export function useAppTheme() {
-  return useContext(AppThemeContext)
-}
 
 export const AppThemeProvider = ({children}: { children: ReactNode }) => {
   const [currentThemeColor, setCurrentThemeColor] = useState<ThemeColorType>('dark')
@@ -42,7 +25,9 @@ export const AppThemeProvider = ({children}: { children: ReactNode }) => {
 
   return (
     <AppThemeContext.Provider value={contextValue}>
-      {children}
+      <ThemeProvider theme={theme}>
+        {children}
+      </ThemeProvider>
     </AppThemeContext.Provider>
   )
 }

@@ -1,5 +1,4 @@
-import { Module } from '@di-core/decorator/decorators.ts'
-import { ModuleClassProvider } from '@di-core/di/Dependency.ts'
+import { Module, ModuleClassProvider } from 'flexdi'
 import { MessageSignerModule } from '../../../common/di/MessageSignerModule.ts'
 import { WalletConnectModule } from '../../../common/di/WalletConnectModule.ts'
 import { AppSourceService } from '../../../common/repository/data/source/AppSourceService.ts'

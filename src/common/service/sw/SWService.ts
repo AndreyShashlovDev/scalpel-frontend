@@ -1,4 +1,4 @@
-import { Injectable } from '@di-core/decorator/decorators.ts'
+import { Injectable } from 'flexdi'
 import { Observable, Subject } from 'rxjs'
 // @ts-expect-error is exported
 import { registerSW } from 'virtual:pwa-register'

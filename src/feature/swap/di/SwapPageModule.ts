@@ -1,5 +1,5 @@
+import { Module } from 'flexdi'
 import { ApplicationRouter } from '../../../common/router/domain/ApplicationRouter.ts'
-import { Module } from '../../../utils/di-core/decorator/decorators.ts'
 import { StrategyRepository } from '../data/strategy-repository/StrategyRepository.ts'
 import { StrategyRepositoryImpl } from '../data/strategy-repository/StrategyRepositoryImpl.ts'
 import { SwapRepository } from '../data/swap-repository/SwapRepository.ts'

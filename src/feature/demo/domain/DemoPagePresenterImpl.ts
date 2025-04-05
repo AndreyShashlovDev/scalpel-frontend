@@ -1,6 +1,6 @@
+import { Inject, Injectable } from 'flexdi'
 import { BehaviorSubject, from, Observable, Subject, Subscription } from 'rxjs'
 import { Pageable } from '../../../common/repository/data/model/Pageable.ts'
-import { Inject, Injectable } from '../../../utils/di-core/decorator/decorators.ts'
 import { SimulationResponse } from '../data/model/SimulationResponse.ts'
 import { SimulationRepository } from '../data/simulation-repository/SimulationRepository.ts'
 import {

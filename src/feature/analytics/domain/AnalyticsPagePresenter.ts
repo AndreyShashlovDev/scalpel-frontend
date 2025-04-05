@@ -1,5 +1,5 @@
+import { BasicPresenter } from 'flexdi'
 import { Observable } from 'rxjs'
-import { BasicPresenter } from '../../../utils/arch/BasicPresenter.ts'
 import { AnalyticsRange } from '../data/analytics-repository/AnalyticsRange.ts'
 import { AnalyticsChartUiModel } from '../presentation/model/AnalyticsChartUiModel.ts'
 

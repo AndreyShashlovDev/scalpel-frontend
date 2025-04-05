@@ -1,4 +1,4 @@
-import { Injectable } from '@di-core/decorator/decorators.ts'
+import { Injectable } from 'flexdi'
 import { Observable, Subject } from 'rxjs'
 import { Preference } from '../model/Preference.ts'
 import { PreferencesRepository } from './PreferencesRepository.ts'

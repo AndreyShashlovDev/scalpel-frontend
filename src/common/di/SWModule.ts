@@ -1,4 +1,4 @@
-import { Module } from '@di-core/decorator/decorators.ts'
+import { Module } from 'flexdi'
 import { SWService } from '../service/sw/SWService.ts'
 
 @Module({

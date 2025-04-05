@@ -1,4 +1,4 @@
-import { Module } from '@di-core/decorator/decorators.ts'
+import { Module } from 'flexdi'
 import { ApplicationRouter } from '../../../common/router/domain/ApplicationRouter.ts'
 import { LogsRepository } from '../data/logs-repository/LogsRepository.ts'
 import { LogsRepositoryImpl } from '../data/logs-repository/LogsRepositoryImpl.ts'

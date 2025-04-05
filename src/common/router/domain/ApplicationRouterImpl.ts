@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@di-core/decorator/decorators.ts'
+import { Inject, Injectable } from 'flexdi'
 import { ApplicationRouter, RouterPath } from './ApplicationRouter.ts'
 import { RouteStateManager } from './state-manager/RouteStateManager.ts'
 
