@@ -1,4 +1,5 @@
 import 'reflect-metadata'
+import './ReloadOnScriptError.ts'
 import { ModuleLoader, RootModuleLoader } from 'flexdi/react'
 import i18n, { InitOptions } from 'i18next'
 import { StrictMode } from 'react'

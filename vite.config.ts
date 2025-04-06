@@ -67,13 +67,11 @@ const pwaConfig = () => {
           }
         }
       ],
-      navigateFallback: 'index.html',
     },
 
     devOptions: {
       enabled: true,
       type: 'module',
-      navigateFallback: 'index.html'
     }
   })
 }
