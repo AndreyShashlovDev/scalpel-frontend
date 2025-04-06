@@ -4893,9 +4893,9 @@ flatted@^3.2.9:
   integrity sha512-X8cqMLLie7KsNUDSdzeN8FYK9rEt4Dt67OsG/DNGnYTSDBG4uFAJFBnUeiV+zCVAvwFy56IjM9sH51jVaEhNxw==
 
 flexdi@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/flexdi/-/flexdi-0.2.1.tgz#49488193aa9b62556806145011d2877457cb187b"
-  integrity sha512-c8m41XUeBMEa9l2x2GvpIZp3pSHckYM+h9YaBjcPfmomfzwFx3fhzLPhWoCh4tneH0zKAVfJE33dXRxqPnkN0Q==
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/flexdi/-/flexdi-0.2.3.tgz#edde9ac1aa9af042c154ea2207f72ca9987da2eb"
+  integrity sha512-tJlJz6JTzAAUax0Icll4P1p5vDd8eAZSH8iwOioFNDsPerM/uXCWgTV9m4jbR0V+EnytSXvYQTNZLR+ImIJIJg==
 
 for-each@^0.3.3:
   version "0.3.3"
