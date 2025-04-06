@@ -30,6 +30,7 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
   private readonly isLoadingFinished = new Subject<boolean>()
   private readonly isEmpty = new Subject<boolean>()
   private readonly listScrollPosition = new BehaviorSubject<number | undefined>(undefined)
+  private readonly listScrollPositionInitial = new BehaviorSubject<number | undefined>(undefined)
 
   private readonly filter = new BehaviorSubject<StrategiesFilter>(new StrategiesFilter(
     [
@@ -72,7 +73,7 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
       this.currentPage = restoredState.currentPage
       this.isLastPage.next(restoredState.isLastPage)
       this.strategiesList.next(restoredState.listItems)
-      this.listScrollPosition.next(restoredState.listScrollY)
+      this.listScrollPositionInitial.next(restoredState.listScrollY)
       this.isLoadingFinished.next(true)
       this.isLoading.next(false)
 
@@ -135,7 +136,7 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
   }
 
   public getListScrollY(): Observable<number | undefined> {
-    return this.listScrollPosition.asObservable()
+    return this.listScrollPositionInitial.asObservable()
       .pipe(distinctUntilChanged())
   }
 
