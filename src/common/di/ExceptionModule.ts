@@ -11,8 +11,7 @@ import { ExceptionNotifierService } from '../service/exception-handler/Exception
     },
     {
       provide: ExceptionNotifierService,
-      deps: [ExceptionHandlerService],
-      useFactory: (exceptionHandler: ExceptionHandlerService) => exceptionHandler,
+      useToken: ExceptionHandlerService
     }
   ],
   exports: [ExceptionHandlerService, ExceptionNotifierService],
