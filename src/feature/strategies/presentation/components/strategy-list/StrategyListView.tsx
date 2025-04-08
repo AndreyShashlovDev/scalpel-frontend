@@ -25,7 +25,7 @@ const ListWrapper = styled(InfiniteScrollListView)`
 `
 
 export interface StrategyListProps {
-  itemsObservable: Observable<StrategyListItem<unknown>[]> | undefined
+  itemsObservable: Observable<StrategyListItem<unknown>[]>
   onNextFetch: () => void
   onItemClick: (viewId: number, hash: string, data?: unknown) => void
   hasNext: boolean

@@ -40,7 +40,7 @@ createRoot(document.getElementById('root')!).render(
       <RootModuleLoader
         module={AppModule}
         ErrorBoundary={DefaultErrorBoundary}
-        LoadingComponent={DefaultError}
+        LoadingComponent={EntrypointView}
         ErrorComponent={DefaultError}
         enableStrictMode={process.env.NODE_ENV !== 'production'}
       >
