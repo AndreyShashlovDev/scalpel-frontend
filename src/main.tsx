@@ -47,11 +47,12 @@ createRoot(document.getElementById('root')!).render(
         <AppProvider>
           <ModuleLoader
             module={AppPageModule}
-            children={<App />}
             ErrorBoundary={DefaultErrorBoundary}
             LoadingComponent={EntrypointView}
             ErrorComponent={DefaultError}
-          />
+          >
+            <App />
+          </ModuleLoader>
         </AppProvider>
       </RootModuleLoader>
     </AppThemeProvider>

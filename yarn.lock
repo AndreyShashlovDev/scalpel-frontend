@@ -4892,10 +4892,10 @@ flatted@^3.2.9:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.3.1.tgz#21db470729a6734d4997002f439cb308987f567a"
   integrity sha512-X8cqMLLie7KsNUDSdzeN8FYK9rEt4Dt67OsG/DNGnYTSDBG4uFAJFBnUeiV+zCVAvwFy56IjM9sH51jVaEhNxw==
 
-flexdi@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/flexdi/-/flexdi-0.3.0.tgz#7b20b8015d3e2696545915cec1964e8d1f5a5e1a"
-  integrity sha512-NVnaVg2KBR0Cb0waSTtPqVPeFirHCnvA3eRoHMaTzYa4MF1r0vneyl5mMr+D+pI5FYq9iC8THmug0+Yx08RqJA==
+flexdi@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/flexdi/-/flexdi-0.4.0.tgz#086ff133b7c2dec952daa9f1deb8dee8edc16b8a"
+  integrity sha512-tjT4HgLkhCTNCEOkSW3jiy8GCOjgTJjqGGfrZ3NVyAiGBOJ8vC8kyJBUFoOO+ct2jxZMKjkHV2wPlWmr6t7EzQ==
 
 for-each@^0.3.3:
   version "0.3.3"
