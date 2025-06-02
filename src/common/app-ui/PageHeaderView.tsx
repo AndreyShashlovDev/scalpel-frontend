@@ -61,7 +61,7 @@ export const PageHeaderView = ({text, hasBackButton, onBackButtonClick, hasMainM
               (hasBackButton ?? false)
                 ? <AppIconButton
                   icon={<BackArrowIcon />}
-                  size={ComponentSize.SMALL}
+                  size={ComponentSize.SMALLEST}
                   onClick={() => onBackButtonClick && onBackButtonClick()}
                 />
                 : <span />

@@ -52,10 +52,11 @@ export const AppNumberInputView = memo(({
       onValueChange={(values) => {
         val.current = values.floatValue
 
-        if (!values.floatValue && !allowEmptyValue) {
+        if (values.floatValue === undefined && !allowEmptyValue) {
           onChange(min ?? 0)
           return
         }
+        onChange(val.current)
       }}
       {...props}
     />

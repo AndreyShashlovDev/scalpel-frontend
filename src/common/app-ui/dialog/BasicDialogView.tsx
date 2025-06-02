@@ -21,7 +21,6 @@ const TitleContainer = styled.div<{ $canClose: boolean }>`
   display: grid;
   grid-template-columns:  1fr ${({$canClose}) => $canClose ? '56px' : '0'};
   padding-left: ${({$canClose}) => $canClose ? '56px' : '0'};
-  background: ${({theme}) => theme.color.background};
 `
 
 const CloseButton = styled(m.div)`
@@ -51,6 +50,7 @@ const DialogWindowContent = styled.div`
   background-color: ${({theme}) => theme.color.background};
 
   border: 1px solid ${({theme}) => theme.color.button.normal.border.primary};
+  border-radius: ${({theme}) => theme.size.borderRadius.small};
 `
 
 const ContentContainer = styled.div`

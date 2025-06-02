@@ -32,7 +32,7 @@ export const AppIconButton = memo(({icon, size, onClick, disabled}: AppIconButto
       return '24px'
 
     } else if (size === ComponentSize.SMALLEST) {
-      return '16px'
+      return '18px'
 
     } else if (size === ComponentSize.LARGE) {
       return '32px'

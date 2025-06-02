@@ -21,14 +21,25 @@ const PageLayoutViewWrapper = styled(PageLayoutView)`
   width: 100vw;
   height: 100vh;
 `
+const LoginContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  max-width: 360px;
+  padding: 32px;
+  gap: 16px;
+  text-align: center;
+  font-size: 24px;
+`
 
 const LoginButtonContainer = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
   flex-direction: column;
-  max-width: 300px;
-  padding: 32px;
+  max-width: 220px;
   gap: 16px;
   text-align: center;
   font-size: 24px;
@@ -97,36 +108,38 @@ export const LoginPageView = () => {
             <>
               <AppTitleView text={'Scalpel'} size={ComponentSize.LARGEST} />
 
-              <LoginButtonContainer>
+              <LoginContainer>
                 <span>Authorization</span>
 
                 <AddressContainer>
                  {walletAddress && <AddressWrapper address={walletAddress} />}
                 </AddressContainer>
 
-                <AppButton
-                  text={walletAddress && isConnected ? 'Disconnect' : 'Connect wallet'}
-                  onClick={handleConnectDisconnectClick}
-                />
+                <LoginButtonContainer>
+                  <AppButton
+                    text={walletAddress && isConnected ? 'Disconnect' : 'Connect wallet'}
+                    onClick={handleConnectDisconnectClick}
+                  />
 
-                <AppButton
-                  disabled={!isConnected}
-                  text={'Login'}
-                  onClick={handleLoginClick}
-                />
+                  <AppButton
+                    disabled={!isConnected}
+                    text={'Login'}
+                    onClick={handleLoginClick}
+                  />
 
-                <AppButton
-                  disabled={!isConnected}
-                  text={'Registration'}
-                  onClick={handleRegisterClick}
-                />
+                  <AppButton
+                    disabled={!isConnected}
+                    text={'Registration'}
+                    onClick={handleRegisterClick}
+                  />
 
-                <AppSpaceView />
-                <AppButton
-                  text={'Demo'}
-                  onClick={handleDemoClick}
-                />
-              </LoginButtonContainer>
+                  <AppSpaceView />
+                  <AppButton
+                    text={'Demo'}
+                    onClick={handleDemoClick}
+                  />
+                </LoginButtonContainer>
+              </LoginContainer>
             </>
           )
       }

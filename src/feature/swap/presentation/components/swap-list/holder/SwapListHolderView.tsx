@@ -91,11 +91,11 @@ export const SwapListHolderView = forwardRef(({item}: SwapListHolderProps, ref: 
         }
 
         <AppSpaceView />
-        {item.txHash && <div>tx hash: <AppTxHashView hash={item.txHash} chain={item.chain} /></div>}
+        {item.txHash && <div>Tx hash: <AppTxHashView hash={item.txHash} chain={item.chain} /></div>}
         {}
         {item.txFee && (
           <TxFeeContainer>
-            <span>tx fee:</span>
+            <span>Tx fee:</span>
             <TokenIconView
               chain={item.chain}
               address={'0xffffffffffffffffffffffffffffffffffffffff'}
