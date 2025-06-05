@@ -1,4 +1,4 @@
-import { Module, ModuleClassProvider } from 'flexdi'
+import { Module } from 'flexdi'
 import { MessageSignerModule } from '../../../common/di/MessageSignerModule.ts'
 import { WalletConnectModule } from '../../../common/di/WalletConnectModule.ts'
 import { AppSourceService } from '../../../common/repository/data/source/AppSourceService.ts'
@@ -8,21 +8,13 @@ import { MessageSigner } from '../../../common/service/message-signer/MessageSig
 import { Wallet, WalletConnect } from '../../../common/service/wallet-connect/WalletConnect.ts'
 import { AuthRepositoryImpl } from '../data/auth-repository/AuthRepositoryImpl.ts'
 import { LoginInteractor } from '../domain/interactor/LoginInteractor.ts'
-import { RegistrationInteractor } from '../domain/interactor/RegistrationInteractor.ts'
 import { LoginPagePresenter } from '../domain/LoginPagePresenter.ts'
-import { LoginPageDialogProvider } from '../router/LoginPageDialogProvider.ts'
 import { LoginPageRouterImpl } from '../router/LoginPageRouterImpl.ts'
-
-const DialogProvider: ModuleClassProvider = {
-  provide: LoginPageDialogProvider,
-  useClass: LoginPageDialogProvider
-}
 
 @Module({
   imports: [WalletConnectModule, MessageSignerModule],
 
   providers: [
-    DialogProvider,
     {
       provide: LoginPagePresenter,
       deps: [
@@ -31,7 +23,6 @@ const DialogProvider: ModuleClassProvider = {
         AppAuthService,
         AppSourceService,
         ApplicationRouter,
-        LoginPageDialogProvider,
       ],
       useFactory: async (
         walletConnect: WalletConnect<Wallet>,
@@ -39,7 +30,6 @@ const DialogProvider: ModuleClassProvider = {
         appAuthService: AppAuthService,
         appSourceService: AppSourceService,
         appRouter: ApplicationRouter,
-        loginPageDialogProvider: LoginPageDialogProvider,
       ) => {
         const presenterModule = await import('../domain/LoginPagePresenterImpl')
         const LoginPagePresenterImpl = presenterModule.LoginPagePresenterImpl
@@ -51,15 +41,11 @@ const DialogProvider: ModuleClassProvider = {
             new AuthRepositoryImpl(appSourceService),
             appAuthService
           ),
-          new RegistrationInteractor(
-            messageSigner,
-            new AuthRepositoryImpl(appSourceService),
-          ),
-          new LoginPageRouterImpl(appRouter, loginPageDialogProvider)
+          new LoginPageRouterImpl(appRouter)
         )
       }
     }
   ],
-  exports: [LoginPagePresenter, LoginPageDialogProvider]
+  exports: [LoginPagePresenter]
 })
 export class LoginPageModule {}
