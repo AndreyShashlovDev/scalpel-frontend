@@ -23,13 +23,43 @@ const pwaConfig = () => {
     manifest: {
       name: 'Scalpel',
       short_name: 'Scalpel',
-      description: 'Scalpel private trading platform',
+      description: 'Scalpel - trading platform',
       theme_color: '#080404',
       background_color: '#080404',
       display: 'standalone',
       icons: [
         {
-          src: 'pwa/192x192.png',
+          src: 'pwa/72.png',
+          sizes: '72x72',
+          type: 'image/png'
+        },
+        {
+          src: 'pwa/96.png',
+          sizes: '96x96',
+          type: 'image/png'
+        },
+        {
+          src: 'pwa/128.png',
+          sizes: '128x128',
+          type: 'image/png'
+        },
+        {
+          src: 'pwa/144.png',
+          sizes: '144x144',
+          type: 'image/png'
+        },
+        {
+          src: 'pwa/152.png',
+          sizes: '152x152',
+          type: 'image/png'
+        },
+        {
+          src: 'pwa/180.png',
+          sizes: '180x180',
+          type: 'image/png'
+        },
+        {
+          src: 'pwa/192.png',
           sizes: '192x192',
           type: 'image/png'
         },
@@ -39,13 +69,7 @@ const pwaConfig = () => {
           type: 'image/png'
         },
         {
-          src: 'pwa/192x192.png',
-          sizes: '192x192',
-          type: 'image/png',
-          purpose: 'maskable'
-        },
-        {
-          src: 'pwa/512x512.png',
+          src: 'pwa/512mask.png',
           sizes: '512x512',
           type: 'image/png',
           purpose: 'maskable'
