@@ -29,4 +29,6 @@ export abstract class StrategyPageRouter {
   public abstract restoreRouteState(): Readonly<StateBundle> | undefined
 
   public abstract openChangeNotificationState(text: string, resultId: number): void
+
+  public abstract openCreateNewOrder(): void
 }

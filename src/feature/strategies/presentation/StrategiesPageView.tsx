@@ -3,6 +3,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import styled from 'styled-components'
 import FilterIcon from '../../../assets/icons/app/FilterIcon.svg'
 import NotificationIcon from '../../../assets/icons/app/NotificationIcon.svg'
+import { AppButton } from '../../../common/app-ui/AppButton.tsx'
 import { DialogQuestionCallBack, DialogQuestionView } from '../../../common/app-ui/dialog/DialogQuestionView.tsx'
 import { LoadingView } from '../../../common/app-ui/LoadingView.tsx'
 import { PageHeaderView } from '../../../common/app-ui/PageHeaderView.tsx'
@@ -14,6 +15,13 @@ import { DialogStrategyFilterCallBack, DialogStrategyFilterView } from './compon
 import { StrategyListView } from './components/strategy-list/StrategyListView.tsx'
 
 const PageLayoutWrapper = styled(PageLayoutView)`
+`
+
+const EmptyListContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: ${({theme}) => theme.size.dimens.larger};
 `
 
 const ListContainer = styled.div`
@@ -99,6 +107,10 @@ export const StrategiesPageView = () => {
     presenter.onChangeFilter(filter)
   }, [presenter])
 
+  const handleCreateNewOrder = useCallback(() => {
+    presenter.onCreateNewOrderClick()
+  }, [presenter])
+
   useEffect(() => {
     const abortController = new AbortController()
     const element = listScrollContainerRef.current
@@ -135,7 +147,9 @@ export const StrategiesPageView = () => {
       >
       {
         !isLoading && isEmptyPage
-          ? <div>List empty</div>
+          ? <EmptyListContainer>
+              <AppButton text={'Create new order'} onClick={handleCreateNewOrder}/>
+          </EmptyListContainer>
           : isLoading && !pullToRefreshLoading && <LoadingView />
       }
 

@@ -73,4 +73,8 @@ export class StrategyPageRouterImpl extends StrategyPageRouter {
       resultId
     )
   }
+
+  public openCreateNewOrder(): void {
+    this.appRouter.openCreateStrategyPage()
+  }
 }

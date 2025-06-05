@@ -1,5 +1,5 @@
-import { Observable } from 'rxjs'
 import { BasicPresenter } from 'flexdi'
+import { Observable } from 'rxjs'
 import { StrategyListItem } from '../presentation/model/StrategyListItem.ts'
 import StrategiesFilter from './model/StrategiesFilter.ts'
 
@@ -36,4 +36,6 @@ export abstract class StrategiesPagePresenter extends BasicPresenter<void> {
   public abstract setListScrollY(scrollTop: number): void
 
   public abstract onNotificationClick(): void
+
+  public abstract onCreateNewOrderClick(): void
 }

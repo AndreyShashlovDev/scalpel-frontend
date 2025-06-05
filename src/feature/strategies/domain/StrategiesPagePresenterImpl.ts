@@ -464,4 +464,8 @@ export class StrategiesPagePresenterImpl extends StrategiesPagePresenter {
       this.exceptionNotifierService.notify(UnknownException.create(e.message))
     }
   }
+
+  public onCreateNewOrderClick(): void {
+    this.router.openCreateNewOrder()
+  }
 }
